@@ -1,15 +1,15 @@
-package BigT;
+package bigt;
 
 import global.MID;
 
 
-public class bigt {
+public class BigT {
 	
 	private String name;
 	private int type;
 
 // Defining different cluster strategy type
-	public bigt(String name, int type) {
+	public BigT(String name, int type) {
 	
 	
 	}
