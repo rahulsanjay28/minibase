@@ -1,4 +1,4 @@
-package BigT;
+package bigt;
 
 
 public class Map {
