@@ -1,5 +1,5 @@
 # modify the paths appropriately
-JDKPATH = /Library/Java/JavaVirtualMachines/jdk-13.0.2.jdk/Contents/Home
+JDKPATH = ${MyJDKPath}
 LIBPATH = .:..
 CLASSPATH = $(LIBPATH)
 BINPATH = $(JDKPATH)/bin

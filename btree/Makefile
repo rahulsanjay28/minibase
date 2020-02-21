@@ -1,4 +1,4 @@
-JDKPATH = /Library/Java/JavaVirtualMachines/jdk-13.0.2.jdk/Contents/Home
+JDKPATH = ${MyJDKPath}
 LIBPATH = /Users/rahulsanjay/Downloads/DBMSI/minjava/javaminibase/construction
 CLASSPATH = $(JDKPATH)/lib/classes.zip:.:..:$(LIBPATH)
 BINPATH = $(JDKPATH)/bin

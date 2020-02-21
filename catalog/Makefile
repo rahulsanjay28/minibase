@@ -1,4 +1,4 @@
-JDKPATH = /s/java
+JDKPATH = ${MyJDKPath}
 LIBPATH = /p/course/cs784-raghu/minibase_share/javaminibase/construction
 CLASSPATH = $(JDKPATH)/lib/classes.zip:.:..:$(LIBPATH)
 BINPATH = $(JDKPATH)/bin
