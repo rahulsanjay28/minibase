@@ -1,3 +1,8 @@
+/**
+ * compile this file using the command "javac BatchInsert.java"
+ * Then run using "java BatchInsert datafilename type bigtablename"
+ */
+
 public class BatchInsert {
 
     public static void main(String[] args) {
