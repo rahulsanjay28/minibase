@@ -1,8 +1,6 @@
 package bigt;
 
 import global.MID;
-
-
 public class BigT {
 
     private String name;

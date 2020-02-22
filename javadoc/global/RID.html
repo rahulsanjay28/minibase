@@ -60,7 +60,7 @@ Class  RID</H2>
 <PRE>
 java.lang.Object
   |
-  +--<B>global.RID</B>
+  +--<B>global.MID</B>
 </PRE>
 <HR>
 <DL>
@@ -135,18 +135,18 @@ class RID
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../global/RID.html#copyRid(global.RID)">copyRid</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../global/RID.html#copyRid(global.MID)">copyRid</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make a copy of the given rid</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make a copy of the given MID</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../global/RID.html#equals(global.RID)">equals</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../global/RID.html#equals(global.MID)">equals</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compares two RID object, i.e, this to the rid</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compares two RID object, i.e, this to the MID</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -155,7 +155,7 @@ class RID
                  int&nbsp;offset)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Write the rid into a byte array at offset</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Write the MID into a byte array at offset</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -234,9 +234,9 @@ public <B>RID</B>(<A HREF="../global/PageId.html">PageId</A>&nbsp;pageno,
 <A NAME="copyRid(global.RID)"><!-- --></A><H3>
 copyRid</H3>
 <PRE>
-public void <B>copyRid</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</PRE>
+public void <B>copyRid</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</PRE>
 <DL>
-<DD>make a copy of the given rid</DL>
+<DD>make a copy of the given MID</DL>
 <HR>
 
 <A NAME="writeToByteArray(byte[], int)"><!-- --></A><H3>
@@ -246,7 +246,7 @@ public void <B>writeToByteArray</B>(byte[]&nbsp;ary,
                              int&nbsp;offset)
                       throws java.io.IOException</PRE>
 <DL>
-<DD>Write the rid into a byte array at offset<DD><DL>
+<DD>Write the MID into a byte array at offset<DD><DL>
 <DT><B>Parameters:</B><DD><CODE>ary</CODE> - the specified byte array<DD><CODE>offset</CODE> - the offset of byte array to write<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - I/O errors</DL>
 </DD>
 </DL>
@@ -255,10 +255,10 @@ public void <B>writeToByteArray</B>(byte[]&nbsp;ary,
 <A NAME="equals(global.RID)"><!-- --></A><H3>
 equals</H3>
 <PRE>
-public boolean <B>equals</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</PRE>
+public boolean <B>equals</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</PRE>
 <DL>
-<DD>Compares two RID object, i.e, this to the rid<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - RID object to be compared to<DT><B>Returns:</B><DD>true is they are equal
+<DD>Compares two RID object, i.e, this to the MID<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - RID object to be compared to<DT><B>Returns:</B><DD>true is they are equal
          false if not.</DL>
 </DD>
 </DL>

@@ -149,7 +149,7 @@ BTsortedPage class
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTSortedPage.html#deleteSortedRecord(global.RID)">deleteSortedRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTSortedPage.html#deleteSortedRecord(global.MID)">deleteSortedRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deletes a record from a sorted record page.</TD>
@@ -161,7 +161,7 @@ BTsortedPage class
 <TD><B>Methods inherited from class heap.<A HREF="../heap/HFPage.html">HFPage</A></B></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../heap/HFPage.html#available_space()">available_space</A>, <A HREF="../heap/HFPage.html#deleteRecord(global.RID)">deleteRecord</A>, <A HREF="../heap/HFPage.html#dumpPage()">dumpPage</A>, <A HREF="../heap/HFPage.html#empty()">empty</A>, <A HREF="../heap/HFPage.html#firstRecord()">firstRecord</A>, <A HREF="../heap/HFPage.html#getCurPage()">getCurPage</A>, <A HREF="../heap/HFPage.html#getHFpageArray()">getHFpageArray</A>, <A HREF="../heap/HFPage.html#getNextPage()">getNextPage</A>, <A HREF="../heap/HFPage.html#getPrevPage()">getPrevPage</A>, <A HREF="../heap/HFPage.html#getRecord(global.RID)">getRecord</A>, <A HREF="../heap/HFPage.html#getSlotCnt()">getSlotCnt</A>, <A HREF="../heap/HFPage.html#getSlotLength(int)">getSlotLength</A>, <A HREF="../heap/HFPage.html#getSlotOffset(int)">getSlotOffset</A>, <A HREF="../heap/HFPage.html#getType()">getType</A>, <A HREF="../heap/HFPage.html#init(global.PageId, diskmgr.Page)">init</A>, <A HREF="../heap/HFPage.html#insertRecord(byte[])">insertRecord</A>, <A HREF="../heap/HFPage.html#nextRecord(global.RID)">nextRecord</A>, <A HREF="../heap/HFPage.html#openHFpage(diskmgr.Page)">openHFpage</A>, <A HREF="../heap/HFPage.html#returnRecord(global.RID)">returnRecord</A>, <A HREF="../heap/HFPage.html#setCurPage(global.PageId)">setCurPage</A>, <A HREF="../heap/HFPage.html#setNextPage(global.PageId)">setNextPage</A>, <A HREF="../heap/HFPage.html#setPrevPage(global.PageId)">setPrevPage</A>, <A HREF="../heap/HFPage.html#setSlot(int, int, int)">setSlot</A>, <A HREF="../heap/HFPage.html#setType(short)">setType</A></CODE></TD>
+<TD><CODE><A HREF="../heap/HFPage.html#available_space()">available_space</A>, <A HREF="../heap/HFPage.html#deleteRecord(global.MID)">deleteRecord</A>, <A HREF="../heap/HFPage.html#dumpPage()">dumpPage</A>, <A HREF="../heap/HFPage.html#empty()">empty</A>, <A HREF="../heap/HFPage.html#firstRecord()">firstRecord</A>, <A HREF="../heap/HFPage.html#getCurPage()">getCurPage</A>, <A HREF="../heap/HFPage.html#getHFpageArray()">getHFpageArray</A>, <A HREF="../heap/HFPage.html#getNextPage()">getNextPage</A>, <A HREF="../heap/HFPage.html#getPrevPage()">getPrevPage</A>, <A HREF="../heap/HFPage.html#getRecord(global.MID)">getRecord</A>, <A HREF="../heap/HFPage.html#getSlotCnt()">getSlotCnt</A>, <A HREF="../heap/HFPage.html#getSlotLength(int)">getSlotLength</A>, <A HREF="../heap/HFPage.html#getSlotOffset(int)">getSlotOffset</A>, <A HREF="../heap/HFPage.html#getType()">getType</A>, <A HREF="../heap/HFPage.html#init(global.PageId, diskmgr.Page)">init</A>, <A HREF="../heap/HFPage.html#insertRecord(byte[])">insertRecord</A>, <A HREF="../heap/HFPage.html#nextRecord(global.MID)">nextRecord</A>, <A HREF="../heap/HFPage.html#openHFpage(diskmgr.Page)">openHFpage</A>, <A HREF="../heap/HFPage.html#returnRecord(global.MID)">returnRecord</A>, <A HREF="../heap/HFPage.html#setCurPage(global.PageId)">setCurPage</A>, <A HREF="../heap/HFPage.html#setNextPage(global.PageId)">setNextPage</A>, <A HREF="../heap/HFPage.html#setPrevPage(global.PageId)">setPrevPage</A>, <A HREF="../heap/HFPage.html#setSlot(int, int, int)">setSlot</A>, <A HREF="../heap/HFPage.html#setType(short)">setType</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_diskmgr.Page"><!-- --></A>
@@ -252,12 +252,12 @@ public <B>BTSortedPage</B>(int&nbsp;keyType)
 <A NAME="deleteSortedRecord(global.RID)"><!-- --></A><H3>
 deleteSortedRecord</H3>
 <PRE>
-public boolean <B>deleteSortedRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public boolean <B>deleteSortedRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                            throws <A HREF="../btree/DeleteRecException.html">DeleteRecException</A></PRE>
 <DL>
 <DD>Deletes a record from a sorted record page. It also calls
     HFPage.compact_slot_dir() to compact the slot directory.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - it specifies where a record will be deleted<DT><B>Returns:</B><DD>true if success; false if rid is invalid(no record in the rid).<DT><B>Throws:</B><DD><CODE><A HREF="../btree/DeleteRecException.html">DeleteRecException</A></CODE> - error when delete</DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - it specifies where a record will be deleted<DT><B>Returns:</B><DD>true if success; false if MID is invalid(no record in the MID).<DT><B>Throws:</B><DD><CODE><A HREF="../btree/DeleteRecException.html">DeleteRecException</A></CODE> - error when delete</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

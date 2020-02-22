@@ -144,7 +144,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test1.in"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("test1.in");
@@ -170,7 +170,7 @@ class SORTDriver extends TestDriver
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
@@ -290,7 +290,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test2.in"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("test2.in");
@@ -316,7 +316,7 @@ class SORTDriver extends TestDriver
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
@@ -442,7 +442,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test3.in"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("test3.in");
@@ -477,7 +477,7 @@ class SORTDriver extends TestDriver
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
@@ -705,7 +705,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file
-        RID rid1, rid2;
+        MID MID1, MID2;
         Heapfile f1 = null;
         Heapfile f2 = null;
         try {
@@ -733,8 +733,8 @@ class SORTDriver extends TestDriver
             }
 
             try {
-                rid1 = f1.insertRecord(t.returnTupleByteArray());
-                rid2 = f2.insertRecord(t.returnTupleByteArray());
+                MID1 = f1.insertRecord(t.returnTupleByteArray());
+                MID2 = f2.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();

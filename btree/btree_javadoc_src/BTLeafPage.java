@@ -72,20 +72,20 @@ public class BTLeafPage extends BTSortedPage {
    * accomplished by a call to SortedPage::insertRecord()
    *  Parameters:
    *@param key - the key value of the data record. Input parameter.
-   *@param dataRid - the rid of the data record. This is
+   *@param dataMID - the rid of the data record. This is
    *               stored on the leaf page along with the
    *               corresponding key value. Input parameter.
    *
    *@return - the rid of the inserted leaf record data entry,
    *           i.e., the <key, dataRid> pair.
    */   
-  public RID insertRecord(KeyClass key, RID dataRid) 
+  public MID insertRecord(KeyClass key, MID dataMID)
       //throws  LeafInsertRecException
     {
       KeyDataEntry entry;
       
       try {
-        entry = new KeyDataEntry( key,dataRid);
+        entry = new KeyDataEntry( key, dataMID);
 	
         return insertRecord(entry);
       }
@@ -98,20 +98,20 @@ public class BTLeafPage extends BTSortedPage {
   /**  Iterators. 
    * One of the two functions: getFirst and getNext
    * which  provide an iterator interface to the records on a BTLeafPage.
-   *@param rid It will be modified and the first rid in the leaf page
+   *@param mid It will be modified and the first rid in the leaf page
    * will be passed out by itself. Input and Output parameter.
    *@return return the first KeyDataEntry in the leaf page.
    * null if no more record
    */
-  public KeyDataEntry getFirst(RID rid) 
+  public KeyDataEntry getFirst(MID mid)
       //throws  IteratorException
     {
       
       KeyDataEntry  entry; 
       
       try {
-        rid.pageNo = getCurPage();
-        rid.slotNo = 0; // begin with first slot
+        mid.pageNo = getCurPage();
+        mid.slotNo = 0; // begin with first slot
 	
         if ( getSlotCnt() <= 0) {
           return null;
@@ -131,22 +131,22 @@ public class BTLeafPage extends BTSortedPage {
    /**Iterators.  
     * One of the two functions: getFirst and getNext which  provide an
     * iterator interface to the records on a BTLeafPage.
-    *@param rid It will be modified and the next rid will be passed out 
+    *@param mid It will be modified and the next mid will be passed out
     *by itself. Input and Output parameter.
     *@return return the next KeyDataEntry in the leaf page. 
     *null if no more record.
     */
 
-   public KeyDataEntry getNext (RID rid)
+   public KeyDataEntry getNext (MID mid)
        //throws  IteratorException
    {
      KeyDataEntry  entry; 
      int i;
      try{
-       rid.slotNo++; //must before any return;
-       i=rid.slotNo;
+       mid.slotNo++; //must before any return;
+       i= mid.slotNo;
        
-       if ( rid.slotNo >= getSlotCnt())
+       if ( mid.slotNo >= getSlotCnt())
        {
 	 return null;
        }
@@ -166,15 +166,15 @@ public class BTLeafPage extends BTSortedPage {
   /**
    * getCurrent returns the current record in the iteration; it is like
    * getNext except it does not advance the iterator.
-   *@param rid  the current rid. Input and Output parameter. But
+   *@param mid  the current rid. Input and Output parameter. But
    *    Output=Input.
    *@return return the current KeyDataEntry
    */ 
-   public KeyDataEntry getCurrent (RID rid)
+   public KeyDataEntry getCurrent (MID mid)
          //throws  IteratorException
    {  
-     rid.slotNo--;
-     return getNext(rid);
+     mid.slotNo--;
+     return getNext(mid);
    }
   
   
@@ -187,13 +187,13 @@ public class BTLeafPage extends BTSortedPage {
        //throws  LeafDeleteException
     {
       KeyDataEntry  entry;
-      RID rid=new RID(); 
+      MID mid =new MID();
       
       try {
-	for(entry = getFirst(rid); entry!=null; entry=getNext(rid)) 
+	for(entry = getFirst(mid); entry!=null; entry=getNext(mid))
 	  {  
 	    if ( entry.equals(dEntry) ) {
-	      if ( super.deleteSortedRecord( rid ) == false )
+	      if ( super.deleteSortedRecord(mid) == false )
 		throw new LeafDeleteException(null, "Delete record failed");
 	      return true;
 	    }
@@ -239,18 +239,18 @@ public class BTLeafPage extends BTSortedPage {
 	    
 	    
             //get its sibling's first record's key for adjusting parent pointer
-            RID dummyRid=new RID();
+            MID dummyMID =new MID();
             KeyDataEntry firstEntry;
-            firstEntry=leafPage.getFirst(dummyRid);
+            firstEntry=leafPage.getFirst(dummyMID);
 
             // insert it into its sibling            
             leafPage.insertRecord(lastEntry);
             
             // delete the last record from the old page
-            RID delRid=new RID();
-            delRid.pageNo = getCurPage();
-            delRid.slotNo = getSlotCnt()-1;
-            if ( deleteSortedRecord(delRid) == false )
+            MID delMID =new MID();
+            delMID.pageNo = getCurPage();
+            delMID.slotNo = getSlotCnt()-1;
+            if ( deleteSortedRecord(delMID) == false )
 	      throw new LeafRedistributeException(null, "delete record failed");
 
 	    
@@ -280,22 +280,22 @@ public class BTLeafPage extends BTSortedPage {
 					    NodeType.LEAF);
 	    
             // insert it into its sibling
-            RID dummyRid=new RID();
+            MID dummyMID =new MID();
             leafPage.insertRecord(firstEntry);
             
 
             // delete the first record from the old page
-            RID delRid=new RID();
-            delRid.pageNo = getCurPage();
-            delRid.slotNo = 0;
-            if ( deleteSortedRecord(delRid) == false) 
+            MID delMID =new MID();
+            delMID.pageNo = getCurPage();
+            delMID.slotNo = 0;
+            if ( deleteSortedRecord(delMID) == false)
 	      throw new LeafRedistributeException(null, "delete record failed");  
 	    
 	    
             // get the current first record of the old page
             // for adjusting parent pointer.
             KeyDataEntry tmpEntry;
-            tmpEntry = getFirst(dummyRid);
+            tmpEntry = getFirst(dummyMID);
          
             
             // adjust the entry pointing to itself in its parent

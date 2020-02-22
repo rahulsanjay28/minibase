@@ -180,7 +180,7 @@ class JoinsDriver implements GlobalConst {
         int size = t.size();
 
         // inserting the tuple into file "sailors"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("sailors.in");
@@ -212,7 +212,7 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 System.err.println("*** error in Heapfile.insertRecord() ***");
                 status = FAIL;
@@ -278,7 +278,7 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 System.err.println("*** error in Heapfile.insertRecord() ***");
                 status = FAIL;
@@ -343,7 +343,7 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 System.err.println("*** error in Heapfile.insertRecord() ***");
                 status = FAIL;

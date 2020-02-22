@@ -108,8 +108,8 @@ Base class for a index file
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>abstract &nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/IndexFile.html#Delete(btree.KeyClass, global.RID)">Delete</A></B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;data,
-       <A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/IndexFile.html#Delete(btree.KeyClass, global.MID)">Delete</A></B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;data,
+       <A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete entry from the index file.</TD>
@@ -117,8 +117,8 @@ Base class for a index file
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>abstract &nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/IndexFile.html#insert(btree.KeyClass, global.RID)">insert</A></B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;data,
-       <A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/IndexFile.html#insert(btree.KeyClass, global.MID)">insert</A></B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;data,
+       <A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Insert entry into the index file.</TD>
@@ -170,7 +170,7 @@ public <B>IndexFile</B>()</PRE>
 insert</H3>
 <PRE>
 public abstract void <B>insert</B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;data,
-                            <A HREF="../global/RID.html">RID</A>&nbsp;rid)
+                            <A HREF="../global/RID.html">RID</A>&nbsp;MID)
                      throws <A HREF="../btree/KeyTooLongException.html">KeyTooLongException</A>,
                             <A HREF="../btree/KeyNotMatchException.html">KeyNotMatchException</A>,
                             <A HREF="../btree/LeafInsertRecException.html">LeafInsertRecException</A>,
@@ -188,7 +188,7 @@ public abstract void <B>insert</B>(<A HREF="../btree/KeyClass.html">KeyClass</A>
                             java.io.IOException</PRE>
 <DL>
 <DD>Insert entry into the index file.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>data</CODE> - the key for the entry<DD><CODE>rid</CODE> - the rid of the tuple with the key<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - from lower layers<DD><CODE><A HREF="../btree/KeyTooLongException.html">KeyTooLongException</A></CODE> - the key is too long<DD><CODE><A HREF="../btree/KeyNotMatchException.html">KeyNotMatchException</A></CODE> - the keys do not match<DD><CODE><A HREF="../btree/LeafInsertRecException.html">LeafInsertRecException</A></CODE> - insert record to leaf page failed<DD><CODE><A HREF="../btree/IndexInsertRecException.html">IndexInsertRecException</A></CODE> - insert record to index page failed<DD><CODE><A HREF="../btree/ConstructPageException.html">ConstructPageException</A></CODE> - fail to construct a header page<DD><CODE><A HREF="../btree/UnpinPageException.html">UnpinPageException</A></CODE> - unpin page failed<DD><CODE><A HREF="../btree/PinPageException.html">PinPageException</A></CODE> - pin page failed<DD><CODE><A HREF="../btree/NodeNotMatchException.html">NodeNotMatchException</A></CODE> - nodes do not match<DD><CODE><A HREF="../btree/ConvertException.html">ConvertException</A></CODE> - conversion failed (from global package)<DD><CODE><A HREF="../btree/DeleteRecException.html">DeleteRecException</A></CODE> - delete record failed<DD><CODE><A HREF="../btree/IndexSearchException.html">IndexSearchException</A></CODE> - index search failed<DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - error from iterator<DD><CODE><A HREF="../btree/LeafDeleteException.html">LeafDeleteException</A></CODE> - delete leaf page failed<DD><CODE><A HREF="../btree/InsertException.html">InsertException</A></CODE> - insert record failed</DL>
+<DT><B>Parameters:</B><DD><CODE>data</CODE> - the key for the entry<DD><CODE>MID</CODE> - the MID of the tuple with the key<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - from lower layers<DD><CODE><A HREF="../btree/KeyTooLongException.html">KeyTooLongException</A></CODE> - the key is too long<DD><CODE><A HREF="../btree/KeyNotMatchException.html">KeyNotMatchException</A></CODE> - the keys do not match<DD><CODE><A HREF="../btree/LeafInsertRecException.html">LeafInsertRecException</A></CODE> - insert record to leaf page failed<DD><CODE><A HREF="../btree/IndexInsertRecException.html">IndexInsertRecException</A></CODE> - insert record to index page failed<DD><CODE><A HREF="../btree/ConstructPageException.html">ConstructPageException</A></CODE> - fail to construct a header page<DD><CODE><A HREF="../btree/UnpinPageException.html">UnpinPageException</A></CODE> - unpin page failed<DD><CODE><A HREF="../btree/PinPageException.html">PinPageException</A></CODE> - pin page failed<DD><CODE><A HREF="../btree/NodeNotMatchException.html">NodeNotMatchException</A></CODE> - nodes do not match<DD><CODE><A HREF="../btree/ConvertException.html">ConvertException</A></CODE> - conversion failed (from global package)<DD><CODE><A HREF="../btree/DeleteRecException.html">DeleteRecException</A></CODE> - delete record failed<DD><CODE><A HREF="../btree/IndexSearchException.html">IndexSearchException</A></CODE> - index search failed<DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - error from iterator<DD><CODE><A HREF="../btree/LeafDeleteException.html">LeafDeleteException</A></CODE> - delete leaf page failed<DD><CODE><A HREF="../btree/InsertException.html">InsertException</A></CODE> - insert record failed</DL>
 </DD>
 </DL>
 <HR>
@@ -197,7 +197,7 @@ public abstract void <B>insert</B>(<A HREF="../btree/KeyClass.html">KeyClass</A>
 Delete</H3>
 <PRE>
 public abstract boolean <B>Delete</B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;data,
-                               <A HREF="../global/RID.html">RID</A>&nbsp;rid)
+                               <A HREF="../global/RID.html">RID</A>&nbsp;MID)
                         throws <A HREF="../btree/DeleteFashionException.html">DeleteFashionException</A>,
                                <A HREF="../btree/LeafRedistributeException.html">LeafRedistributeException</A>,
                                <A HREF="../btree/RedistributeException.html">RedistributeException</A>,
@@ -217,7 +217,7 @@ public abstract boolean <B>Delete</B>(<A HREF="../btree/KeyClass.html">KeyClass<
                                java.io.IOException</PRE>
 <DL>
 <DD>Delete entry from the index file.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>data</CODE> - the key for the entry<DD><CODE>rid</CODE> - the rid of the tuple with the key<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - from lower layers<DD><CODE><A HREF="../btree/DeleteFashionException.html">DeleteFashionException</A></CODE> - delete fashion undefined<DD><CODE><A HREF="../btree/LeafRedistributeException.html">LeafRedistributeException</A></CODE> - failed to redistribute leaf page<DD><CODE><A HREF="../btree/RedistributeException.html">RedistributeException</A></CODE> - redistrubtion failed<DD><CODE><A HREF="../btree/InsertRecException.html">InsertRecException</A></CODE> - insert record failed<DD><CODE><A HREF="../btree/KeyNotMatchException.html">KeyNotMatchException</A></CODE> - keys do not match<DD><CODE><A HREF="../btree/UnpinPageException.html">UnpinPageException</A></CODE> - unpin page failed<DD><CODE><A HREF="../btree/IndexInsertRecException.html">IndexInsertRecException</A></CODE> - insert record to index failed<DD><CODE><A HREF="../btree/FreePageException.html">FreePageException</A></CODE> - free page failed<DD><CODE><A HREF="../btree/RecordNotFoundException.html">RecordNotFoundException</A></CODE> - failed to find the record<DD><CODE><A HREF="../btree/PinPageException.html">PinPageException</A></CODE> - pin page failed<DD><CODE><A HREF="../btree/IndexFullDeleteException.html">IndexFullDeleteException</A></CODE> - full delete on index page failed<DD><CODE><A HREF="../btree/LeafDeleteException.html">LeafDeleteException</A></CODE> - delete leaf page failed<DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - exception from iterating through records<DD><CODE><A HREF="../btree/ConstructPageException.html">ConstructPageException</A></CODE> - fail to construct the header page<DD><CODE><A HREF="../btree/DeleteRecException.html">DeleteRecException</A></CODE> - delete record failed<DD><CODE><A HREF="../btree/IndexSearchException.html">IndexSearchException</A></CODE> - index search failed</DL>
+<DT><B>Parameters:</B><DD><CODE>data</CODE> - the key for the entry<DD><CODE>MID</CODE> - the MID of the tuple with the key<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - from lower layers<DD><CODE><A HREF="../btree/DeleteFashionException.html">DeleteFashionException</A></CODE> - delete fashion undefined<DD><CODE><A HREF="../btree/LeafRedistributeException.html">LeafRedistributeException</A></CODE> - failed to redistribute leaf page<DD><CODE><A HREF="../btree/RedistributeException.html">RedistributeException</A></CODE> - redistrubtion failed<DD><CODE><A HREF="../btree/InsertRecException.html">InsertRecException</A></CODE> - insert record failed<DD><CODE><A HREF="../btree/KeyNotMatchException.html">KeyNotMatchException</A></CODE> - keys do not match<DD><CODE><A HREF="../btree/UnpinPageException.html">UnpinPageException</A></CODE> - unpin page failed<DD><CODE><A HREF="../btree/IndexInsertRecException.html">IndexInsertRecException</A></CODE> - insert record to index failed<DD><CODE><A HREF="../btree/FreePageException.html">FreePageException</A></CODE> - free page failed<DD><CODE><A HREF="../btree/RecordNotFoundException.html">RecordNotFoundException</A></CODE> - failed to find the record<DD><CODE><A HREF="../btree/PinPageException.html">PinPageException</A></CODE> - pin page failed<DD><CODE><A HREF="../btree/IndexFullDeleteException.html">IndexFullDeleteException</A></CODE> - full delete on index page failed<DD><CODE><A HREF="../btree/LeafDeleteException.html">LeafDeleteException</A></CODE> - delete leaf page failed<DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - exception from iterating through records<DD><CODE><A HREF="../btree/ConstructPageException.html">ConstructPageException</A></CODE> - fail to construct the header page<DD><CODE><A HREF="../btree/DeleteRecException.html">DeleteRecException</A></CODE> - delete record failed<DD><CODE><A HREF="../btree/IndexSearchException.html">IndexSearchException</A></CODE> - index search failed</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->

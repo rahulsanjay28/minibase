@@ -234,10 +234,10 @@ Class heap file page.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/HFPage.html#deleteRecord(global.RID)">deleteRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/HFPage.html#deleteRecord(global.MID)">deleteRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete the record with the specified rid</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;delete the record with the specified MID</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -298,10 +298,10 @@ Class heap file page.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../heap/Tuple.html">Tuple</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/HFPage.html#getRecord(global.RID)">getRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/HFPage.html#getRecord(global.MID)">getRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copies out record with RID rid into record pointer.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;copies out record with RID MID into record pointer.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -356,7 +356,7 @@ Class heap file page.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../global/RID.html">RID</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/HFPage.html#nextRecord(global.RID)">nextRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;curRid)</CODE>
+<TD><CODE><B><A HREF="../heap/HFPage.html#nextRecord(global.MID)">nextRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;curMID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
@@ -373,10 +373,10 @@ Class heap file page.
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../heap/Tuple.html">Tuple</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/HFPage.html#returnRecord(global.RID)">returnRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/HFPage.html#returnRecord(global.MID)">returnRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns a tuple in a byte array[pageSize] with given RID rid.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returns a tuple in a byte array[pageSize] with given RID MID.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -832,7 +832,7 @@ public <A HREF="../global/RID.html">RID</A> <B>insertRecord</B>(byte[]&nbsp;reco
 </DD>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>record</CODE> - a record to be inserted<DT><B>Returns:</B><DD>RID of record, null if sufficient space does not exist<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - I/O errors
- in C++ Status insertRecord(char *recPtr, int recLen, RID& rid)</DL>
+ in C++ Status insertRecord(char *recPtr, int recLen, RID& MID)</DL>
 </DD>
 </DL>
 <HR>
@@ -840,16 +840,16 @@ public <A HREF="../global/RID.html">RID</A> <B>insertRecord</B>(byte[]&nbsp;reco
 <A NAME="deleteRecord(global.RID)"><!-- --></A><H3>
 deleteRecord</H3>
 <PRE>
-public void <B>deleteRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public void <B>deleteRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                   throws java.io.IOException,
                          <A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></PRE>
 <DL>
-<DD>delete the record with the specified rid<DD><DL>
+<DD>delete the record with the specified MID<DD><DL>
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - the record ID<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - Invalid slot number<DD><CODE>java.io.IOException</CODE> - I/O errors
- in C++ Status deleteRecord(const RID& rid)</DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - the record ID<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - Invalid slot number<DD><CODE>java.io.IOException</CODE> - I/O errors
+ in C++ Status deleteRecord(const RID& MID)</DL>
 </DD>
 </DL>
 <HR>
@@ -865,7 +865,7 @@ public <A HREF="../global/RID.html">RID</A> <B>firstRecord</B>()
 </DD>
 <DD><DL>
 <DT><B>Returns:</B><DD>RID of first record on page, null if page contains no records.<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - I/O errors
- in C++ Status firstRecord(RID& firstRid)</DL>
+ in C++ Status firstRecord(RID& firstMID)</DL>
 </DD>
 </DL>
 <HR>
@@ -873,16 +873,16 @@ public <A HREF="../global/RID.html">RID</A> <B>firstRecord</B>()
 <A NAME="nextRecord(global.RID)"><!-- --></A><H3>
 nextRecord</H3>
 <PRE>
-public <A HREF="../global/RID.html">RID</A> <B>nextRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;curRid)
+public <A HREF="../global/RID.html">RID</A> <B>nextRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;curMID)
                throws java.io.IOException</PRE>
 <DL>
 <DD><DL>
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>curRid</CODE> - current record ID<DT><B>Returns:</B><DD>RID of next record on the page, null if no more 
+<DT><B>Parameters:</B><DD><CODE>curMID</CODE> - current record ID<DT><B>Returns:</B><DD>RID of next record on the page, null if no more
  records exist on the page<DT><B>Throws:</B><DD><CODE>java.io.IOException</CODE> - I/O errors
- in C++ Status nextRecord (RID curRid, RID& nextRid)</DL>
+ in C++ Status nextRecord (RID curMID, RID& nextRid)</DL>
 </DD>
 </DL>
 <HR>
@@ -890,17 +890,17 @@ public <A HREF="../global/RID.html">RID</A> <B>nextRecord</B>(<A HREF="../global
 <A NAME="getRecord(global.RID)"><!-- --></A><H3>
 getRecord</H3>
 <PRE>
-public <A HREF="../heap/Tuple.html">Tuple</A> <B>getRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../heap/Tuple.html">Tuple</A> <B>getRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                 throws java.io.IOException,
                        <A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></PRE>
 <DL>
-<DD>copies out record with RID rid into record pointer.
+<DD>copies out record with RID MID into record pointer.
  <br>
- Status getRecord(RID rid, char *recPtr, int& recLen)<DD><DL>
+ Status getRecord(RID MID, char *recPtr, int& recLen)<DD><DL>
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - the record ID<DT><B>Returns:</B><DD>a tuple contains the record<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - Invalid slot number<DD><CODE>java.io.IOException</CODE> - I/O errors<DT><B>See Also: </B><DD><A HREF="../heap/Tuple.html"><CODE>Tuple</CODE></A></DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - the record ID<DT><B>Returns:</B><DD>a tuple contains the record<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - Invalid slot number<DD><CODE>java.io.IOException</CODE> - I/O errors<DT><B>See Also: </B><DD><A HREF="../heap/Tuple.html"><CODE>Tuple</CODE></A></DL>
 </DD>
 </DL>
 <HR>
@@ -908,17 +908,17 @@ public <A HREF="../heap/Tuple.html">Tuple</A> <B>getRecord</B>(<A HREF="../globa
 <A NAME="returnRecord(global.RID)"><!-- --></A><H3>
 returnRecord</H3>
 <PRE>
-public <A HREF="../heap/Tuple.html">Tuple</A> <B>returnRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../heap/Tuple.html">Tuple</A> <B>returnRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                    throws java.io.IOException,
                           <A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></PRE>
 <DL>
-<DD>returns a tuple in a byte array[pageSize] with given RID rid.
+<DD>returns a tuple in a byte array[pageSize] with given RID MID.
  <br>
- in C++	Status returnRecord(RID rid, char*& recPtr, int& recLen)<DD><DL>
+ in C++	Status returnRecord(RID MID, char*& recPtr, int& recLen)<DD><DL>
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - the record ID<DT><B>Returns:</B><DD>a tuple  with its length and offset in the byte array<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - Invalid slot number<DD><CODE>java.io.IOException</CODE> - I/O errors<DT><B>See Also: </B><DD><A HREF="../heap/Tuple.html"><CODE>Tuple</CODE></A></DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - the record ID<DT><B>Returns:</B><DD>a tuple  with its length and offset in the byte array<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - Invalid slot number<DD><CODE>java.io.IOException</CODE> - I/O errors<DT><B>See Also: </B><DD><A HREF="../heap/Tuple.html"><CODE>Tuple</CODE></A></DL>
 </DD>
 </DL>
 <HR>

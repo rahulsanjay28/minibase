@@ -312,7 +312,7 @@ Method in class global.<A HREF="global/PageId.html">PageId</A>
 <DD>make a copy of the given pageId
 <DT><A HREF="global/RID.html#copyRid(global.RID)"><B>copyRid(RID)</B></A> - 
 Method in class global.<A HREF="global/RID.html">RID</A>
-<DD>make a copy of the given rid
+<DD>make a copy of the given MID
 <DT><A HREF="heap/HFPage.html#CUR_PAGE"><B>CUR_PAGE</B></A> - 
 Static variable in class heap.<A HREF="heap/HFPage.html">HFPage</A>
 <DD>&nbsp;
@@ -371,7 +371,7 @@ Method in class btree.<A HREF="btree/IndexFile.html">IndexFile</A>
 <DD>Delete entry from the index file.
 <DT><A HREF="btree/BTreeFile.html#Delete(btree.KeyClass, global.RID)"><B>Delete(KeyClass, RID)</B></A> - 
 Method in class btree.<A HREF="btree/BTreeFile.html">BTreeFile</A>
-<DD>delete leaf entry  given its <key, rid> pair.
+<DD>delete leaf entry  given its <key, MID> pair.
 <DT><A HREF="btree/DeleteFashion.html"><B>DeleteFashion</B></A> - class btree.<A HREF="btree/DeleteFashion.html">DeleteFashion</A>.<DD>DeleteType class
  define which delete type (naive or full) will be<DT><A HREF="btree/DeleteFashion.html#DeleteFashion()"><B>DeleteFashion()</B></A> - 
 Constructor for class btree.<A HREF="btree/DeleteFashion.html">DeleteFashion</A>
@@ -408,10 +408,10 @@ Constructor for class btree.<A HREF="btree/DeleteRecException.html">DeleteRecExc
 <DD>&nbsp;
 <DT><A HREF="heap/HFPage.html#deleteRecord(global.RID)"><B>deleteRecord(RID)</B></A> - 
 Method in class heap.<A HREF="heap/HFPage.html">HFPage</A>
-<DD>delete the record with the specified rid
+<DD>delete the record with the specified MID
 <DT><A HREF="heap/Heapfile.html#deleteRecord(global.RID)"><B>deleteRecord(RID)</B></A> - 
 Method in class heap.<A HREF="heap/Heapfile.html">Heapfile</A>
-<DD>Delete record from file with given rid.
+<DD>Delete record from file with given MID.
 <DT><A HREF="btree/BTSortedPage.html#deleteSortedRecord(global.RID)"><B>deleteSortedRecord(RID)</B></A> - 
 Method in class btree.<A HREF="btree/BTSortedPage.html">BTSortedPage</A>
 <DD>Deletes a record from a sorted record page.
@@ -492,7 +492,7 @@ Method in class btree.<A HREF="btree/KeyDataEntry.html">KeyDataEntry</A>
 <DD>shallow equal.
 <DT><A HREF="global/RID.html#equals(global.RID)"><B>equals(RID)</B></A> - 
 Method in class global.<A HREF="global/RID.html">RID</A>
-<DD>Compares two RID object, i.e, this to the rid
+<DD>Compares two RID object, i.e, this to the MID
 <DT><A HREF="iterator/PredEval.html#Eval(iterator.CondExpr[], heap.Tuple, heap.Tuple, global.AttrType[], global.AttrType[])"><B>Eval(CondExpr[], Tuple, Tuple, AttrType[], AttrType[])</B></A> - 
 Static method in class iterator.<A HREF="iterator/PredEval.html">PredEval</A>
 <DD>predicate evaluate, according to the condition ConExpr, judge if 
@@ -647,7 +647,7 @@ Method in class btree.<A HREF="btree/BTLeafPage.html">BTLeafPage</A>
  getNext except it does not advance the iterator.
 <DT><A HREF="btree/LeafData.html#getData()"><B>getData()</B></A> - 
 Method in class btree.<A HREF="btree/LeafData.html">LeafData</A>
-<DD>get a copy of the rid
+<DD>get a copy of the MID
 <DT><A HREF="btree/GetFileEntryException.html"><B>GetFileEntryException</B></A> - exception btree.<A HREF="btree/GetFileEntryException.html">GetFileEntryException</A>.<DD>&nbsp;<DT><A HREF="btree/GetFileEntryException.html#GetFileEntryException()"><B>GetFileEntryException()</B></A> - 
 Constructor for class btree.<A HREF="btree/GetFileEntryException.html">GetFileEntryException</A>
 <DD>&nbsp;
@@ -725,7 +725,7 @@ Method in class heap.<A HREF="heap/Heapfile.html">Heapfile</A>
 <DD>Return number of records in file.
 <DT><A HREF="heap/HFPage.html#getRecord(global.RID)"><B>getRecord(RID)</B></A> - 
 Method in class heap.<A HREF="heap/HFPage.html">HFPage</A>
-<DD>copies out record with RID rid into record pointer.
+<DD>copies out record with RID MID into record pointer.
 <DT><A HREF="heap/Heapfile.html#getRecord(global.RID)"><B>getRecord(RID)</B></A> - 
 Method in class heap.<A HREF="heap/Heapfile.html">Heapfile</A>
 <DD>Read record from file, returning pointer and length.
@@ -903,7 +903,7 @@ Method in class btree.<A HREF="btree/IndexFile.html">IndexFile</A>
 <DD>Insert entry into the index file.
 <DT><A HREF="btree/BTreeFile.html#insert(btree.KeyClass, global.RID)"><B>insert(KeyClass, RID)</B></A> - 
 Method in class btree.<A HREF="btree/BTreeFile.html">BTreeFile</A>
-<DD>insert record with the given key and rid
+<DD>insert record with the given key and MID
 <DT><A HREF="btree/InsertException.html"><B>InsertException</B></A> - exception btree.<A HREF="btree/InsertException.html">InsertException</A>.<DD>&nbsp;<DT><A HREF="btree/InsertException.html#InsertException()"><B>InsertException()</B></A> - 
 Constructor for class btree.<A HREF="btree/InsertException.html">InsertException</A>
 <DD>&nbsp;
@@ -1492,7 +1492,7 @@ Constructor for class iterator.<A HREF="iterator/pnodeSplayPQ.html">pnodeSplayPQ
 <DD>class constructor.
 <DT><A HREF="heap/Scan.html#position(global.RID)"><B>position(RID)</B></A> - 
 Method in class heap.<A HREF="heap/Scan.html">Scan</A>
-<DD>Position the scan cursor to the record with the given rid.
+<DD>Position the scan cursor to the record with the given MID.
 <DT><A HREF="iterator/PredEval.html"><B>PredEval</B></A> - class iterator.<A HREF="iterator/PredEval.html">PredEval</A>.<DD>&nbsp;<DT><A HREF="iterator/PredEval.html#PredEval()"><B>PredEval()</B></A> - 
 Constructor for class iterator.<A HREF="iterator/PredEval.html">PredEval</A>
 <DD>&nbsp;
@@ -1591,7 +1591,7 @@ Method in class iterator.<A HREF="iterator/IoBuf.html">IoBuf</A>
 <DD>if WRITE_BUFFER is true, call this mehtod to switch to read buffer.
 <DT><A HREF="heap/HFPage.html#returnRecord(global.RID)"><B>returnRecord(RID)</B></A> - 
 Method in class heap.<A HREF="heap/HFPage.html">HFPage</A>
-<DD>returns a tuple in a byte array[pageSize] with given RID rid.
+<DD>returns a tuple in a byte array[pageSize] with given RID MID.
 <DT><A HREF="heap/Tuple.html#returnTupleByteArray()"><B>returnTupleByteArray()</B></A> - 
 Method in class heap.<A HREF="heap/Tuple.html">Tuple</A>
 <DD>return the data byte array
@@ -1670,7 +1670,7 @@ Method in class heap.<A HREF="heap/HFPage.html">HFPage</A>
 <DD>sets value of curPage to pageNo
 <DT><A HREF="btree/LeafData.html#setData(global.RID)"><B>setData(RID)</B></A> - 
 Method in class btree.<A HREF="btree/LeafData.html">LeafData</A>
-<DD>set the rid
+<DD>set the MID
 <DT><A HREF="heap/Tuple.html#setFloFld(int, float)"><B>setFloFld(int, float)</B></A> - 
 Method in class heap.<A HREF="heap/Tuple.html">Tuple</A>
 <DD>Set this field to float value
@@ -1928,7 +1928,7 @@ Constructor for class btree.<A HREF="btree/UnpinPageException.html">UnpinPageExc
 <DT><A HREF="btree/UnpinPageException.html#UnpinPageException(java.lang.String)"><B>UnpinPageException(String)</B></A> - 
 Constructor for class btree.<A HREF="btree/UnpinPageException.html">UnpinPageException</A>
 <DD>&nbsp;
-<DT><A HREF="heap/Heapfile.html#updateRecord(global.RID, heap.Tuple)"><B>updateRecord(RID, Tuple)</B></A> - 
+<DT><A HREF="heap/Heapfile.html#updateRecord(global.MID, heap.Tuple)"><B>updateRecord(RID, Tuple)</B></A> -
 Method in class heap.<A HREF="heap/Heapfile.html">Heapfile</A>
 <DD>Updates the specified record in the heapfile.
 <DT><A HREF="heap/HFPage.html#USED_PTR"><B>USED_PTR</B></A> - 
@@ -1955,7 +1955,7 @@ Method in class diskmgr.<A HREF="diskmgr/DB.html">DB</A>
 <DD>Write the contents in a page object to the specified page.
 <DT><A HREF="global/RID.html#writeToByteArray(byte[], int)"><B>writeToByteArray(byte[], int)</B></A> - 
 Method in class global.<A HREF="global/RID.html">RID</A>
-<DD>Write the rid into a byte array at offset
+<DD>Write the MID into a byte array at offset
 <DT><A HREF="global/PageId.html#writeToByteArray(byte[], int)"><B>writeToByteArray(byte[], int)</B></A> - 
 Method in class global.<A HREF="global/PageId.html">PageId</A>
 <DD>Write the pid into a specified bytearray at offset

@@ -5,26 +5,27 @@ import global.*;
  *   It defines the data "rid" for leaf node in B++ tree.
  */
 public class LeafData extends DataClass {
-  private RID myRid;
+  private MID myMID;
 
   public String toString() {
      String s;
-     s="[ "+ (new Integer(myRid.pageNo.pid)).toString() +" "
-              + (new Integer(myRid.slotNo)).toString() + " ]";
+     s="[ "+ (new Integer(myMID.pageNo.pid)).toString() +" "
+              + (new Integer(myMID.slotNo)).toString() + " ]";
      return s;
   }
 
   /** Class constructor
-   *  @param    rid  the data rid
+   *  @param    mid  the data rid
    */
-  LeafData(RID rid) {myRid= new RID(rid.pageNo, rid.slotNo);};  
+  LeafData(MID mid) {
+      myMID = new MID(mid.pageNo, mid.slotNo);};
 
   /** get a copy of the rid
   *  @return the reference of the copy 
   */
-  public RID getData() {return new RID(myRid.pageNo, myRid.slotNo);};
+  public MID getData() {return new MID(myMID.pageNo, myMID.slotNo);};
 
   /** set the rid
    */ 
-  public void setData(RID rid) { myRid= new RID(rid.pageNo, rid.slotNo);};
+  public void setData(MID mid) { myMID = new MID(mid.pageNo, mid.slotNo);};
 }   

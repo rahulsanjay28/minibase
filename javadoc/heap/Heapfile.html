@@ -146,10 +146,10 @@ java.lang.Object
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/Heapfile.html#deleteRecord(global.RID)">deleteRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/Heapfile.html#deleteRecord(global.MID)">deleteRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete record from file with given rid.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete record from file with given MID.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -162,7 +162,7 @@ java.lang.Object
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../heap/Tuple.html">Tuple</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/Heapfile.html#getRecord(global.RID)">getRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/Heapfile.html#getRecord(global.MID)">getRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read record from file, returning pointer and length.</TD>
@@ -186,7 +186,7 @@ java.lang.Object
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/Heapfile.html#updateRecord(global.RID, heap.Tuple)">updateRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid,
+<TD><CODE><B><A HREF="../heap/Heapfile.html#updateRecord(global.MID, heap.Tuple)">updateRecord</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID,
              <A HREF="../heap/Tuple.html">Tuple</A>&nbsp;newtuple)</CODE>
 
 <BR>
@@ -301,7 +301,7 @@ public <A HREF="../global/RID.html">RID</A> <B>insertRecord</B>(byte[]&nbsp;recP
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>recPtr</CODE> - pointer of the record<DD><CODE>recLen</CODE> - the length of the record<DT><B>Returns:</B><DD>the rid of the record<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - invalid slot number<DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - invalid tuple size<DD><CODE><A HREF="../heap/SpaceNotAvailableException.html">SpaceNotAvailableException</A></CODE> - no space left<DD><CODE><A HREF="../heap/HFException.html">HFException</A></CODE> - heapfile exception<DD><CODE><A HREF="../heap/HFBufMgrException.html">HFBufMgrException</A></CODE> - exception thrown from bufmgr layer<DD><CODE><A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A></CODE> - exception thrown from diskmgr layer<DD><CODE>java.io.IOException</CODE> - I/O errors</DL>
+<DT><B>Parameters:</B><DD><CODE>recPtr</CODE> - pointer of the record<DD><CODE>recLen</CODE> - the length of the record<DT><B>Returns:</B><DD>the MID of the record<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - invalid slot number<DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - invalid tuple size<DD><CODE><A HREF="../heap/SpaceNotAvailableException.html">SpaceNotAvailableException</A></CODE> - no space left<DD><CODE><A HREF="../heap/HFException.html">HFException</A></CODE> - heapfile exception<DD><CODE><A HREF="../heap/HFBufMgrException.html">HFBufMgrException</A></CODE> - exception thrown from bufmgr layer<DD><CODE><A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A></CODE> - exception thrown from diskmgr layer<DD><CODE>java.io.IOException</CODE> - I/O errors</DL>
 </DD>
 </DL>
 <HR>
@@ -309,7 +309,7 @@ public <A HREF="../global/RID.html">RID</A> <B>insertRecord</B>(byte[]&nbsp;recP
 <A NAME="deleteRecord(global.RID)"><!-- --></A><H3>
 deleteRecord</H3>
 <PRE>
-public boolean <B>deleteRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public boolean <B>deleteRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                      throws <A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A>,
                             <A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A>,
                             <A HREF="../heap/HFException.html">HFException</A>,
@@ -317,7 +317,7 @@ public boolean <B>deleteRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid
                             <A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A>,
                             java.lang.Exception</PRE>
 <DL>
-<DD>Delete record from file with given rid.<DD><DL>
+<DD>Delete record from file with given MID.<DD><DL>
 </DL>
 </DD>
 <DD><DL>
@@ -326,10 +326,10 @@ public boolean <B>deleteRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid
 </DL>
 <HR>
 
-<A NAME="updateRecord(global.RID, heap.Tuple)"><!-- --></A><H3>
+<A NAME="updateRecord(global.MID, heap.Tuple)"><!-- --></A><H3>
 updateRecord</H3>
 <PRE>
-public boolean <B>updateRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid,
+public boolean <B>updateRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID,
                             <A HREF="../heap/Tuple.html">Tuple</A>&nbsp;newtuple)
                      throws <A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A>,
                             <A HREF="../heap/InvalidUpdateException.html">InvalidUpdateException</A>,
@@ -343,7 +343,7 @@ public boolean <B>updateRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid:</CODE> - the record which needs update<DD><CODE>newtuple:</CODE> - the new content of the record<DT><B>Returns:</B><DD>ture:update success   false: can't find the record<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - invalid slot number<DD><CODE><A HREF="../heap/InvalidUpdateException.html">InvalidUpdateException</A></CODE> - invalid update on record<DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - invalid tuple size<DD><CODE><A HREF="../heap/HFException.html">HFException</A></CODE> - heapfile exception<DD><CODE><A HREF="../heap/HFBufMgrException.html">HFBufMgrException</A></CODE> - exception thrown from bufmgr layer<DD><CODE><A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A></CODE> - exception thrown from diskmgr layer<DD><CODE>java.lang.Exception</CODE> - other exception</DL>
+<DT><B>Parameters:</B><DD><CODE>MID:</CODE> - the record which needs update<DD><CODE>newtuple:</CODE> - the new content of the record<DT><B>Returns:</B><DD>ture:update success   false: can't find the record<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - invalid slot number<DD><CODE><A HREF="../heap/InvalidUpdateException.html">InvalidUpdateException</A></CODE> - invalid update on record<DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - invalid tuple size<DD><CODE><A HREF="../heap/HFException.html">HFException</A></CODE> - heapfile exception<DD><CODE><A HREF="../heap/HFBufMgrException.html">HFBufMgrException</A></CODE> - exception thrown from bufmgr layer<DD><CODE><A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A></CODE> - exception thrown from diskmgr layer<DD><CODE>java.lang.Exception</CODE> - other exception</DL>
 </DD>
 </DL>
 <HR>
@@ -351,7 +351,7 @@ public boolean <B>updateRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid
 <A NAME="getRecord(global.RID)"><!-- --></A><H3>
 getRecord</H3>
 <PRE>
-public <A HREF="../heap/Tuple.html">Tuple</A> <B>getRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../heap/Tuple.html">Tuple</A> <B>getRecord</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                 throws <A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A>,
                        <A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A>,
                        <A HREF="../heap/HFException.html">HFException</A>,
@@ -363,7 +363,7 @@ public <A HREF="../heap/Tuple.html">Tuple</A> <B>getRecord</B>(<A HREF="../globa
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - Record ID<DT><B>Returns:</B><DD>a Tuple. if Tuple==null, no more tuple<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - invalid slot number<DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - invalid tuple size<DD><CODE><A HREF="../heap/SpaceNotAvailableException.html">SpaceNotAvailableException</A></CODE> - no space left<DD><CODE><A HREF="../heap/HFException.html">HFException</A></CODE> - heapfile exception<DD><CODE><A HREF="../heap/HFBufMgrException.html">HFBufMgrException</A></CODE> - exception thrown from bufmgr layer<DD><CODE><A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A></CODE> - exception thrown from diskmgr layer<DD><CODE>java.lang.Exception</CODE> - other exception</DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - Record ID<DT><B>Returns:</B><DD>a Tuple. if Tuple==null, no more tuple<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidSlotNumberException.html">InvalidSlotNumberException</A></CODE> - invalid slot number<DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - invalid tuple size<DD><CODE><A HREF="../heap/SpaceNotAvailableException.html">SpaceNotAvailableException</A></CODE> - no space left<DD><CODE><A HREF="../heap/HFException.html">HFException</A></CODE> - heapfile exception<DD><CODE><A HREF="../heap/HFBufMgrException.html">HFBufMgrException</A></CODE> - exception thrown from bufmgr layer<DD><CODE><A HREF="../heap/HFDiskMgrException.html">HFDiskMgrException</A></CODE> - exception thrown from diskmgr layer<DD><CODE>java.lang.Exception</CODE> - other exception</DL>
 </DD>
 </DL>
 <HR>

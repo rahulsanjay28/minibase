@@ -1,12 +1,9 @@
 package tests;
 
 import java.io.*;
-import java.util.*;
 import java.lang.*;
 
 import heap.*;
-import bufmgr.*;
-import diskmgr.*;
 import global.*;
 import chainexception.*;
 
@@ -92,7 +89,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
         System.out.println("\n  Test 1: Insert and scan fixed-size records\n");
         boolean status = OK;
-        RID rid = new RID();
+        MID mid = new MID();
         Heapfile f = null;
 
         System.out.println("  - Create a heap file\n");
@@ -121,7 +118,7 @@ class HFDriver extends TestDriver implements GlobalConst {
                 rec.name = "record" + i;
 
                 try {
-                    rid = f.insertRecord(rec.toByteArray());
+                    mid = f.insertRecord(rec.toByteArray());
                 } catch (Exception e) {
                     status = FAIL;
                     System.err.println("*** Error inserting record " + i + "\n");
@@ -181,7 +178,7 @@ class HFDriver extends TestDriver implements GlobalConst {
             boolean done = false;
             while (!done) {
                 try {
-                    tuple = scan.getNext(rid);
+                    tuple = scan.getNext(mid);
                     if (tuple == null) {
                         done = true;
                         break;
@@ -260,7 +257,7 @@ class HFDriver extends TestDriver implements GlobalConst {
         System.out.println("\n  Test 2: Delete fixed-size records\n");
         boolean status = OK;
         Scan scan = null;
-        RID rid = new RID();
+        MID mid = new MID();
         Heapfile f = null;
 
         System.out.println("  - Open the same heap file as test 1\n");
@@ -290,7 +287,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
             while (!done) {
                 try {
-                    tuple = scan.getNext(rid);
+                    tuple = scan.getNext(mid);
                     if (tuple == null) {
                         done = true;
                     }
@@ -305,7 +302,7 @@ class HFDriver extends TestDriver implements GlobalConst {
                     if (i % 2 == 0) odd = false;
                     if (odd) {       // Delete the odd-numbered ones.
                         try {
-                            status = f.deleteRecord(rid);
+                            status = f.deleteRecord(mid);
                         } catch (Exception e) {
                             status = FAIL;
                             System.err.println("*** Error deleting record " + i + "\n");
@@ -351,7 +348,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
             while (!done) {
                 try {
-                    tuple = scan.getNext(rid);
+                    tuple = scan.getNext(mid);
                     if (tuple == null) {
                         done = true;
                     }
@@ -395,7 +392,7 @@ class HFDriver extends TestDriver implements GlobalConst {
         System.out.println("\n  Test 3: Update fixed-size records\n");
         boolean status = OK;
         Scan scan = null;
-        RID rid = new RID();
+        MID mid = new MID();
         Heapfile f = null;
 
         System.out.println("  - Open the same heap file as tests 1 and 2\n");
@@ -427,7 +424,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
             while (!done) {
                 try {
-                    tuple = scan.getNext(rid);
+                    tuple = scan.getNext(mid);
                     if (tuple == null) {
                         done = true;
                     }
@@ -455,7 +452,7 @@ class HFDriver extends TestDriver implements GlobalConst {
                         e.printStackTrace();
                     }
                     try {
-                        status = f.updateRecord(rid, newTuple);
+                        status = f.updateRecord(mid, newTuple);
                     } catch (Exception e) {
                         status = FAIL;
                         e.printStackTrace();
@@ -507,7 +504,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
             while (!done) {
                 try {
-                    tuple = scan.getNext(rid);
+                    tuple = scan.getNext(mid);
                     if (tuple == null) {
                         done = true;
                         break;
@@ -526,7 +523,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
                     // While we're at it, test the getRecord method too.
                     try {
-                        tuple2 = f.getRecord(rid);
+                        tuple2 = f.getRecord(mid);
                     } catch (Exception e) {
                         status = FAIL;
                         System.err.println("*** Error getting record " + i + "\n");
@@ -577,7 +574,7 @@ class HFDriver extends TestDriver implements GlobalConst {
         System.out.println("\n  Test 4: Test some error conditions\n");
         boolean status = OK;
         Scan scan = null;
-        RID rid = new RID();
+        MID mid = new MID();
         Heapfile f = null;
 
         try {
@@ -608,7 +605,7 @@ class HFDriver extends TestDriver implements GlobalConst {
             Tuple tuple = new Tuple();
 
             try {
-                tuple = scan.getNext(rid);
+                tuple = scan.getNext(mid);
                 if (tuple == null) {
                     status = FAIL;
                 }
@@ -636,7 +633,7 @@ class HFDriver extends TestDriver implements GlobalConst {
                     e.printStackTrace();
                 }
                 try {
-                    status = f.updateRecord(rid, newTuple);
+                    status = f.updateRecord(mid, newTuple);
                 } catch (ChainException e) {
                     status = checkException(e, "heap.InvalidUpdateException");
                     if (status == FAIL) {
@@ -672,7 +669,7 @@ class HFDriver extends TestDriver implements GlobalConst {
                     e.printStackTrace();
                 }
                 try {
-                    status = f.updateRecord(rid, newTuple);
+                    status = f.updateRecord(mid, newTuple);
                 } catch (ChainException e) {
                     status = checkException(e, "heap.InvalidUpdateException");
                     if (status == FAIL) {
@@ -698,7 +695,7 @@ class HFDriver extends TestDriver implements GlobalConst {
             System.out.println("  - Try to insert a record that's too long\n");
             byte[] record = new byte[MINIBASE_PAGESIZE + 4];
             try {
-                rid = f.insertRecord(record);
+                mid = f.insertRecord(record);
             } catch (ChainException e) {
                 status = checkException(e, "heap.SpaceNotAvailableException");
                 if (status == FAIL) {
@@ -804,7 +801,7 @@ class DummyRecord {
      * constructor: translate a tuple to a DummyRecord object
      * it will make a copy of the data in the tuple
      *
-     * @param atuple: the input tuple
+     * @param _atuple: the input tuple
      */
     public DummyRecord(Tuple _atuple)
             throws java.io.IOException {

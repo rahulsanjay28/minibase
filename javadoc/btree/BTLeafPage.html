@@ -160,7 +160,7 @@ A BTLeafPage is a leaf page on a B+ tree.  It holds abstract
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTLeafPage.html#getCurrent(global.RID)">getCurrent</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTLeafPage.html#getCurrent(global.MID)">getCurrent</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getCurrent returns the current record in the iteration; it is like
@@ -169,7 +169,7 @@ A BTLeafPage is a leaf page on a B+ tree.  It holds abstract
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTLeafPage.html#getFirst(global.RID)">getFirst</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTLeafPage.html#getFirst(global.MID)">getFirst</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iterators.</TD>
@@ -177,7 +177,7 @@ A BTLeafPage is a leaf page on a B+ tree.  It holds abstract
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTLeafPage.html#getNext(global.RID)">getNext</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTLeafPage.html#getNext(global.MID)">getNext</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iterators.</TD>
@@ -185,8 +185,8 @@ A BTLeafPage is a leaf page on a B+ tree.  It holds abstract
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../global/RID.html">RID</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTLeafPage.html#insertRecord(btree.KeyClass, global.RID)">insertRecord</A></B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;key,
-             <A HREF="../global/RID.html">RID</A>&nbsp;dataRid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTLeafPage.html#insertRecord(btree.KeyClass, global.MID)">insertRecord</A></B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;key,
+             <A HREF="../global/RID.html">RID</A>&nbsp;dataMID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;insertRecord
@@ -199,7 +199,7 @@ A BTLeafPage is a leaf page on a B+ tree.  It holds abstract
 <TD><B>Methods inherited from class btree.<A HREF="../btree/BTSortedPage.html">BTSortedPage</A></B></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../btree/BTSortedPage.html#deleteSortedRecord(global.RID)">deleteSortedRecord</A></CODE></TD>
+<TD><CODE><A HREF="../btree/BTSortedPage.html#deleteSortedRecord(global.MID)">deleteSortedRecord</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_heap.HFPage"><!-- --></A>
@@ -208,7 +208,7 @@ A BTLeafPage is a leaf page on a B+ tree.  It holds abstract
 <TD><B>Methods inherited from class heap.<A HREF="../heap/HFPage.html">HFPage</A></B></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../heap/HFPage.html#available_space()">available_space</A>, <A HREF="../heap/HFPage.html#deleteRecord(global.RID)">deleteRecord</A>, <A HREF="../heap/HFPage.html#dumpPage()">dumpPage</A>, <A HREF="../heap/HFPage.html#empty()">empty</A>, <A HREF="../heap/HFPage.html#firstRecord()">firstRecord</A>, <A HREF="../heap/HFPage.html#getCurPage()">getCurPage</A>, <A HREF="../heap/HFPage.html#getHFpageArray()">getHFpageArray</A>, <A HREF="../heap/HFPage.html#getNextPage()">getNextPage</A>, <A HREF="../heap/HFPage.html#getPrevPage()">getPrevPage</A>, <A HREF="../heap/HFPage.html#getRecord(global.RID)">getRecord</A>, <A HREF="../heap/HFPage.html#getSlotCnt()">getSlotCnt</A>, <A HREF="../heap/HFPage.html#getSlotLength(int)">getSlotLength</A>, <A HREF="../heap/HFPage.html#getSlotOffset(int)">getSlotOffset</A>, <A HREF="../heap/HFPage.html#getType()">getType</A>, <A HREF="../heap/HFPage.html#init(global.PageId, diskmgr.Page)">init</A>, <A HREF="../heap/HFPage.html#insertRecord(byte[])">insertRecord</A>, <A HREF="../heap/HFPage.html#nextRecord(global.RID)">nextRecord</A>, <A HREF="../heap/HFPage.html#openHFpage(diskmgr.Page)">openHFpage</A>, <A HREF="../heap/HFPage.html#returnRecord(global.RID)">returnRecord</A>, <A HREF="../heap/HFPage.html#setCurPage(global.PageId)">setCurPage</A>, <A HREF="../heap/HFPage.html#setNextPage(global.PageId)">setNextPage</A>, <A HREF="../heap/HFPage.html#setPrevPage(global.PageId)">setPrevPage</A>, <A HREF="../heap/HFPage.html#setSlot(int, int, int)">setSlot</A>, <A HREF="../heap/HFPage.html#setType(short)">setType</A></CODE></TD>
+<TD><CODE><A HREF="../heap/HFPage.html#available_space()">available_space</A>, <A HREF="../heap/HFPage.html#deleteRecord(global.MID)">deleteRecord</A>, <A HREF="../heap/HFPage.html#dumpPage()">dumpPage</A>, <A HREF="../heap/HFPage.html#empty()">empty</A>, <A HREF="../heap/HFPage.html#firstRecord()">firstRecord</A>, <A HREF="../heap/HFPage.html#getCurPage()">getCurPage</A>, <A HREF="../heap/HFPage.html#getHFpageArray()">getHFpageArray</A>, <A HREF="../heap/HFPage.html#getNextPage()">getNextPage</A>, <A HREF="../heap/HFPage.html#getPrevPage()">getPrevPage</A>, <A HREF="../heap/HFPage.html#getRecord(global.MID)">getRecord</A>, <A HREF="../heap/HFPage.html#getSlotCnt()">getSlotCnt</A>, <A HREF="../heap/HFPage.html#getSlotLength(int)">getSlotLength</A>, <A HREF="../heap/HFPage.html#getSlotOffset(int)">getSlotOffset</A>, <A HREF="../heap/HFPage.html#getType()">getType</A>, <A HREF="../heap/HFPage.html#init(global.PageId, diskmgr.Page)">init</A>, <A HREF="../heap/HFPage.html#insertRecord(byte[])">insertRecord</A>, <A HREF="../heap/HFPage.html#nextRecord(global.MID)">nextRecord</A>, <A HREF="../heap/HFPage.html#openHFpage(diskmgr.Page)">openHFpage</A>, <A HREF="../heap/HFPage.html#returnRecord(global.MID)">returnRecord</A>, <A HREF="../heap/HFPage.html#setCurPage(global.PageId)">setCurPage</A>, <A HREF="../heap/HFPage.html#setNextPage(global.PageId)">setNextPage</A>, <A HREF="../heap/HFPage.html#setPrevPage(global.PageId)">setPrevPage</A>, <A HREF="../heap/HFPage.html#setSlot(int, int, int)">setSlot</A>, <A HREF="../heap/HFPage.html#setType(short)">setType</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_diskmgr.Page"><!-- --></A>
@@ -307,19 +307,19 @@ public <B>BTLeafPage</B>(int&nbsp;keyType)
 insertRecord</H3>
 <PRE>
 public <A HREF="../global/RID.html">RID</A> <B>insertRecord</B>(<A HREF="../btree/KeyClass.html">KeyClass</A>&nbsp;key,
-                        <A HREF="../global/RID.html">RID</A>&nbsp;dataRid)
+                        <A HREF="../global/RID.html">RID</A>&nbsp;dataMID)
                  throws <A HREF="../btree/LeafInsertRecException.html">LeafInsertRecException</A></PRE>
 <DL>
 <DD>insertRecord
  READ THIS DESCRIPTION CAREFULLY. THERE ARE TWO RIDs
  WHICH MEAN TWO DIFFERENT THINGS.
- Inserts a key, rid value into the leaf node. This is
+ Inserts a key, MID value into the leaf node. This is
  accomplished by a call to SortedPage::insertRecord()
   Parameters:<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>key</CODE> - - the key value of the data record. Input parameter.<DD><CODE>dataRid</CODE> - - the rid of the data record. This is
+<DT><B>Parameters:</B><DD><CODE>key</CODE> - - the key value of the data record. Input parameter.<DD><CODE>dataMID</CODE> - - the MID of the data record. This is
                stored on the leaf page along with the
-               corresponding key value. Input parameter.<DT><B>Returns:</B><DD>- the rid of the inserted leaf record data entry,
-           i.e., the <key, dataRid> pair.<DT><B>Throws:</B><DD><CODE><A HREF="../btree/LeafInsertRecException.html">LeafInsertRecException</A></CODE> - error when insert</DL>
+               corresponding key value. Input parameter.<DT><B>Returns:</B><DD>- the MID of the inserted leaf record data entry,
+           i.e., the <key, dataMID> pair.<DT><B>Throws:</B><DD><CODE><A HREF="../btree/LeafInsertRecException.html">LeafInsertRecException</A></CODE> - error when insert</DL>
 </DD>
 </DL>
 <HR>
@@ -327,13 +327,13 @@ public <A HREF="../global/RID.html">RID</A> <B>insertRecord</B>(<A HREF="../btre
 <A NAME="getFirst(global.RID)"><!-- --></A><H3>
 getFirst</H3>
 <PRE>
-public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getFirst</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getFirst</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                       throws <A HREF="../btree/IteratorException.html">IteratorException</A></PRE>
 <DL>
 <DD>Iterators. 
  One of the two functions: getFirst and getNext
  which  provide an iterator interface to the records on a BTLeafPage.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - It will be modified and the first rid in the leaf page
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - It will be modified and the first MID in the leaf page
  will be passed out by itself. Input and Output parameter.<DT><B>Returns:</B><DD>return the first KeyDataEntry in the leaf page.
  null if no more record<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - iterator error</DL>
 </DD>
@@ -343,13 +343,13 @@ public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getFirst</B>(<A 
 <A NAME="getNext(global.RID)"><!-- --></A><H3>
 getNext</H3>
 <PRE>
-public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getNext</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getNext</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                      throws <A HREF="../btree/IteratorException.html">IteratorException</A></PRE>
 <DL>
 <DD>Iterators.  
  One of the two functions: getFirst and getNext which  provide an
  iterator interface to the records on a BTLeafPage.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - It will be modified and the next rid will be passed out 
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - It will be modified and the next MID will be passed out
 by itself. Input and Output parameter.<DT><B>Returns:</B><DD>return the next KeyDataEntry in the leaf page. 
 null if no more record.<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - iterator error</DL>
 </DD>
@@ -359,12 +359,12 @@ null if no more record.<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorExc
 <A NAME="getCurrent(global.RID)"><!-- --></A><H3>
 getCurrent</H3>
 <PRE>
-public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getCurrent</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getCurrent</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                         throws <A HREF="../btree/IteratorException.html">IteratorException</A></PRE>
 <DL>
 <DD>getCurrent returns the current record in the iteration; it is like
  getNext except it does not advance the iterator.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - the current rid. Input and Output parameter. But
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - the current MID. Input and Output parameter. But
     Output=Input.<DT><B>Returns:</B><DD>return the current KeyDataEntry<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - iterator error</DL>
 </DD>
 </DL>

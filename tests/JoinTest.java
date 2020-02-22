@@ -181,7 +181,7 @@ class JoinsDriver implements GlobalConst {
         int size = t.size();
 
         // inserting the tuple into file "sailors"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("sailors.in");
@@ -213,7 +213,7 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 System.err.println("*** error in Heapfile.insertRecord() ***");
                 status = FAIL;
@@ -279,7 +279,7 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 System.err.println("*** error in Heapfile.insertRecord() ***");
                 status = FAIL;
@@ -344,7 +344,7 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 System.err.println("*** error in Heapfile.insertRecord() ***");
                 status = FAIL;
@@ -834,12 +834,12 @@ class JoinsDriver implements GlobalConst {
             Runtime.getRuntime().exit(1);
         }
 
-        RID rid = new RID();
+        MID mid = new MID();
         int key = 0;
         Tuple temp = null;
 
         try {
-            temp = scan.getNext(rid);
+            temp = scan.getNext(mid);
         } catch (Exception e) {
             status = FAIL;
             e.printStackTrace();
@@ -855,14 +855,14 @@ class JoinsDriver implements GlobalConst {
             }
 
             try {
-                btf.insert(new IntegerKey(key), rid);
+                btf.insert(new IntegerKey(key), mid);
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
             }
 
             try {
-                temp = scan.getNext(rid);
+                temp = scan.getNext(mid);
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();

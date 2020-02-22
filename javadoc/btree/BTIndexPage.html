@@ -152,7 +152,7 @@ A BTIndexPage is an index page on a B+ tree.  It holds abstract
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTIndexPage.html#getFirst(global.RID)">getFirst</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTIndexPage.html#getFirst(global.MID)">getFirst</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iterators.</TD>
@@ -160,7 +160,7 @@ A BTIndexPage is an index page on a B+ tree.  It holds abstract
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../btree/BTIndexPage.html#getNext(global.RID)">getNext</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../btree/BTIndexPage.html#getNext(global.MID)">getNext</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Iterators.</TD>
@@ -181,7 +181,7 @@ A BTIndexPage is an index page on a B+ tree.  It holds abstract
 <TD><B>Methods inherited from class btree.<A HREF="../btree/BTSortedPage.html">BTSortedPage</A></B></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../btree/BTSortedPage.html#deleteSortedRecord(global.RID)">deleteSortedRecord</A></CODE></TD>
+<TD><CODE><A HREF="../btree/BTSortedPage.html#deleteSortedRecord(global.MID)">deleteSortedRecord</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_heap.HFPage"><!-- --></A>
@@ -190,7 +190,7 @@ A BTIndexPage is an index page on a B+ tree.  It holds abstract
 <TD><B>Methods inherited from class heap.<A HREF="../heap/HFPage.html">HFPage</A></B></TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../heap/HFPage.html#available_space()">available_space</A>, <A HREF="../heap/HFPage.html#deleteRecord(global.RID)">deleteRecord</A>, <A HREF="../heap/HFPage.html#dumpPage()">dumpPage</A>, <A HREF="../heap/HFPage.html#empty()">empty</A>, <A HREF="../heap/HFPage.html#firstRecord()">firstRecord</A>, <A HREF="../heap/HFPage.html#getCurPage()">getCurPage</A>, <A HREF="../heap/HFPage.html#getHFpageArray()">getHFpageArray</A>, <A HREF="../heap/HFPage.html#getNextPage()">getNextPage</A>, <A HREF="../heap/HFPage.html#getPrevPage()">getPrevPage</A>, <A HREF="../heap/HFPage.html#getRecord(global.RID)">getRecord</A>, <A HREF="../heap/HFPage.html#getSlotCnt()">getSlotCnt</A>, <A HREF="../heap/HFPage.html#getSlotLength(int)">getSlotLength</A>, <A HREF="../heap/HFPage.html#getSlotOffset(int)">getSlotOffset</A>, <A HREF="../heap/HFPage.html#getType()">getType</A>, <A HREF="../heap/HFPage.html#init(global.PageId, diskmgr.Page)">init</A>, <A HREF="../heap/HFPage.html#insertRecord(byte[])">insertRecord</A>, <A HREF="../heap/HFPage.html#nextRecord(global.RID)">nextRecord</A>, <A HREF="../heap/HFPage.html#openHFpage(diskmgr.Page)">openHFpage</A>, <A HREF="../heap/HFPage.html#returnRecord(global.RID)">returnRecord</A>, <A HREF="../heap/HFPage.html#setCurPage(global.PageId)">setCurPage</A>, <A HREF="../heap/HFPage.html#setNextPage(global.PageId)">setNextPage</A>, <A HREF="../heap/HFPage.html#setPrevPage(global.PageId)">setPrevPage</A>, <A HREF="../heap/HFPage.html#setSlot(int, int, int)">setSlot</A>, <A HREF="../heap/HFPage.html#setType(short)">setType</A></CODE></TD>
+<TD><CODE><A HREF="../heap/HFPage.html#available_space()">available_space</A>, <A HREF="../heap/HFPage.html#deleteRecord(global.MID)">deleteRecord</A>, <A HREF="../heap/HFPage.html#dumpPage()">dumpPage</A>, <A HREF="../heap/HFPage.html#empty()">empty</A>, <A HREF="../heap/HFPage.html#firstRecord()">firstRecord</A>, <A HREF="../heap/HFPage.html#getCurPage()">getCurPage</A>, <A HREF="../heap/HFPage.html#getHFpageArray()">getHFpageArray</A>, <A HREF="../heap/HFPage.html#getNextPage()">getNextPage</A>, <A HREF="../heap/HFPage.html#getPrevPage()">getPrevPage</A>, <A HREF="../heap/HFPage.html#getRecord(global.MID)">getRecord</A>, <A HREF="../heap/HFPage.html#getSlotCnt()">getSlotCnt</A>, <A HREF="../heap/HFPage.html#getSlotLength(int)">getSlotLength</A>, <A HREF="../heap/HFPage.html#getSlotOffset(int)">getSlotOffset</A>, <A HREF="../heap/HFPage.html#getType()">getType</A>, <A HREF="../heap/HFPage.html#init(global.PageId, diskmgr.Page)">init</A>, <A HREF="../heap/HFPage.html#insertRecord(byte[])">insertRecord</A>, <A HREF="../heap/HFPage.html#nextRecord(global.MID)">nextRecord</A>, <A HREF="../heap/HFPage.html#openHFpage(diskmgr.Page)">openHFpage</A>, <A HREF="../heap/HFPage.html#returnRecord(global.MID)">returnRecord</A>, <A HREF="../heap/HFPage.html#setCurPage(global.PageId)">setCurPage</A>, <A HREF="../heap/HFPage.html#setNextPage(global.PageId)">setNextPage</A>, <A HREF="../heap/HFPage.html#setPrevPage(global.PageId)">setPrevPage</A>, <A HREF="../heap/HFPage.html#setSlot(int, int, int)">setSlot</A>, <A HREF="../heap/HFPage.html#setType(short)">setType</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_diskmgr.Page"><!-- --></A>
@@ -288,7 +288,7 @@ public <A HREF="../global/RID.html">RID</A> <B>insertKey</B>(<A HREF="../btree/K
               throws <A HREF="../btree/IndexInsertRecException.html">IndexInsertRecException</A></PRE>
 <DL>
 <DD>It inserts a <key, pageNo> value into the index page,<DD><DL>
-<DT><B>Returns:</B><DD>It returns the rid where the record is inserted;
+<DT><B>Returns:</B><DD>It returns the MID where the record is inserted;
 null if no space left.<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IndexInsertRecException.html">IndexInsertRecException</A></CODE> - error when insert</DL>
 </DD>
 </DL>
@@ -297,13 +297,13 @@ null if no space left.<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IndexInsertR
 <A NAME="getFirst(global.RID)"><!-- --></A><H3>
 getFirst</H3>
 <PRE>
-public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getFirst</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getFirst</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                       throws <A HREF="../btree/IteratorException.html">IteratorException</A></PRE>
 <DL>
 <DD>Iterators. 
  One of the two functions: getFirst and getNext
  which  provide an iterator interface to the records on a BTIndexPage.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - It will be modified and the first rid in the index page
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - It will be modified and the first MID in the index page
  will be passed out by itself. Input and Output parameter.<DT><B>Returns:</B><DD>return the first KeyDataEntry in the index page.
 null if NO MORE RECORD<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - iterator error</DL>
 </DD>
@@ -313,13 +313,13 @@ null if NO MORE RECORD<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorExce
 <A NAME="getNext(global.RID)"><!-- --></A><H3>
 getNext</H3>
 <PRE>
-public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getNext</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../btree/KeyDataEntry.html">KeyDataEntry</A> <B>getNext</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                      throws <A HREF="../btree/IteratorException.html">IteratorException</A></PRE>
 <DL>
 <DD>Iterators.  
  One of the two functions: get_first and get_next which  provide an
  iterator interface to the records on a BTIndexPage.<DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - It will be modified and next rid will be passed out by itself.
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - It will be modified and next MID will be passed out by itself.
          Input and Output parameter.<DT><B>Returns:</B><DD>return the next KeyDataEntry in the index page. 
 null if no more record<DT><B>Throws:</B><DD><CODE><A HREF="../btree/IteratorException.html">IteratorException</A></CODE> - iterator error</DL>
 </DD>

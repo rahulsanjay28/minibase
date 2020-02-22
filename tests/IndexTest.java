@@ -3,8 +3,6 @@ package tests;
 import java.io.*;
 
 import global.*;
-import bufmgr.*;
-import diskmgr.*;
 import heap.*;
 import iterator.*;
 import index.*;
@@ -141,7 +139,7 @@ class IndexDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test1.in"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("test1.in");
@@ -167,7 +165,7 @@ class IndexDriver extends TestDriver
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
@@ -197,12 +195,12 @@ class IndexDriver extends TestDriver
 
         System.out.println("BTreeIndex created successfully.\n");
 
-        rid = new RID();
+        mid = new MID();
         String key = null;
         Tuple temp = null;
 
         try {
-            temp = scan.getNext(rid);
+            temp = scan.getNext(mid);
         } catch (Exception e) {
             status = FAIL;
             e.printStackTrace();
@@ -218,14 +216,14 @@ class IndexDriver extends TestDriver
             }
 
             try {
-                btf.insert(new StringKey(key), rid);
+                btf.insert(new StringKey(key), mid);
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
             }
 
             try {
-                temp = scan.getNext(rid);
+                temp = scan.getNext(mid);
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
@@ -339,7 +337,7 @@ class IndexDriver extends TestDriver
 
         int size = t.size();
 
-        RID rid;
+        MID mid;
         Heapfile f = null;
 
         // open existing data file
@@ -369,7 +367,7 @@ class IndexDriver extends TestDriver
 
         System.out.println("BTreeIndex opened successfully.\n");
 
-        rid = new RID();
+        mid = new MID();
         String key = null;
         Tuple temp = null;
 
@@ -569,7 +567,7 @@ class IndexDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test3.in"
-        RID rid;
+        MID mid;
         Heapfile f = null;
         try {
             f = new Heapfile("test3.in");
@@ -604,7 +602,7 @@ class IndexDriver extends TestDriver
             }
 
             try {
-                rid = f.insertRecord(t.returnTupleByteArray());
+                mid = f.insertRecord(t.returnTupleByteArray());
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
@@ -634,12 +632,12 @@ class IndexDriver extends TestDriver
 
         System.out.println("BTreeIndex created successfully.\n");
 
-        rid = new RID();
+        mid = new MID();
         int key = 0;
         Tuple temp = null;
 
         try {
-            temp = scan.getNext(rid);
+            temp = scan.getNext(mid);
         } catch (Exception e) {
             status = FAIL;
             e.printStackTrace();
@@ -655,14 +653,14 @@ class IndexDriver extends TestDriver
             }
 
             try {
-                btf.insert(new IntegerKey(key), rid);
+                btf.insert(new IntegerKey(key), mid);
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();
             }
 
             try {
-                temp = scan.getNext(rid);
+                temp = scan.getNext(mid);
             } catch (Exception e) {
                 status = FAIL;
                 e.printStackTrace();

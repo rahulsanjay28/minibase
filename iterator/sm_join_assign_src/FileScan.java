@@ -125,10 +125,10 @@ public class FileScan extends  Iterator
 	   FieldNumberOutOfBoundException,
 	   WrongPermat
     {     
-      RID rid = new RID();;
+      MID mid = new MID();;
       
       while(true) {
-	if((tuple1 =  scan.getNext(rid)) == null) {
+	if((tuple1 =  scan.getNext(mid)) == null) {
 	  return null;
 	}
 	

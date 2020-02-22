@@ -22,7 +22,7 @@ public class Utility implements Catalogglobal{
  void deleteRecUT(String relation, attrNode item){};
 
  // DELETES INDEX ENRIES FOR RECORDS
- void deleteRecIndexesUT(String relation, RID rid, Tuple tuple){};
+ void deleteRecIndexesUT(String relation, MID mid, Tuple tuple){};
 
  // WRAPS INSERT UTILITY  IN TX
  public static void insertRecordUT(String relation, int attrCnt, attrNode [] attrList)
@@ -75,7 +75,7 @@ public static void insertRecUT(String relation, int attrCnt, attrNode [] attrLis
 	 Exception
  {
  RelDesc  relRec = null;
- RID      rid = null;
+ MID mid = null;
  int status;
  AttrType attrType = new AttrType(AttrType.attrInteger);
  int      attrPos = 0;
@@ -258,7 +258,7 @@ ExtendedSystemDefs.MINIBASE_RELCAT.getInfo(relation, relRec);
 		btree = new BTreeFile(indexName);
 		if (btree == null)
 		  throw new Catalognomem(null, "Catalog: No Enough Memory!");
-           	btree.insert(key,rid);
+           	btree.insert(key, mid);
            } 
 	   catch (Exception e1) {
 	     throw e1;
@@ -276,7 +276,7 @@ ExtendedSystemDefs.MINIBASE_RELCAT.getInfo(relation, relRec);
 
  // LOADS INDEXES
  void loadIndexesUT(Tuple tuple, int attrCnt, int indexCnt,
-     AttrDesc [] attrs, IndexDesc [] indexes, void [] iFiles, RID rid ){};
+     AttrDesc [] attrs, IndexDesc [] indexes, void [] iFiles, MID mid){};
 
 //-------------------------------
 // TYPECHECK INTS

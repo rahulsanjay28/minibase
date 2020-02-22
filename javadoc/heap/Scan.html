@@ -132,7 +132,7 @@ A Scan object is created ONLY through the function openScan
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;<A HREF="../heap/Tuple.html">Tuple</A></CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/Scan.html#getNext(global.RID)">getNext</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/Scan.html#getNext(global.MID)">getNext</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieve the next record in a sequential scan</TD>
@@ -140,10 +140,10 @@ A Scan object is created ONLY through the function openScan
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;boolean</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../heap/Scan.html#position(global.RID)">position</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)</CODE>
+<TD><CODE><B><A HREF="../heap/Scan.html#position(global.MID)">position</A></B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Position the scan cursor to the record with the given rid.</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Position the scan cursor to the record with the given MID.</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -198,7 +198,7 @@ public <B>Scan</B>(<A HREF="../heap/Heapfile.html">Heapfile</A>&nbsp;hf)
 <A NAME="getNext(global.RID)"><!-- --></A><H3>
 getNext</H3>
 <PRE>
-public <A HREF="../heap/Tuple.html">Tuple</A> <B>getNext</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public <A HREF="../heap/Tuple.html">Tuple</A> <B>getNext</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
               throws <A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A>,
                      java.io.IOException</PRE>
 <DL>
@@ -206,7 +206,7 @@ public <A HREF="../heap/Tuple.html">Tuple</A> <B>getNext</B>(<A HREF="../global/
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - Record ID of the record<DT><B>Returns:</B><DD>the Tuple of the retrieved record.<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - Invalid tuple size<DD><CODE>java.io.IOException</CODE> - I/O errors</DL>
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - Record ID of the record<DT><B>Returns:</B><DD>the Tuple of the retrieved record.<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - Invalid tuple size<DD><CODE>java.io.IOException</CODE> - I/O errors</DL>
 </DD>
 </DL>
 <HR>
@@ -214,15 +214,15 @@ public <A HREF="../heap/Tuple.html">Tuple</A> <B>getNext</B>(<A HREF="../global/
 <A NAME="position(global.RID)"><!-- --></A><H3>
 position</H3>
 <PRE>
-public boolean <B>position</B>(<A HREF="../global/RID.html">RID</A>&nbsp;rid)
+public boolean <B>position</B>(<A HREF="../global/RID.html">RID</A>&nbsp;MID)
                  throws <A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A>,
                         java.io.IOException</PRE>
 <DL>
-<DD>Position the scan cursor to the record with the given rid.<DD><DL>
+<DD>Position the scan cursor to the record with the given MID.<DD><DL>
 </DL>
 </DD>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>rid</CODE> - Record ID of the given record<DT><B>Returns:</B><DD>true if successful, 
+<DT><B>Parameters:</B><DD><CODE>MID</CODE> - Record ID of the given record<DT><B>Returns:</B><DD>true if successful,
 			false otherwise.<DT><B>Throws:</B><DD><CODE><A HREF="../heap/InvalidTupleSizeException.html">InvalidTupleSizeException</A></CODE> - Invalid tuple size<DD><CODE>java.io.IOException</CODE> - I/O errors</DL>
 </DD>
 </DL>
