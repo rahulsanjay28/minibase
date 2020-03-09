@@ -2,10 +2,14 @@
 
 package diskmgr;
 
-import java.io.*;
+import global.Convert;
+import global.GlobalConst;
+import global.PageId;
+import global.SystemDefs;
 
-import bufmgr.*;
-import global.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 public class DB implements GlobalConst {
 
@@ -16,7 +20,7 @@ public class DB implements GlobalConst {
     /**
      * Open the database with the given name.
      *
-     * @param name DB_name
+     * @param fname DB_name
      * @throws IOException                I/O errors
      * @throws FileIOException            file I/O error
      * @throws InvalidPageNumberException invalid page number
@@ -61,8 +65,8 @@ public class DB implements GlobalConst {
      * Create a database with the specified number of pages where the page
      * size is the default page size.
      *
-     * @param name      DB name
-     * @param num_pages number of pages in DB
+     * @param fname      DB name
+     * @param num_pgs number of pages in DB
      * @throws IOException                I/O errors
      * @throws InvalidPageNumberException invalid page number
      * @throws FileIOException            file I/O error
