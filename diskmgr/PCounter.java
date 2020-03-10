@@ -1,16 +1,37 @@
 package diskmgr;
 
 public class PCounter {
-    public static int rcounter;
-    public static int wcounter;
 
-    public static void initialize() {
-        rcounter =0; wcounter =0;
+    private int readCount;
+    private int writeCount;
+
+    private static PCounter mInstance;
+
+    private PCounter() {
+
     }
-    public static void readIncrement() {
-        rcounter++;
+
+    public static PCounter getInstance() {
+        if (mInstance == null) {
+            mInstance = new PCounter();
+        }
+        return mInstance;
     }
-    public static void writeIncrement() {
-        wcounter++;
+
+    public void readIncrement() {
+        readCount++;
     }
+
+    public void writeIncrement() {
+        writeCount++;
+    }
+
+    public int getReadCount() {
+        return readCount;
+    }
+
+    public int getWriteCount() {
+        return writeCount;
+    }
+
 }

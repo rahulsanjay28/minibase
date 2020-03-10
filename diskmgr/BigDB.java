@@ -9,24 +9,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class bigDB implements GlobalConst {
+public class BigDB implements GlobalConst {
 
     private static final int bits_per_page = MAX_SPACE * 8;
 
     private RandomAccessFile fp;
     private int num_pages;
     private String name;
-    public PCounter pc;
 
     private int type = 1;
-    public bigDB(int type){
+
+    public BigDB(int type) {
         this.type = type;
-        pc = new PCounter();
     }
 
-    public bigDB(){
-        pc = new PCounter();
-        System.out.println(pc.rcounter);
+    public BigDB() {
     }
 
     /**
@@ -38,7 +35,7 @@ public class bigDB implements GlobalConst {
      * @throws InvalidPageNumberException invalid page number
      * @throws DiskMgrException           error caused by other layers
      */
-    public void openbigDB(String fname)
+    public void openBigDB(String fname)
             throws IOException,
             InvalidPageNumberException,
             FileIOException,
@@ -70,14 +67,14 @@ public class bigDB implements GlobalConst {
      * Create a database with the specified number of pages where the page
      * size is the default page size.
      *
-     * @param fname      DB name
+     * @param fname   DB name
      * @param num_pgs number of pages in DB
      * @throws IOException                I/O errors
      * @throws InvalidPageNumberException invalid page number
      * @throws FileIOException            file I/O error
      * @throws DiskMgrException           error caused by other layers
      */
-    public void openbigDB(String fname, int num_pgs)
+    public void openBigDB(String fname, int num_pgs)
             throws IOException,
             InvalidPageNumberException,
             FileIOException,
@@ -166,7 +163,7 @@ public class bigDB implements GlobalConst {
         // Write the appropriate number of bytes.
         try {
             fp.write(apage.getpage());
-            pc.writeIncrement();
+            PCounter.getInstance().writeIncrement();
         } catch (IOException e) {
             throw new FileIOException(e, "DB file I/O error");
         }
@@ -197,7 +194,7 @@ public class bigDB implements GlobalConst {
         byte[] buffer = apage.getpage();  //new byte[MINIBASE_PAGESIZE];
         try {
             fp.read(buffer);
-            pc.readIncrement();
+            PCounter.getInstance().readIncrement();
         } catch (IOException e) {
             throw new FileIOException(e, "DB file I/O error");
         }
@@ -231,7 +228,7 @@ public class bigDB implements GlobalConst {
      * user specified run_size
      *
      * @param start_page_num the starting page id of the run of pages
-     * @param runsize       the number of page need allocated
+     * @param runsize        the number of page need allocated
      * @throws OutOfSpaceException        No space left
      * @throws InvalidRunSizeException    invalid run size
      * @throws InvalidPageNumberException invalid page number
@@ -790,7 +787,7 @@ public class bigDB implements GlobalConst {
 
     /**
      * short cut to access the pinPage function in bufmgr package.
-     *
+     * <p>
      * //@see bufmgr.pinPage
      */
     private void pinPage(PageId pageno, Page page, boolean emptyPage)
@@ -806,7 +803,7 @@ public class bigDB implements GlobalConst {
 
     /**
      * short cut to access the unpinPage function in bufmgr package.
-     *
+     * <p>
      * //@see bufmgr.unpinPage
      */
     private void unpinPage(PageId pageno, boolean dirty)

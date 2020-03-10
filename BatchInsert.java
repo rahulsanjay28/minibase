@@ -1,7 +1,9 @@
 import bigt.Map;
 import bigt.Minibase;
+import diskmgr.PCounter;
 import global.AttrType;
 import global.RID;
+import global.SystemDefs;
 import heap.*;
 
 import java.io.BufferedReader;
@@ -56,6 +58,9 @@ public class BatchInsert {
                 e.printStackTrace();
             }
         }
+
+        System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
+        System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
     }
 
     /**
