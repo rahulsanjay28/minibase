@@ -1,5 +1,10 @@
 package bigt;
 
+import btree.AddFileEntryException;
+import btree.BTreeFile;
+import btree.ConstructPageException;
+import btree.GetFileEntryException;
+import global.AttrType;
 import global.SystemDefs;
 import heap.HFBufMgrException;
 import heap.HFDiskMgrException;
@@ -14,26 +19,34 @@ public class Minibase {
     private SystemDefs systemDefs;
     private String dbpath;
     private BigT bigT;
+    private BTreeFile bTreeFile;
+    private BTreeFile bTreeFile1;
 
-    private Minibase(){
+    private int maxRowKeyLength;
+    private int maxColumnKeyLength;
+    private int maxTimeStampLength;
+    private int maxValueLength;
+
+    private Minibase() {
 
     }
 
-    public static Minibase getInstance(){
-        if(mInstance == null){
+    public static Minibase getInstance() {
+        if (mInstance == null) {
             mInstance = new Minibase();
         }
         return mInstance;
     }
 
-    public BigT getBigTable(){
+    public BigT getBigTable() {
         return bigT;
     }
 
-    public void init(String name, int type, int numBuf){
+    public void init(String name, int type, int numBuf) {
         this.NUM_BUF = numBuf;
-        dbpath = "/tmp/"+ name + type + ".bigtable-db";
-        systemDefs = new SystemDefs(dbpath, 3000, numBuf, "Clock");
+        dbpath = "/tmp/" + name + type + ".bigtable-db";
+        systemDefs = new SystemDefs(dbpath, 11000, numBuf, "Clock");
+
         try {
             bigT = new BigT(name, type);
         } catch (HFException e) {
@@ -45,6 +58,57 @@ public class Minibase {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        int keySize = -1;
+        if(type == 2){
+            keySize = maxRowKeyLength;
+        }else if(type == 3) {
+            keySize = maxColumnKeyLength;
+        }else if(type == 4){
+            keySize = maxColumnKeyLength + maxRowKeyLength;
+        }else if(type == 5){
+            keySize = maxRowKeyLength + maxValueLength;
+        }
+
+        if(type != 0) {
+            try {
+                bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 1);
+                BTreeFile.traceFilename("TRACE");
+            } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(type == 4 || type == 5){
+            try {
+                bTreeFile1 = new BTreeFile(name + type + "_index_1", AttrType.attrInteger, 4, 1);
+            } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+    public BTreeFile getBTree(){
+        return bTreeFile;
+    }
+
+    public BTreeFile getSecondaryBTree(){
+        return bTreeFile1;
+    }
+
+    public void setMaxRowKeyLength(int maxRowKeyLength) {
+        this.maxRowKeyLength = maxRowKeyLength;
+    }
+
+    public void setMaxColumnKeyLength(int maxColumnKeyLength) {
+        this.maxColumnKeyLength = maxColumnKeyLength;
+    }
+
+    public void setMaxTimeStampLength(int maxTimeStampLength) {
+        this.maxTimeStampLength = maxTimeStampLength;
+    }
+
+    public void setMaxValueLength(int maxValueLength) {
+        this.maxValueLength = maxValueLength;
+    }
 }
