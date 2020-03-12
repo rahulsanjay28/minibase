@@ -1,5 +1,6 @@
 import bigt.Map;
 import bigt.Minibase;
+import bigt.Scan;
 import bigt.Stream;
 import btree.*;
 import diskmgr.PCounter;
@@ -71,7 +72,7 @@ public class BatchInsert {
 //        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
 //        System.out.println("maxValueLength: " + maxValueLength);
 
-        Minibase.getInstance().setMaxRowKeyLength(25);
+        Minibase.getInstance().setMaxRowKeyLength(21);
         Minibase.getInstance().setMaxColumnKeyLength(25);
         Minibase.getInstance().setMaxTimeStampLength(25);
         Minibase.getInstance().setMaxValueLength(25);
@@ -105,6 +106,21 @@ public class BatchInsert {
         }else{
             System.out.println("Database already exists");
         }
+
+        System.out.println("Scanning the big table");
+        PCounter.getInstance().setWriteCount(0);
+        PCounter.getInstance().setReadCount(0);
+        Scan scan = new Scan(Minibase.getInstance().getBigTable());
+        RID rid = new RID();
+        Map map = scan.getNext(rid);
+        while(map != null){
+            map.setOffsets(map.getOffset());
+            System.out.println(map.getRowLabel() + " " + map.getColumnLabel() + " " +
+                    map.getTimeStamp() + " " + map.getValue());
+            map = scan.getNext(rid);
+        }
+        System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
+        System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
     }
 
     private static void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value){

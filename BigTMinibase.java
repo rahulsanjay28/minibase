@@ -6,7 +6,7 @@ public class BigTMinibase {
         String args1;
         Scanner sc = new Scanner(System.in);
         do {
-            System.out.println("Press 1 for BatchInsert\n Press 2 for Query\n Press any other key to exit\n");
+            System.out.println("Press 1 for BatchInsert\nPress 2 for Query\nPress any other key to exit\n");
             option = sc.nextInt();
             if(option == 1){
                 System.out.println("Enter DATAFILENAME TYPE BIGTABLENAME NUMBUF");
