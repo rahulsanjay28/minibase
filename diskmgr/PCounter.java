@@ -34,4 +34,11 @@ public class PCounter {
         return writeCount;
     }
 
+    public void setReadCount(int readCount) {
+        this.readCount = readCount;
+    }
+
+    public void setWriteCount(int writeCount) {
+        this.writeCount = writeCount;
+    }
 }

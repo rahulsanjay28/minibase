@@ -48,6 +48,8 @@ interface Filetype {
 
 public class BigT implements Filetype, GlobalConst {
 
+    private String name;
+    private int type;
 
     PageId _firstDirPageId;   // page number of header page
     int _ftype;
@@ -210,6 +212,10 @@ public class BigT implements Filetype, GlobalConst {
             HFBufMgrException,
             HFDiskMgrException,
             IOException {
+
+        this.name = name;
+        this.type = type;
+
         // Give us a prayer of destructing cleanly if construction fails.
         _file_deleted = true;
         _fileName = null;
@@ -587,8 +593,9 @@ public class BigT implements Filetype, GlobalConst {
      * @param valueFilter
      * @return Stream
      */
-    public Stream openStream(int orderType, String rowFilter, String columnFilter, String valueFilter) {
-        return null;
+    public Stream openStream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception{
+        Stream stream = new Stream(this, orderType, rowFilter, columnFilter, valueFilter);
+        return stream;
     }
 
     /**
@@ -1013,5 +1020,12 @@ public class BigT implements Filetype, GlobalConst {
 
     } // end of delete_file_entry
 
+    public String getName(){
+        return this.name;
+    }
+
+    public int getType(){
+        return this.type;
+    }
 
 }// End of HeapFile

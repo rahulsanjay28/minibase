@@ -1,16 +1,22 @@
-package heap;
+package bigt;
 
-/** JAVA */
+/**
+ * JAVA
+ * Scan.java-  class Scan
+ */
 /**
  * Scan.java-  class Scan
  *
  */
 
-import java.io.*;
-import global.*;
-import bufmgr.*;
-import diskmgr.*;
-import bigt.*;
+import diskmgr.Page;
+import global.GlobalConst;
+import global.PageId;
+import global.RID;
+import global.SystemDefs;
+import heap.*;
+
+import java.io.IOException;
 
 
 /**
@@ -21,7 +27,7 @@ import bigt.*;
  * An object of type scan will always have pinned one directory page
  * of the heapfile.
  */
-public class Scan implements GlobalConst{
+public class Scan implements GlobalConst {
 
     /**
      * Note that one record in our way-cool HeapFile implementation is
@@ -30,7 +36,7 @@ public class Scan implements GlobalConst{
      */
 
     /** The heapfile we are using. */
-    private BigT  _hf;
+    private BigT _hf;
 
     /** PageId of current directory page (which is itself an HFPage) */
     private PageId dirpageId = new PageId();
@@ -67,11 +73,9 @@ public class Scan implements GlobalConst{
      */
     public Scan(BigT hf)
             throws InvalidTupleSizeException,
-            IOException
-    {
+            IOException {
         init(hf);
     }
-
 
 
     /** Retrieve the next record in a sequential scan
@@ -84,8 +88,7 @@ public class Scan implements GlobalConst{
      */
     public Map getNext(RID rid)
             throws InvalidTupleSizeException,
-            IOException
-    {
+            IOException {
         Map recptrMap = null;
 
         if (nextUserStatus != true) {
@@ -99,16 +102,14 @@ public class Scan implements GlobalConst{
         rid.slotNo = userrid.slotNo;
 
         try {
-            recptrMap = datapage.getRecord(rid);
-        }
-
-        catch (Exception e) {
+            recptrMap = datapage.getMap(rid);
+        } catch (Exception e) {
             //    System.err.println("SCAN: Error in Scan" + e);
             e.printStackTrace();
         }
 
-        userrid = datapage.nextRecord(rid);
-        if(userrid == null) nextUserStatus = false;
+        userrid = datapage.nextMap(rid);
+        if (userrid == null) nextUserStatus = false;
         else nextUserStatus = true;
 
         return recptrMap;
@@ -120,19 +121,19 @@ public class Scan implements GlobalConst{
      * @exception InvalidTupleSizeException Invalid tuple size
      * @exception IOException I/O errors
      * @param rid Record ID of the given record
-     * @return 	true if successful,
+     * @return true if successful,
      *			false otherwise.
      */
     public boolean position(RID rid)
             throws InvalidTupleSizeException,
-            IOException
-    {
-        RID    nxtrid = new RID();
+            IOException {
+        RID nxtrid = new RID();
         boolean bst;
 
         bst = peekNext(nxtrid);
+        System.out.println("position " + bst);
 
-        if (nxtrid.equals(rid)==true)
+        if (nxtrid.equals(rid) == true)
             return true;
 
         // This is kind lame, but otherwise it will take all day.
@@ -143,8 +144,8 @@ public class Scan implements GlobalConst{
 
             // reset everything and start over from the beginning
             reset();
-
-            bst =  firstDataPage();
+            System.out.println("position " + bst);
+            bst = firstDataPage();
 
             if (bst != true)
                 return bst;
@@ -155,28 +156,26 @@ public class Scan implements GlobalConst{
                     return bst;
             }
         }
-
+        System.out.println("position " + bst);
         // Now we are on the correct page.
 
-        try{
-            userrid = datapage.firstRecord();
-        }
-        catch (Exception e) {
+        try {
+            userrid = datapage.firstMap();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        if (userrid == null)
-        {
+        if (userrid == null) {
             bst = false;
             return bst;
         }
-
+        System.out.println("position " + bst);
         bst = peekNext(nxtrid);
-
+        System.out.println("position " + bst);
         while ((bst == true) && (nxtrid != rid))
             bst = mvNext(nxtrid);
-
+        System.out.println("position " + bst);
         return bst;
     }
 
@@ -190,8 +189,7 @@ public class Scan implements GlobalConst{
      */
     private void init(BigT hf)
             throws InvalidTupleSizeException,
-            IOException
-    {
+            IOException {
         _hf = hf;
 
         firstDataPage();
@@ -199,22 +197,19 @@ public class Scan implements GlobalConst{
 
 
     /** Closes the Scan object */
-    public void closescan()
-    {
+    public void closescan() {
         reset();
     }
 
 
     /** Reset everything and unpin all pages. */
-    private void reset()
-    {
+    private void reset() {
 
         if (datapage != null) {
 
-            try{
+            try {
                 unpinPage(datapageId, false);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 // 	System.err.println("SCAN: Error in Scan" + e);
                 e.printStackTrace();
             }
@@ -224,10 +219,9 @@ public class Scan implements GlobalConst{
 
         if (dirpage != null) {
 
-            try{
+            try {
                 unpinPage(dirpageId, false);
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 //     System.err.println("SCAN: Error in Scan: " + e);
                 e.printStackTrace();
             }
@@ -247,11 +241,10 @@ public class Scan implements GlobalConst{
      */
     private boolean firstDataPage()
             throws InvalidTupleSizeException,
-            IOException
-    {
+            IOException {
         DataPageInfo dpinfo;
-        Map rectuple = null;
-        Boolean      bst;
+        Map recMap = null;
+        Boolean bst;
 
         /** copy data about first directory page */
 
@@ -260,38 +253,34 @@ public class Scan implements GlobalConst{
 
         /** get first directory page and pin it */
         try {
-            dirpage  = new HFPage();
+            dirpage = new HFPage();
             pinPage(dirpageId, (Page) dirpage, false);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             //    System.err.println("SCAN Error, try pinpage: " + e);
             e.printStackTrace();
         }
 
         /** now try to get a pointer to the first datapage */
-        datapageRid = dirpage.firstRecord();
+        datapageRid = dirpage.firstMap();
 
         if (datapageRid != null) {
-            /** there is a datapage record on the first directory page: */
+            /** there is a datapage Map on the first directory page: */
 
             try {
-                rectuple = dirpage.getRecord(datapageRid);
-            }
-
-            catch (Exception e) {
+                recMap = dirpage.getMap(datapageRid);
+            } catch (Exception e) {
                 //	System.err.println("SCAN: Chain Error in Scan: " + e);
                 e.printStackTrace();
             }
 
-            dpinfo = new DataPageInfo(rectuple);
+            dpinfo = new DataPageInfo(recMap);
             datapageId.pid = dpinfo.pageId.pid;
 
         } else {
 
             /** the first directory page is the only one which can possibly remain
              * empty: therefore try to get the next directory page and
-             * check it. The next one has to contain a datapage record, unless
+             * check it. The next one has to contain a datapage Map, unless
              * the heapfile is empty:
              */
             PageId nextDirPageId = new PageId();
@@ -303,9 +292,7 @@ public class Scan implements GlobalConst{
                 try {
                     unpinPage(dirpageId, false);
                     dirpage = null;
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     //	System.err.println("SCAN: Error in 1stdatapage 1 " + e);
                     e.printStackTrace();
                 }
@@ -313,43 +300,37 @@ public class Scan implements GlobalConst{
                 try {
 
                     dirpage = new HFPage();
-                    pinPage(nextDirPageId, (Page )dirpage, false);
+                    pinPage(nextDirPageId, (Page) dirpage, false);
 
-                }
-
-                catch (Exception e) {
+                } catch (Exception e) {
                     //  System.err.println("SCAN: Error in 1stdatapage 2 " + e);
                     e.printStackTrace();
                 }
 
-                /** now try again to read a data record: */
+                /** now try again to read a data Map: */
 
                 try {
-                    datapageRid = dirpage.firstRecord();
-                }
-
-                catch (Exception e) {
+                    datapageRid = dirpage.firstMap();
+                } catch (Exception e) {
                     //  System.err.println("SCAN: Error in 1stdatapg 3 " + e);
                     e.printStackTrace();
                     datapageId.pid = INVALID_PAGE;
                 }
 
-                if(datapageRid != null) {
+                if (datapageRid != null) {
 
                     try {
 
-                        rectuple = dirpage.getRecord(datapageRid);
-                    }
-
-                    catch (Exception e) {
-                        //    System.err.println("SCAN: Error getRecord 4: " + e);
+                        recMap = dirpage.getMap(datapageRid);
+                    } catch (Exception e) {
+                        //    System.err.println("SCAN: Error getMap 4: " + e);
                         e.printStackTrace();
                     }
 
-                    if (rectuple.getLength() != DataPageInfo.size)
+                    if (recMap.getLength() != DataPageInfo.size)
                         return false;
 
-                    dpinfo = new DataPageInfo(rectuple);
+                    dpinfo = new DataPageInfo(recMap);
                     datapageId.pid = dpinfo.pageId.pid;
 
                 } else {
@@ -364,11 +345,9 @@ public class Scan implements GlobalConst{
 
         datapage = null;
 
-        try{
+        try {
             nextDataPage();
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             //  System.err.println("SCAN Error: 1st_next 0: " + e);
             e.printStackTrace();
         }
@@ -392,18 +371,17 @@ public class Scan implements GlobalConst{
     /** Move to the next data page in the file and
      * retrieve the next data page.
      *
-     * @return 		true if successful
+     * @return true if successful
      *			false if unsuccessful
      */
     private boolean nextDataPage()
             throws InvalidTupleSizeException,
-            IOException
-    {
+            IOException {
         DataPageInfo dpinfo;
 
         boolean nextDataPageStatus;
         PageId nextDirPageId = new PageId();
-        Map rectuple = null;
+        Map recMap = null;
 
         // ASSERTIONS:
         // - this->dirpageId has Id of current directory page
@@ -427,11 +405,10 @@ public class Scan implements GlobalConst{
             if (datapageId.pid == INVALID_PAGE) {
                 // heapfile is empty to begin with
 
-                try{
+                try {
                     unpinPage(dirpageId, false);
                     dirpage = null;
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     //  System.err.println("Scan: Chain Error: " + e);
                     e.printStackTrace();
                 }
@@ -440,17 +417,15 @@ public class Scan implements GlobalConst{
 
                 // pin first data page
                 try {
-                    datapage  = new HFPage();
+                    datapage = new HFPage();
                     pinPage(datapageId, (Page) datapage, false);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 try {
-                    userrid = datapage.firstRecord();
-                }
-                catch (Exception e) {
+                    userrid = datapage.firstMap();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -463,26 +438,25 @@ public class Scan implements GlobalConst{
         // - current datapage pinned
 
         // unpin the current datapage
-        try{
+        try {
             unpinPage(datapageId, false /* no dirty */);
             datapage = null;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
 
-        // read next datapagerecord from current directory page
+        // read next datapageMap from current directory page
         // dirpage is set to NULL at the end of scan. Hence
 
         if (dirpage == null) {
             return false;
         }
 
-        datapageRid = dirpage.nextRecord(datapageRid);
+        datapageRid = dirpage.nextMap(datapageRid);
 
         if (datapageRid == null) {
             nextDataPageStatus = false;
-            // we have read all datapage records on the current directory page
+            // we have read all datapage Maps on the current directory page
 
             // get next directory page
             nextDirPageId = dirpage.getNextPage();
@@ -493,9 +467,7 @@ public class Scan implements GlobalConst{
                 dirpage = null;
 
                 datapageId.pid = INVALID_PAGE;
-            }
-
-            catch (Exception e) {
+            } catch (Exception e) {
 
             }
 
@@ -508,11 +480,9 @@ public class Scan implements GlobalConst{
                 dirpageId = nextDirPageId;
 
                 try {
-                    dirpage  = new HFPage();
-                    pinPage(dirpageId, (Page)dirpage, false);
-                }
-
-                catch (Exception e){
+                    dirpage = new HFPage();
+                    pinPage(dirpageId, (Page) dirpage, false);
+                } catch (Exception e) {
 
                 }
 
@@ -520,10 +490,9 @@ public class Scan implements GlobalConst{
                     return false;
 
                 try {
-                    datapageRid = dirpage.firstRecord();
+                    datapageRid = dirpage.firstMap();
                     nextDataPageStatus = true;
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     nextDataPageStatus = false;
                     return false;
                 }
@@ -537,27 +506,23 @@ public class Scan implements GlobalConst{
         // - this->datapageRid has the Rid of the next datapage to be read
         // - this->datapage, this->datapageId invalid
 
-        // data page is not yet loaded: read its record from the directory page
+        // data page is not yet loaded: read its Map from the directory page
         try {
-            rectuple = dirpage.getRecord(datapageRid);
-        }
-
-        catch (Exception e) {
+            recMap = dirpage.getMap(datapageRid);
+        } catch (Exception e) {
             System.err.println("HeapFile: Error in Scan" + e);
         }
 
-        if (rectuple.getLength() != DataPageInfo.size)
+        if (recMap.getLength() != DataPageInfo.size)
             return false;
 
-        dpinfo = new DataPageInfo(rectuple);
+        dpinfo = new DataPageInfo(recMap);
         datapageId.pid = dpinfo.pageId.pid;
 
         try {
             datapage = new HFPage();
             pinPage(dpinfo.pageId, (Page) datapage, false);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("HeapFile: Error in Scan" + e);
         }
 
@@ -567,10 +532,9 @@ public class Scan implements GlobalConst{
         // - this->dirpageId, this->dirpage correct
         // - this->datapageId, this->datapage, this->datapageRid correct
 
-        userrid = datapage.firstRecord();
+        userrid = datapage.firstMap();
 
-        if(userrid == null)
-        {
+        if (userrid == null) {
             nextUserStatus = false;
             return false;
         }
@@ -588,22 +552,21 @@ public class Scan implements GlobalConst{
     }
 
 
-    /** Move to the next record in a sequential scan.
-     * Also returns the RID of the (new) current record.
+    /** Move to the next Map in a sequential scan.
+     * Also returns the RID of the (new) current Map.
      */
     private boolean mvNext(RID rid)
             throws InvalidTupleSizeException,
-            IOException
-    {
+            IOException {
         RID nextrid;
         boolean status;
 
         if (datapage == null)
             return false;
 
-        nextrid = datapage.nextRecord(rid);
+        nextrid = datapage.nextMap(rid);
 
-        if( nextrid != null ){
+        if (nextrid != null) {
             userrid.pageNo.pid = nextrid.pageNo.pid;
             userrid.slotNo = nextrid.slotNo;
             return true;
@@ -611,7 +574,7 @@ public class Scan implements GlobalConst{
 
             status = nextDataPage();
 
-            if (status==true){
+            if (status == true) {
                 rid.pageNo.pid = userrid.pageNo.pid;
                 rid.slotNo = userrid.slotNo;
             }
@@ -629,9 +592,8 @@ public class Scan implements GlobalConst{
 
         try {
             SystemDefs.JavabaseBM.pinPage(pageno, page, emptyPage);
-        }
-        catch (Exception e) {
-            throw new HFBufMgrException(e,"Scan.java: pinPage() failed");
+        } catch (Exception e) {
+            throw new HFBufMgrException(e, "Scan.java: pinPage() failed");
         }
 
     } // end of pinPage
@@ -645,9 +607,8 @@ public class Scan implements GlobalConst{
 
         try {
             SystemDefs.JavabaseBM.unpinPage(pageno, dirty);
-        }
-        catch (Exception e) {
-            throw new HFBufMgrException(e,"Scan.java: unpinPage() failed");
+        } catch (Exception e) {
+            throw new HFBufMgrException(e, "Scan.java: unpinPage() failed");
         }
 
     } // end of unpinPage

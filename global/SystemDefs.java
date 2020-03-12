@@ -1,13 +1,13 @@
 package global;
 
 import bufmgr.BufMgr;
-import catalog.Catalog;
+//import catalog.Catalog;
 import diskmgr.BigDB;
 
 public class SystemDefs {
     public static BufMgr JavabaseBM;
     public static BigDB JavabaseDB;
-    public static Catalog JavabaseCatalog;
+//    public static Catalog JavabaseCatalog;
 
     public static String JavabaseDBName;
     public static String JavabaseLogName;
@@ -48,7 +48,7 @@ public class SystemDefs {
         JavabaseDB = null;
         JavabaseDBName = null;
         JavabaseLogName = null;
-        JavabaseCatalog = null;
+//        JavabaseCatalog = null;
 
         try {
             JavabaseBM = new BufMgr(bufpoolsize, replacement_policy);
