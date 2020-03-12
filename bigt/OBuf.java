@@ -1,12 +1,9 @@
 package bigt;
 
-import heap.*;
-import global.*;
-import bufmgr.*;
-import diskmgr.*;
-import BigT.*;
+import global.GlobalConst;
+import global.RID;
 
-import java.io.*;
+import java.io.IOException;
 
 /**
  *O_buf::Put takes tuples and stores them on the buffer pages that
