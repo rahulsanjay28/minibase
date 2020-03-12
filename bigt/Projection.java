@@ -29,7 +29,7 @@ public class Projection
      *@exception IOException some I/O fault
      */
 
-    public static void Project(Map  map1, int index_type, AttrType type1[],
+    public static void Project(Map  map1, AttrType type1[],
                                Map Jmap, FldSpec perm_mat[]
     )
             throws UnknowAttrType,
