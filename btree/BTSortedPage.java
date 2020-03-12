@@ -117,6 +117,7 @@ public class BTSortedPage extends HFPage {
         try {
 
             record = BT.getBytesFromEntry(entry);
+            Minibase.getInstance().setMaxKeyEntrySize(record.length);
             rid = super.insertMap(record);
             if (rid == null) return null;
 

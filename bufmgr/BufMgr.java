@@ -503,9 +503,9 @@ public class BufMgr implements GlobalConst {
      * if emptyPage==TRUE, then actually no read is done to bring
      * the page in.
      *
-     * @param pin_pgid page number in the minibase.
-     * @param page            the pointer poit to the page.
-     * @param emptyPage       true (empty page); false (non-empty page)
+     * @param pin_pgid  page number in the minibase.
+     * @param page      the pointer poit to the page.
+     * @param emptyPage true (empty page); false (non-empty page)
      * @throws ReplacerException           if there is a replacer error.
      * @throws HashOperationException      if there is a hashtable error.
      * @throws PageUnpinnedException       if there is a page that is already unpinned.
@@ -616,7 +616,7 @@ public class BufMgr implements GlobalConst {
      * if pincount=0 before this call, return error.
      *
      * @param PageId_in_a_DB page number in the minibase.
-     * @param dirty                the dirty bit of the frame
+     * @param dirty          the dirty bit of the frame
      * @throws ReplacerException           if there is a replacer error.
      * @throws PageUnpinnedException       if there is a page that is already unpinned.
      * @throws InvalidFrameNumberException if there is an invalid frame number .
@@ -833,7 +833,7 @@ public class BufMgr implements GlobalConst {
         return numBuffers;
     }
 
-    public void setNumBuffers(int numBuf){
+    public void setNumBuffers(int numBuf) {
         this.numBuffers = numBuf;
     }
 

@@ -6,13 +6,17 @@
  */
 package btree;
 
-import java.io.*;
-import java.lang.*;
-
+import bufmgr.HashEntryNotFoundException;
+import bufmgr.InvalidFrameNumberException;
+import bufmgr.PageUnpinnedException;
+import bufmgr.ReplacerException;
+import diskmgr.Page;
 import global.*;
-import diskmgr.*;
-import bufmgr.*;
-import heap.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This file contains, among some debug utilities, the interface to our

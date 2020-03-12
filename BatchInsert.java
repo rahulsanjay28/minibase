@@ -102,6 +102,7 @@ public class BatchInsert {
             }
             System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
             System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
+            System.out.println("Max Key entry size " + Minibase.getInstance().getMaxKeyEntrySize());
             System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
             System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
         }else{

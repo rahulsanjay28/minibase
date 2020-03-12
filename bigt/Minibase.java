@@ -27,6 +27,7 @@ public class Minibase {
     private int maxTimeStampLength;
     private int maxValueLength;
     private int numberOfIndexPages = 0;
+    private int maxKeyEntrySize = Integer.MAX_VALUE;
 
     private Minibase() {
 
@@ -123,5 +124,15 @@ public class Minibase {
 
     public void incrementNumberOfIndexPages(){
         ++numberOfIndexPages;
+    }
+
+    public void setMaxKeyEntrySize(int size){
+        if(size < maxKeyEntrySize){
+            maxKeyEntrySize = size;
+        }
+    }
+
+    public int getMaxKeyEntrySize(){
+        return maxKeyEntrySize;
     }
 }
