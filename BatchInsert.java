@@ -56,26 +56,26 @@ public class BatchInsert {
      */
     public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception{
 
-//        String line = "";
-//        try {
-//            BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
-//            while ((line = br.readLine()) != null) {
-//                String[] fields = line.split(",");
-//                updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        System.out.println("maxRowKeyLength: " + maxRowKeyLength);
-//        System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
-//        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
-//        System.out.println("maxValueLength: " + maxValueLength);
+        String line = "";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Minibase.getInstance().setMaxRowKeyLength(21);
-        Minibase.getInstance().setMaxColumnKeyLength(25);
-        Minibase.getInstance().setMaxTimeStampLength(25);
-        Minibase.getInstance().setMaxValueLength(25);
+        System.out.println("maxRowKeyLength: " + maxRowKeyLength);
+        System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
+        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
+        System.out.println("maxValueLength: " + maxValueLength);
+
+        Minibase.getInstance().setMaxRowKeyLength(maxRowKeyLength);
+        Minibase.getInstance().setMaxColumnKeyLength(maxColumnKeyLength);
+        Minibase.getInstance().setMaxTimeStampLength(maxTimeStampLength);
+        Minibase.getInstance().setMaxValueLength(maxValueLength);
         Minibase.getInstance().init(bigTableName, Integer.parseInt(type), Integer.parseInt(numBuf));
 
         ArrayList<Temp> maps = new ArrayList<>();
@@ -83,7 +83,7 @@ public class BatchInsert {
         //check if database is restarted, should not insert again
         if(!SystemDefs.MINIBASE_RESTART_FLAG) {
             //Reading data from the csv file and inserting into the BigTable
-            String line = "";
+            line = "";
             try {
                 BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
                 while ((line = br.readLine()) != null) {
@@ -100,57 +100,43 @@ public class BatchInsert {
             for(Temp temp : maps){
                 insertMap(temp.rowKey, temp.columnKey, temp.timestamp, temp.value, Integer.parseInt(type));
             }
-
+            System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
+            System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
             System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
             System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
         }else{
             System.out.println("Database already exists");
         }
-
-        System.out.println("Scanning the big table");
-        PCounter.getInstance().setWriteCount(0);
-        PCounter.getInstance().setReadCount(0);
-        Scan scan = new Scan(Minibase.getInstance().getBigTable());
-        RID rid = new RID();
-        Map map = scan.getNext(rid);
-        while(map != null){
-            map.setOffsets(map.getOffset());
-            System.out.println(map.getRowLabel() + " " + map.getColumnLabel() + " " +
-                    map.getTimeStamp() + " " + map.getValue());
-            map = scan.getNext(rid);
-        }
-        System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
-        System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
     }
 
     private static void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value){
         //update the max lengths of each field in the map to use it indexing
 
         OutputStream out = new ByteArrayOutputStream();
-        DataOutputStream outstr = new DataOutputStream(out);
+        DataOutputStream rowStream = new DataOutputStream(out);
+        DataOutputStream columnStream = new DataOutputStream(out);
+        DataOutputStream timeStampStream = new DataOutputStream(out);
+        DataOutputStream valueStream = new DataOutputStream(out);
 
         try {
-            outstr.writeUTF(rowKey);
-            if(outstr.size() > maxRowKeyLength){
-                maxRowKeyLength = outstr.size();
+            rowStream.writeUTF(rowKey);
+            if(rowStream.size() > maxRowKeyLength){
+                maxRowKeyLength = rowStream.size();
             }
 
-            outstr.flush();
-            outstr.writeUTF(columnKey);
-            if(outstr.size() > maxColumnKeyLength){
-                maxColumnKeyLength = outstr.size();
+            columnStream.writeUTF(columnKey);
+            if(columnStream.size() > maxColumnKeyLength){
+                maxColumnKeyLength = columnStream.size();
             }
 
-            outstr.flush();
-            outstr.writeUTF(columnKey);
-            if(outstr.size() > maxTimeStampLength){
-                maxTimeStampLength = outstr.size();
+            timeStampStream.writeUTF(timestamp);
+            if(timeStampStream.size() > maxTimeStampLength){
+                maxTimeStampLength = timeStampStream.size();
             }
 
-            outstr.flush();
-            outstr.writeUTF(columnKey);
-            if(outstr.size() > maxValueLength){
-                maxValueLength = outstr.size();
+            valueStream.writeUTF(value);
+            if(valueStream.size() > maxValueLength){
+                maxValueLength = valueStream.size();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -167,7 +153,6 @@ public class BatchInsert {
     private static void insertMap(String rowKey, String columnKey, String timestamp, String value, int type) throws
             Exception {
 //        System.out.println(rowKey + " " + columnKey + " " + timestamp + " " + value);
-
         Map map = new Map();
         AttrType[] attrTypes = new AttrType[4];
         attrTypes[0] = new AttrType(AttrType.attrString);

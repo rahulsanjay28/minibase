@@ -26,6 +26,7 @@ public class Minibase {
     private int maxColumnKeyLength;
     private int maxTimeStampLength;
     private int maxValueLength;
+    private int numberOfIndexPages = 0;
 
     private Minibase() {
 
@@ -110,5 +111,17 @@ public class Minibase {
 
     public void setMaxValueLength(int maxValueLength) {
         this.maxValueLength = maxValueLength;
+    }
+
+    public int getNumberOfIndexPages() {
+        return numberOfIndexPages;
+    }
+
+    public void setNumberOfIndexPages(int numberOfIndexPages) {
+        this.numberOfIndexPages = numberOfIndexPages;
+    }
+
+    public void incrementNumberOfIndexPages(){
+        ++numberOfIndexPages;
     }
 }

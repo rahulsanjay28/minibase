@@ -131,7 +131,6 @@ public class Scan implements GlobalConst {
         boolean bst;
 
         bst = peekNext(nxtrid);
-        System.out.println("position " + bst);
 
         if (nxtrid.equals(rid) == true)
             return true;
@@ -144,7 +143,6 @@ public class Scan implements GlobalConst {
 
             // reset everything and start over from the beginning
             reset();
-            System.out.println("position " + bst);
             bst = firstDataPage();
 
             if (bst != true)
@@ -156,7 +154,6 @@ public class Scan implements GlobalConst {
                     return bst;
             }
         }
-        System.out.println("position " + bst);
         // Now we are on the correct page.
 
         try {
@@ -170,12 +167,9 @@ public class Scan implements GlobalConst {
             bst = false;
             return bst;
         }
-        System.out.println("position " + bst);
         bst = peekNext(nxtrid);
-        System.out.println("position " + bst);
         while ((bst == true) && (nxtrid != rid))
             bst = mvNext(nxtrid);
-        System.out.println("position " + bst);
         return bst;
     }
 

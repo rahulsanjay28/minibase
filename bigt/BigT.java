@@ -968,9 +968,10 @@ public class BigT implements Filetype, GlobalConst {
 
     } // end of freePage
 
+    int count = 0;
     private PageId newPage(Page page, int num)
             throws HFBufMgrException {
-
+        ++count;
         PageId tmpId = new PageId();
 
         try {
@@ -983,6 +984,9 @@ public class BigT implements Filetype, GlobalConst {
 
     } // end of newPage
 
+    public int getCount(){
+        return count;
+    }
     private PageId get_file_entry(String filename)
             throws HFDiskMgrException {
 
