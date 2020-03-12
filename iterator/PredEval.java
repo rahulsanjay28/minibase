@@ -3,6 +3,7 @@ package iterator;
 import heap.*;
 import global.*;
 import java.io.*;
+import bigt.*;
 
 public class PredEval
 {
@@ -22,7 +23,7 @@ public class PredEval
    *@exception FieldNumberOutOfBoundException field number exceeds limit
    *@exception PredEvalException exception from this method
    */
-  public static boolean Eval(CondExpr p[], Tuple t1, Tuple t2, AttrType in1[], 
+  public static boolean Eval(CondExpr p[], Map m1, Map m2, AttrType in1[],
 			     AttrType in2[])
     throws IOException,
 	   UnknowAttrType,
@@ -33,9 +34,9 @@ public class PredEval
     {
       CondExpr temp_ptr;
       int       i = 0;
-      Tuple    tuple1 = null, tuple2 = null;
+      Map    map1 = null, map2 = null;
       int      fld1, fld2;
-      Tuple    value =   new Tuple();
+      Map    value =   new Map();
       short[]     str_size = new short[1];
       AttrType[]  val_type = new AttrType[1];
       
@@ -60,32 +61,32 @@ public class PredEval
 		case AttrType.attrInteger:
 		  value.setHdr((short)1, val_type, null);
 		  value.setIntFld(1, temp_ptr.operand1.integer);
-		  tuple1 = value;
+		  map1 = value;
 		  comparison_type.attrType = AttrType.attrInteger;
 		  break;
 		case AttrType.attrReal:
 		  value.setHdr((short)1, val_type, null);
 		  value.setFloFld(1, temp_ptr.operand1.real);
-		  tuple1 = value;
+		  map1 = value;
 		  comparison_type.attrType =AttrType.attrReal; 
 		  break;
 		case AttrType.attrString:
 		  str_size[0] = (short)(temp_ptr.operand1.string.length()+1 );
 		  value.setHdr((short)1, val_type, str_size);
 		  value.setStrFld(1, temp_ptr.operand1.string);
-		  tuple1 = value;
+		  map1 = value;
 		  comparison_type.attrType = AttrType.attrString;
 		  break;
 		case AttrType.attrSymbol:
 		  fld1 = temp_ptr.operand1.symbol.offset;
 		  if (temp_ptr.operand1.symbol.relation.key == RelSpec.outer)
 		    {
-		      tuple1 = t1;
+		      map1 = m1;
 		      comparison_type.attrType = in1[fld1-1].attrType;
 		    }
 		  else
 		    {
-		      tuple1 = t2;
+		      map1 = m2;
 		      comparison_type.attrType = in2[fld1-1].attrType;
 		    }
 		  break;
@@ -101,25 +102,25 @@ public class PredEval
 		case AttrType.attrInteger:
 		  value.setHdr((short)1, val_type, null);
 		  value.setIntFld(1, temp_ptr.operand2.integer);
-		  tuple2 = value;
+		  map2 = value;
 		  break;
 		case AttrType.attrReal:
 		  value.setHdr((short)1, val_type, null);
 		  value.setFloFld(1, temp_ptr.operand2.real);
-		  tuple2 = value;
+		  map2 = value;
 		  break;
 		case AttrType.attrString:
 		  str_size[0] = (short)(temp_ptr.operand2.string.length()+1 );
 		  value.setHdr((short)1, val_type, str_size);
 		  value.setStrFld(1, temp_ptr.operand2.string);
-		  tuple2 = value;
+		  map2 = value;
 		  break;
 		case AttrType.attrSymbol:
 		  fld2 = temp_ptr.operand2.symbol.offset;
 		  if (temp_ptr.operand2.symbol.relation.key == RelSpec.outer)
-		    tuple2 = t1;
+		    map2 = m1;
 		  else
-		    tuple2 = t2;
+		    map2 = m2;
 		  break;
 		default:
 		  break;
@@ -128,7 +129,7 @@ public class PredEval
 	      
 	      // Got the arguments, now perform a comparison.
 	      try {
-		comp_res = TupleUtils.CompareTupleWithTuple(comparison_type, tuple1, fld1, tuple2, fld2);
+		comp_res = MapUtils.CompareMapWithMap(map1, map2, fld2);
 	      }catch (TupleUtilsException e){
 		throw new PredEvalException (e,"TupleUtilsException is caught by PredEval.java");
 	      }
