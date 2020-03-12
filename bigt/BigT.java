@@ -854,12 +854,12 @@ public class BigT implements Filetype, GlobalConst {
      * @throws InvalidTupleSizeException Invalid tuple size
      * @throws IOException               I/O errors
      */
-//    public Scan openScan()
-//            throws InvalidTupleSizeException,
-//            IOException {
-//        Scan newscan = new Scan(this);
-//        return newscan;
-//    }
+    public Scan openScan()
+            throws InvalidTupleSizeException,
+            IOException {
+        Scan newscan = new Scan(this);
+        return newscan;
+    }
 
 
     /**
