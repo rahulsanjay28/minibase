@@ -2,11 +2,14 @@
 
 package heap;
 
-import java.io.*;
-import java.lang.*;
+import bigt.Map;
+import diskmgr.Page;
+import global.Convert;
+import global.GlobalConst;
+import global.PageId;
+import global.RID;
 
-import global.*;
-import diskmgr.*;
+import java.io.IOException;
 
 
 /**
@@ -325,14 +328,14 @@ public class HFPage extends Page
      *
      * @throws IOException I/O errors
      *                     in C++ Status insertRecord(char *recPtr, int recLen, RID& rid)
-     * @param    record a record to be inserted
+     * @param    map - a map to be inserted
      * @return RID of record, null if sufficient space does not exist
      */
-    public RID insertRecord(byte[] record)
+    public RID insertMap(byte[] map)
             throws IOException {
         RID rid = new RID();
 
-        int recLen = record.length;
+        int recLen = map.length;
         int spaceNeeded = recLen + SIZE_OF_SLOT;
 
         // Start by checking if sufficient space exists.
@@ -378,7 +381,7 @@ public class HFPage extends Page
             setSlot(i, recLen, usedPtr);
 
             // insert data onto the data page
-            System.arraycopy(record, 0, data, usedPtr, recLen);
+            System.arraycopy(map, 0, data, usedPtr, recLen);
             curPage.pid = Convert.getIntValue(CUR_PAGE, data);
             rid.pageNo.pid = curPage.pid;
             rid.slotNo = i;
@@ -387,14 +390,14 @@ public class HFPage extends Page
     }
 
     /**
-     * delete the record with the specified rid
+     * delete the map with the specified rid
      *
      * @throws IOException I/O errors
      *                     in C++ Status deleteRecord(const RID& rid)
      * @param    rid the record ID
      * @exception InvalidSlotNumberException Invalid slot number
      */
-    public void deleteRecord(RID rid)
+    public void deleteMap(RID rid)
             throws IOException,
             InvalidSlotNumberException {
         int slotNo = rid.slotNo;
@@ -450,7 +453,7 @@ public class HFPage extends Page
      * @throws IOException I/O errors
      *                     in C++ Status firstRecord(RID& firstRid)
      */
-    public RID firstRecord()
+    public RID firstMap()
             throws IOException {
         RID rid = new RID();
         // find the first non-empty slot
@@ -485,7 +488,7 @@ public class HFPage extends Page
      * @throws IOException I/O errors
      *                     in C++ Status nextRecord (RID curRid, RID& nextRid)
      */
-    public RID nextRecord(RID curRid)
+    public RID nextMap(RID curRid)
             throws IOException {
         RID rid = new RID();
         slotCnt = Convert.getShortValue(SLOT_CNT, data);
@@ -523,7 +526,7 @@ public class HFPage extends Page
      * @param    rid the record ID
      * @see Tuple
      */
-    public Tuple getRecord(RID rid)
+    public Map getMap(RID rid)
             throws IOException,
             InvalidSlotNumberException {
         short recLen;
@@ -542,8 +545,8 @@ public class HFPage extends Page
             offset = getSlotOffset(slotNo);
             record = new byte[recLen];
             System.arraycopy(data, offset, record, 0, recLen);
-            Tuple tuple = new Tuple(record, 0, recLen);
-            return tuple;
+            Map map = new Map(record, 0, recLen);
+            return map;
         } else {
             throw new InvalidSlotNumberException(null, "HEAPFILE: INVALID_SLOTNO");
         }
@@ -562,7 +565,7 @@ public class HFPage extends Page
      * @throws IOException                I/O errors
      * @see Tuple
      */
-    public Tuple returnRecord(RID rid)
+    public Map returnMap(RID rid)
             throws IOException,
             InvalidSlotNumberException {
         short recLen;
@@ -581,8 +584,8 @@ public class HFPage extends Page
                 && (pageNo.pid == curPage.pid)) {
 
             offset = getSlotOffset(slotNo);
-            Tuple tuple = new Tuple(data, offset, recLen);
-            return tuple;
+            Map map = new Map(data, offset, recLen);
+            return map;
         } else {
             throw new InvalidSlotNumberException(null, "HEAPFILE: INVALID_SLOTNO");
         }
