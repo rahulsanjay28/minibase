@@ -7,6 +7,7 @@ import java.io.*;
 import bigt.*;
 import java.lang.*;
 
+
 /**
  *some useful method when processing Map
  */
@@ -37,7 +38,7 @@ public class MapUtils
             UnknowAttrType,
             TupleUtilsException
     {
-        String m1_s,  m2_s;
+        String m1_s ="" ,  m2_s ="";
         int m1_i,m2_i;
         switch (map_fld_no)
         {
@@ -57,7 +58,7 @@ public class MapUtils
                         m1_s=m1.getValue();
                         m2_s=m2.getValue();
                     }
-                    }catch (FieldNumberOutOfBoundException e){
+                    }catch (Exception e){
                     throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by mapUtils.java");
                 }
                 if(m1_s.compareTo( m2_s)>0)return 1;
@@ -68,7 +69,7 @@ public class MapUtils
                 try {
                     m1_i = m1.getTimeStamp();
                     m2_i = m2.getTimeStamp();
-                }catch (FieldNumberOutOfBoundException e){
+                }catch (Exception e){
                     throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by mapUtils.java");
                 }
                 if (m1_i == m2_i) return  0;
@@ -177,7 +178,7 @@ public class MapUtils
                     } else if (map_fld_no == 4) {
                         m1.setValue(m2.getValue());
                     }
-                } catch (FieldNumberOutOfBoundException e) {
+                } catch (Exception e) {
                     throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by mapUtils.java");
                 }
             case 3:
