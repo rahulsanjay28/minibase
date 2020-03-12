@@ -524,7 +524,7 @@ public class HFPage extends Page
      * @throws InvalidSlotNumberException Invalid slot number
      * @throws IOException                I/O errors
      * @param    rid the record ID
-     * @see Tuple
+     * @see Map
      */
     public Map getMap(RID rid)
             throws IOException,
@@ -563,7 +563,7 @@ public class HFPage extends Page
      * @return a tuple  with its length and offset in the byte array
      * @throws InvalidSlotNumberException Invalid slot number
      * @throws IOException                I/O errors
-     * @see Tuple
+     * @see Map
      */
     public Map returnMap(RID rid)
             throws IOException,
