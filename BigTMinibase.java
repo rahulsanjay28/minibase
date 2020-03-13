@@ -19,6 +19,8 @@ public class BigTMinibase {
                 System.out.println("Enter BIGTABLENAME TYPE ORDERTYPE ROWFILTER COLUMNFILTER VALUEFILTER NUMBUF");
                 args1 = sc.nextLine();
                 args1 = sc.nextLine();
+
+                //TODO: Sanitize input for cases like [50, SPACE 56]. Split will not work correctly if there's space between range
                 String[] args2 = args1.split(" ");
                 Query query = new Query();
                 query.execute(args2[0], args2[1], args2[2], args2[3], args2[4], args2[5], args2[6]);
