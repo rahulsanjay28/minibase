@@ -220,7 +220,7 @@ public class BatchInsert {
         Stream stream;
         BTreeData bData;
         BTFileScan scan;
-        BTreeData[] bDataMaps = new BTreeData[3];
+        BTreeData[] bDataMaps = new BTreeData[50]; //change it to 3
         //System.out.println("----------------------New map--------------------------");
         //map.print();
         if(Minibase.getInstance().getBigTable().getType() == 1 ){
