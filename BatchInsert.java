@@ -1,13 +1,12 @@
-import bigt.Map;
-import bigt.Minibase;
+import bigt.*;
 import bigt.Scan;
-import bigt.Stream;
 import btree.*;
 import diskmgr.PCounter;
 import global.AttrType;
 import global.RID;
 import global.SystemDefs;
 import heap.*;
+import iterator.MapUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -95,7 +94,7 @@ public class BatchInsert {
                 e.printStackTrace();
             }
 
-            maps.sort(Comparator.comparing(o -> o.rowKey));
+            //maps.sort(Comparator.comparing(o -> o.rowKey));
 
             for(Temp temp : maps){
                 insertMap(temp.rowKey, temp.columnKey, temp.timestamp, temp.value, Integer.parseInt(type));
@@ -155,6 +154,7 @@ public class BatchInsert {
             Exception {
 //        System.out.println(rowKey + " " + columnKey + " " + timestamp + " " + value);
         Map map = new Map();
+        BatchInsert batchInsert = new BatchInsert();
         AttrType[] attrTypes = new AttrType[4];
         attrTypes[0] = new AttrType(AttrType.attrString);
         attrTypes[1] = new AttrType(AttrType.attrString);
@@ -191,6 +191,9 @@ public class BatchInsert {
         }
 
         try {
+            // Check for the Index Type
+            batchInsert.checkVersions(map1);
+
             RID rid = Minibase.getInstance().getBigTable().insertMap(map1.getMapByteArray());
 
             //inserting into the index file
@@ -210,5 +213,83 @@ public class BatchInsert {
                 HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void checkVersions(Map map) {
+        int indexType = Minibase.getInstance().getBigTable().getType();
+        Stream stream;
+        BTreeData bData;
+        BTFileScan scan;
+        BTreeData[] bDataMaps = new BTreeData[3];
+        //System.out.println("----------------------New map--------------------------");
+        map.print();
+        if(Minibase.getInstance().getBigTable().getType() == 1 ){
+
+        }
+        else {
+
+
+            try {
+                stream = Minibase.getInstance().getBigTable().openStream(6, map.getRowLabel(), map.getColumnLabel(), "*");
+                bData = stream.getNextMap();
+                int i = 0;
+                while (bData != null) {
+
+                    bDataMaps[i] = bData;
+                    //bData.getMap().print(); //To check the index
+                    i++;
+                    bData = stream.getNextMap();
+                }
+                if (i == 3) {
+                    //delete Map'
+                    //System.out.println("---%%%%%--------------i == 3 ----------%%%%%----------");
+                    Minibase.getInstance().getBigTable().deleteMap(bDataMaps[0].getRid());
+
+                    //Delete Index of deleted map1
+                    if (Minibase.getInstance().getBTree().Delete(bDataMaps[0].getKey(), bDataMaps[0].getRid())) {
+                        //System.out.println(" @ @  Deleted " );
+                        //bDataMaps[0].getMap().print();
+
+                    /*System.out.println("********* After deleting the index **********");
+                    stream = Minibase.getInstance().getBigTable().openStream(6, map.getRowLabel(), map.getColumnLabel(), "*");
+                    bData = stream.getNextMap();
+                    bData.getMap().print();
+                    while (bData != null) {
+
+                        bData.getMap().print();
+                        bData = stream.getNextMap();
+                    }*/
+                    }
+                    if (Minibase.getInstance().getBigTable().getType() == 4 || Minibase.getInstance().getBigTable().getType() == 5) {
+                        scan = Minibase.getInstance().getSecondaryBTree().new_scan(new StringKey(Integer.toString(bDataMaps[0].getMap().getTimeStamp())), new StringKey(Integer.toString(bDataMaps[0].getMap().getTimeStamp())));
+                        KeyDataEntry entry = scan.get_next();
+                        bData = null;
+                        while (entry != null) {
+
+                            RID rid = ((LeafData) entry.data).getData();
+                            if (rid != null) {
+                                try {
+                                    Map map2 = Minibase.getInstance().getBigTable().getMap(rid);
+                                    map2.setOffsets(map2.getOffset());
+                                    if (MapUtils.Equal(bDataMaps[0].getMap(), map2)) {
+                                        Minibase.getInstance().getSecondaryBTree().Delete(entry.key, rid);
+                                    }
+                                    entry = scan.get_next();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                        }
+
+
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
