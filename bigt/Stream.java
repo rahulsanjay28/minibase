@@ -92,6 +92,26 @@ public class Stream {
 //        map.setOffsets(map.getOffset());
 //        return map;
     }
+    public BTreeData getNextMap() throws Exception {
+        KeyDataEntry entry = scan.get_next();
+        BTreeData bData;
+        if (entry == null) {
+            return null;
+        }
+        RID rid = ((LeafData) entry.data).getData();
+        if (rid != null) {
+            try{
+                Map map2 = Minibase.getInstance().getBigTable().getMap(rid);
+                map2.setOffsets(map2.getOffset());
+                bData = new BTreeData(rid,map2,entry.key);
+                return  bData;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 
 //    public void scanBigTCode() throws Exception{
 //        System.out.println("Scanning the big table");
