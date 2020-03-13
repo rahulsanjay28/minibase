@@ -222,7 +222,7 @@ public class BatchInsert {
         BTFileScan scan;
         BTreeData[] bDataMaps = new BTreeData[3];
         //System.out.println("----------------------New map--------------------------");
-        map.print();
+        //map.print();
         if(Minibase.getInstance().getBigTable().getType() == 1 ){
 
         }
