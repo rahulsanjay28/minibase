@@ -4,11 +4,11 @@ import btree.BTFileScan;
 import btree.KeyDataEntry;
 import btree.LeafData;
 import btree.StringKey;
+import btree.IntegerKey;
 import global.RID;
 
 public class Stream {
-
-    private BTFileScan scan;
+    private BTFileScan scan,scan2;
     private int numberOfMapsFound;
     private Scan scanBigT;
     private RID rid;
@@ -28,9 +28,14 @@ public class Stream {
                 break;
             case 4:
                 scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
+                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
+
+
                 break;
             case 5:
                 scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
+                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
+
                 break;
             default:
                 //need to change this, normal scan will have less read cost than this
