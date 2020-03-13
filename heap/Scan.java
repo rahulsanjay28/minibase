@@ -6,11 +6,14 @@ package heap;
  *
  */
 
-import java.io.*;
-import global.*;
-import bufmgr.*;
-import diskmgr.*;
-import bigt.*;
+import bigt.Map;
+import diskmgr.Page;
+import global.GlobalConst;
+import global.PageId;
+import global.RID;
+import global.SystemDefs;
+
+import java.io.IOException;
 
 
 /**
@@ -30,7 +33,7 @@ public class Scan implements GlobalConst{
      */
 
     /** The heapfile we are using. */
-    private BigT  _hf;
+    private Heapfile  _hf;
 
     /** PageId of current directory page (which is itself an HFPage) */
     private PageId dirpageId = new PageId();
@@ -65,7 +68,7 @@ public class Scan implements GlobalConst{
      *
      * @param hf A HeapFile object
      */
-    public Scan(BigT hf)
+    public Scan(Heapfile hf)
             throws InvalidTupleSizeException,
             IOException
     {
@@ -99,7 +102,7 @@ public class Scan implements GlobalConst{
         rid.slotNo = userrid.slotNo;
 
         try {
-            recptrMap = datapage.getRecord(rid);
+            recptrMap = datapage.getMap(rid);
         }
 
         catch (Exception e) {
@@ -107,7 +110,7 @@ public class Scan implements GlobalConst{
             e.printStackTrace();
         }
 
-        userrid = datapage.nextRecord(rid);
+        userrid = datapage.nextMap(rid);
         if(userrid == null) nextUserStatus = false;
         else nextUserStatus = true;
 
@@ -159,7 +162,7 @@ public class Scan implements GlobalConst{
         // Now we are on the correct page.
 
         try{
-            userrid = datapage.firstRecord();
+            userrid = datapage.firstMap();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -188,7 +191,7 @@ public class Scan implements GlobalConst{
      *
      * @param hf A HeapFile object
      */
-    private void init(BigT hf)
+    private void init(Heapfile hf)
             throws InvalidTupleSizeException,
             IOException
     {
@@ -270,13 +273,13 @@ public class Scan implements GlobalConst{
         }
 
         /** now try to get a pointer to the first datapage */
-        datapageRid = dirpage.firstRecord();
+        datapageRid = dirpage.firstMap();
 
         if (datapageRid != null) {
             /** there is a datapage record on the first directory page: */
 
             try {
-                rectuple = dirpage.getRecord(datapageRid);
+                rectuple = dirpage.getMap(datapageRid);
             }
 
             catch (Exception e) {
@@ -325,7 +328,7 @@ public class Scan implements GlobalConst{
                 /** now try again to read a data record: */
 
                 try {
-                    datapageRid = dirpage.firstRecord();
+                    datapageRid = dirpage.firstMap();
                 }
 
                 catch (Exception e) {
@@ -338,7 +341,7 @@ public class Scan implements GlobalConst{
 
                     try {
 
-                        rectuple = dirpage.getRecord(datapageRid);
+                        rectuple = dirpage.getMap(datapageRid);
                     }
 
                     catch (Exception e) {
@@ -448,7 +451,7 @@ public class Scan implements GlobalConst{
                 }
 
                 try {
-                    userrid = datapage.firstRecord();
+                    userrid = datapage.firstMap();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
@@ -478,7 +481,7 @@ public class Scan implements GlobalConst{
             return false;
         }
 
-        datapageRid = dirpage.nextRecord(datapageRid);
+        datapageRid = dirpage.nextMap(datapageRid);
 
         if (datapageRid == null) {
             nextDataPageStatus = false;
@@ -520,7 +523,7 @@ public class Scan implements GlobalConst{
                     return false;
 
                 try {
-                    datapageRid = dirpage.firstRecord();
+                    datapageRid = dirpage.firstMap();
                     nextDataPageStatus = true;
                 }
                 catch (Exception e){
@@ -539,7 +542,7 @@ public class Scan implements GlobalConst{
 
         // data page is not yet loaded: read its record from the directory page
         try {
-            rectuple = dirpage.getRecord(datapageRid);
+            rectuple = dirpage.getMap(datapageRid);
         }
 
         catch (Exception e) {
@@ -567,7 +570,7 @@ public class Scan implements GlobalConst{
         // - this->dirpageId, this->dirpage correct
         // - this->datapageId, this->datapage, this->datapageRid correct
 
-        userrid = datapage.firstRecord();
+        userrid = datapage.firstMap();
 
         if(userrid == null)
         {
@@ -601,7 +604,7 @@ public class Scan implements GlobalConst{
         if (datapage == null)
             return false;
 
-        nextrid = datapage.nextRecord(rid);
+        nextrid = datapage.nextMap(rid);
 
         if( nextrid != null ){
             userrid.pageNo.pid = nextrid.pageNo.pid;
@@ -622,7 +625,6 @@ public class Scan implements GlobalConst{
 
     /**
      * short cut to access the pinPage function in bufmgr package.
-     * @see bufmgr.pinPage
      */
     private void pinPage(PageId pageno, Page page, boolean emptyPage)
             throws HFBufMgrException {
@@ -638,7 +640,6 @@ public class Scan implements GlobalConst{
 
     /**
      * short cut to access the unpinPage function in bufmgr package.
-     * @see bufmgr.unpinPage
      */
     private void unpinPage(PageId pageno, boolean dirty)
             throws HFBufMgrException {

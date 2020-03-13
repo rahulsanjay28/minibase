@@ -30,7 +30,7 @@ public class pnodeSplayPQ extends pnodePQ
     count = 0;
     fld_no = 0;
     fld_type = new AttrType(AttrType.attrInteger);
-    sort_order = new TupleOrder(TupleOrder.Ascending);
+    sort_order = new MapOrder(MapOrder.Ascending);
   }
 
   /**
@@ -39,7 +39,7 @@ public class pnodeSplayPQ extends pnodePQ
    * @param fldType the type of the field for sorting
    * @param order   the order of sorting (Ascending or Descending)
    */  
-  public pnodeSplayPQ(int fldNo, AttrType fldType, TupleOrder order)
+  public pnodeSplayPQ(int fldNo, AttrType fldType, MapOrder order)
   {
     root = null;
     count = 0;
@@ -75,7 +75,7 @@ public class pnodeSplayPQ extends pnodePQ
     boolean done = false;
 
     while (!done) {
-      if ((sort_order.tupleOrder == TupleOrder.Ascending && comp >= 0) || (sort_order.tupleOrder == TupleOrder.Descending && comp <= 0)) {
+      if ((sort_order.mapOrder == MapOrder.Ascending && comp >= 0) || (sort_order.mapOrder == MapOrder.Descending && comp <= 0)) {
 	pnodeSplayNode tr = t.rt;
 	if (tr == null) {
 	  tr = newnode;
@@ -84,7 +84,7 @@ public class pnodeSplayPQ extends pnodePQ
 	}
 	else comp = pnodeCMP(item, tr.item);
 	
-	if ((sort_order.tupleOrder == TupleOrder.Ascending && comp <= 0) ||(sort_order.tupleOrder == TupleOrder.Descending && comp >= 0))  {
+	if ((sort_order.mapOrder == MapOrder.Ascending && comp <= 0) ||(sort_order.mapOrder == MapOrder.Descending && comp >= 0))  {
 	  l.rt = t; t.par = l;
 	  l = t;
 	  t = tr;
@@ -114,7 +114,7 @@ public class pnodeSplayPQ extends pnodePQ
 	}
 	else comp = pnodeCMP(item, tl.item);
 	
-	if ((sort_order.tupleOrder == TupleOrder.Ascending && comp >= 0) || (sort_order.tupleOrder == TupleOrder.Descending && comp <= 0)) {
+	if ((sort_order.mapOrder == MapOrder.Ascending && comp >= 0) || (sort_order.mapOrder == MapOrder.Descending && comp <= 0)) {
 	  r.lt = t; t.par = r;
 	  r = t;
 	  t = tl;

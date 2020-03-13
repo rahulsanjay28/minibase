@@ -1,39 +1,32 @@
 package iterator;
 
-
+import bigt.Map;
+import bufmgr.PageNotReadException;
+import global.AttrType;
+import global.RID;
 import heap.*;
-import global.*;
-import bufmgr.*;
-import diskmgr.*;
 
+import java.io.IOException;
 
-import java.lang.*;
-import java.io.*;
-
-/**
- * open a heapfile and according to the condition expression to get
- * output file, call get_next to get all tuples
- */
 public class FileScan extends Iterator {
     private AttrType[] _in1;
     private short in1_len;
     private short[] s_sizes;
-    private Heapfile f;
+    private Heapfile t;
     private Scan scan;
-    private Tuple tuple1;
-    private Tuple Jtuple;
+    private Map map1;
+    private Map Jmap;
     private int t1_size;
     private int nOutFlds;
     private CondExpr[] OutputFilter;
     public FldSpec[] perm_mat;
 
-
     /**
      * constructor
      *
      * @param file_name  heapfile to be opened
-     * @param in1[]      array showing what the attributes of the input fields are.
-     * @param s1_sizes[] shows the length of the string fields.
+     * @param in1        array showing what the attributes of the input fields are.
+     * @param s1_sizes   shows the length of the string fields.
      * @param len_in1    number of attributes in the input tuple
      * @param n_out_flds number of fields in the out tuple
      * @param proj_list  shows what input fields go where in the output tuple
@@ -59,32 +52,32 @@ public class FileScan extends Iterator {
         in1_len = len_in1;
         s_sizes = s1_sizes;
 
-        Jtuple = new Tuple();
+        Jmap = new Map();
         AttrType[] Jtypes = new AttrType[n_out_flds];
         short[] ts_size;
-        ts_size = TupleUtils.setup_op_tuple(Jtuple, Jtypes, in1, len_in1, s1_sizes, proj_list, n_out_flds);
+        ts_size = MapUtils.setup_op_tuple(Jmap, Jtypes, in1, len_in1, s1_sizes, proj_list, n_out_flds);
 
         OutputFilter = outFilter;
         perm_mat = proj_list;
         nOutFlds = n_out_flds;
-        tuple1 = new Tuple();
+        map1 = new Map();
 
         try {
-            tuple1.setHdr(in1_len, _in1, s1_sizes);
+            map1.setHdr(in1_len, _in1, s1_sizes);
         } catch (Exception e) {
             throw new FileScanException(e, "setHdr() failed");
         }
-        t1_size = tuple1.size();
+        t1_size = map1.size();
 
         try {
-            f = new Heapfile(file_name);
+            t = new Heapfile(file_name);
 
         } catch (Exception e) {
             throw new FileScanException(e, "Create new heapfile failed");
         }
 
         try {
-            scan = f.openScan();
+            scan = t.openScan();
         } catch (Exception e) {
             throw new FileScanException(e, "openScan() failed");
         }
@@ -109,7 +102,7 @@ public class FileScan extends Iterator {
      * @throws FieldNumberOutOfBoundException array out of bounds
      * @throws WrongPermat                    exception for wrong FldSpec argument
      */
-    public Tuple get_next()
+    public Map get_next()
             throws JoinsException,
             IOException,
             InvalidTupleSizeException,
@@ -123,14 +116,14 @@ public class FileScan extends Iterator {
         ;
 
         while (true) {
-            if ((tuple1 = scan.getNext(rid)) == null) {
+            if ((map1 = scan.getNext(rid)) == null) {
                 return null;
             }
 
-            tuple1.setHdr(in1_len, _in1, s_sizes);
-            if (PredEval.Eval(OutputFilter, tuple1, null, _in1, null) == true) {
-                Projection.Project(tuple1, _in1, Jtuple, perm_mat, nOutFlds);
-                return Jtuple;
+            map1.setHdr(in1_len, _in1, s_sizes);
+            if (PredEval.Eval(OutputFilter, map1, null, _in1, null) == true) {
+                Projection.Project(map1, _in1, Jmap, perm_mat);
+                return Jmap;
             }
         }
     }
@@ -146,7 +139,4 @@ public class FileScan extends Iterator {
             closeFlag = true;
         }
     }
-
 }
-
-
