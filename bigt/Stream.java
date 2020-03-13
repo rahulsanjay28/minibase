@@ -16,18 +16,42 @@ public class Stream {
     public Stream(BigT bigtable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         this.numberOfMapsFound = 0;
         scanBigT = new Scan(bigtable);
+
+        String rowFilters[] = sanitizefilter(rowFilter);
+        String columnFilters[] = sanitizefilter(columnFilter);
+        String valueFilters[] = sanitizefilter(valueFilter);
+
+
         switch (bigtable.getType()) {
             case 2:
                 System.out.println("rowFilter: " + rowFilter);
-                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
+
+                if(rowFilters.length==1)
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
+                else
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]));
 //                rid = getFirstRID();
 //                System.out.println("position call " + scanBigT.position(rid));
                 break;
             case 3:
-                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
+                if(columnFilters.length==1)
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
+                else
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1]));
                 break;
             case 4:
-                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
+                if(columnFilters.length==1 && rowFilters.length==1)
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
+
+                else if(rowFilters.length==1 && columnFilters.length!=1)
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
+
+                else if(rowFilters.length!=1 && columnFilters.length==1)
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
+
+                else
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1]));
+
                 break;
             case 5:
                 scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
@@ -37,6 +61,21 @@ public class Stream {
                 scan = Minibase.getInstance().getBTree().new_scan(null, null);
                 break;
         }
+    }
+
+    public String[] sanitizefilter(String filter)
+    {
+        String s[];
+        if(filter.startsWith("["))
+        {
+            s = filter.substring(1, filter.length()-1).split(",");
+        }
+        else
+        {
+            s = new String[1];
+            s[0] = filter;
+        }
+        return s;
     }
 
     public void closeStream() {
