@@ -2,20 +2,20 @@ import java.util.Scanner;
 
 public class BigTMinibase {
     public static void main(String[] args) throws Exception{
-        int option = -1;
+        String option;
         String args1;
         Scanner sc = new Scanner(System.in);
         do {
             System.out.println("Press 1 for BatchInsert\nPress 2 for Query\nPress any other key to exit\n");
-            option = sc.nextInt();
-            if(option == 1){
+            option = sc.next();
+            if(option.compareTo("1")==0){
                 System.out.println("Enter DATAFILENAME TYPE BIGTABLENAME NUMBUF");
                 args1 = sc.nextLine();
                 args1 = sc.nextLine();
                 String[] args2 = args1.split("\\s");
                 BatchInsert batchInsert = new BatchInsert();
                 batchInsert.execute(args2[0], args2[1], args2[2], args2[3]);
-            }else if(option == 2){
+            }else if(option.compareTo("2")==0){
                 System.out.println("Enter BIGTABLENAME TYPE ORDERTYPE ROWFILTER COLUMNFILTER VALUEFILTER NUMBUF");
                 args1 = sc.nextLine();
                 args1 = sc.nextLine();
@@ -26,7 +26,7 @@ public class BigTMinibase {
                 query.execute(args2[0], args2[1], args2[2], args2[3], args2[4], args2[5], args2[6]);
 
             }
-        }while(option == 1 || option == 2);
+        }while(option.compareTo("Quit")!=0);
     }
 
     //don't delete this method, for future reference
