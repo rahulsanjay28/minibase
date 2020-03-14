@@ -52,7 +52,8 @@ public class Query {
         Map map = stream.getNext();
         while(map != null){
 
-            if(filterOutput(map, stream.sanitizefilter(rowFilter), stream.sanitizefilter(columnFilter),stream.sanitizefilter(valueFilter))) {
+            if(filterOutput(map, stream.sanitizefilter(rowFilter), stream.sanitizefilter(columnFilter),stream.sanitizefilter(valueFilter))
+            ) {
                 System.out.println(map.getRowLabel() + " " + map.getColumnLabel() + " " +
                         map.getTimeStamp() + " " + map.getValue());
             }
@@ -61,6 +62,7 @@ public class Query {
                 System.out.println("map is null");
             }
         }
+        stream.unsetScanEntireBigT();
         System.out.println("Total Number of Maps found " + stream.getNumberOfMapsFound());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
@@ -69,6 +71,8 @@ public class Query {
 
     public boolean filterOutput(Map map, String[] rowFilter, String[] columnFilter,
                                 String[] valueFilter) throws IOException {
+
+
 
         if(rowFilter.length==1)
         {

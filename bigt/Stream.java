@@ -13,6 +13,7 @@ public class Stream {
     private Scan scanBigT;
     private RID rid;
     private BigT bigT;
+    private boolean scanEntireBigT = false;
 
     public Stream(BigT bigtable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         this.numberOfMapsFound = 0;
@@ -23,6 +24,7 @@ public class Stream {
         String rowFilters[] = sanitizefilter(rowFilter);
         String columnFilters[] = sanitizefilter(columnFilter);
         String valueFilters[] = sanitizefilter(valueFilter);
+        //scanBigT = new Scan(bigT);
 
         switch (bigT.getType()) {
             case 2:
@@ -42,6 +44,11 @@ public class Stream {
                     scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1]));
                 break;
             case 4:
+
+                if(rowFilters.length==1 && columnFilters[0].compareTo("*")==0)
+                {
+                    scanEntireBigT = true;
+                }
                 if(columnFilters.length==1 && rowFilters.length==1)
                     scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
 
@@ -71,12 +78,23 @@ public class Stream {
         }
     }
 
+    public void unsetScanEntireBigT()
+    {
+        scanEntireBigT = false;
+    }
+
     public String[] sanitizefilter(String filter)
     {
         String s[];
         if(filter.startsWith("["))
         {
             s = filter.substring(1, filter.length()-1).split(",");
+            if(s[0].compareTo(s[1])==0)
+            {
+                String t[] = new String[1];
+                t[0]=s[0];
+                return t;
+            }
         }
         else
         {
@@ -100,7 +118,8 @@ public class Stream {
     }
 
     public Map getNext() throws Exception {
-        if(bigT.getType() == 1){
+        if(bigT.getType() == 1 || scanEntireBigT){
+            //System.out.println("Scanning entire big t");
             RID rid = new RID();
             Map map = scanBigT.getNext(rid);
             if(map == null) {
