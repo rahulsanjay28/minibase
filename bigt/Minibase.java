@@ -15,9 +15,6 @@ import java.io.IOException;
 public class Minibase {
 
     private static Minibase mInstance;
-    private int NUM_BUF;
-    private SystemDefs systemDefs;
-    private String dbpath;
     private BigT bigT;
     private BTreeFile bTreeFile;
     private BTreeFile bTreeFile1;
@@ -28,6 +25,9 @@ public class Minibase {
     private int maxValueLength;
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
+
+    private AttrType[] attrTypes;
+    private short[] attrSizes;
 
     private Minibase() {
 
@@ -45,9 +45,19 @@ public class Minibase {
     }
 
     public void init(String name, int type, int numBuf) {
-        this.NUM_BUF = numBuf;
-        dbpath = "/tmp/" + name + type + ".bigtable-db";
-        systemDefs = new SystemDefs(dbpath, 11000, numBuf, "Clock");
+        String dbpath = "/tmp/" + name + type + ".bigtable-db";
+        SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
+
+        attrTypes = new AttrType[4];
+        attrTypes[0] = new AttrType(AttrType.attrString);
+        attrTypes[1] = new AttrType(AttrType.attrString);
+        attrTypes[2] = new AttrType(AttrType.attrInteger);
+        attrTypes[3] = new AttrType(AttrType.attrString);
+
+        attrSizes = new short[3];
+        attrSizes[0] = (short) (maxRowKeyLength);
+        attrSizes[1] = (short) (maxColumnKeyLength);
+        attrSizes[2] = (short) (maxValueLength);
 
         try {
             bigT = new BigT(name, type);
@@ -62,17 +72,17 @@ public class Minibase {
         }
 
         int keySize = -1;
-        if(type == 2){
+        if (type == 2) {
             keySize = maxRowKeyLength;
-        }else if(type == 3) {
+        } else if (type == 3) {
             keySize = maxColumnKeyLength;
-        }else if(type == 4){
+        } else if (type == 4) {
             keySize = maxColumnKeyLength + maxRowKeyLength;
-        }else if(type == 5){
+        } else if (type == 5) {
             keySize = maxRowKeyLength + maxValueLength;
         }
 
-        if(type != 0) {
+        if (type != 0) {
             try {
                 bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 1);
                 BTreeFile.traceFilename("TRACE");
@@ -81,7 +91,7 @@ public class Minibase {
             }
         }
 
-        if(type == 4 || type == 5){
+        if (type == 4 || type == 5) {
             try {
                 bTreeFile1 = new BTreeFile(name + type + "_index_1", AttrType.attrInteger, 4, 1);
             } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
@@ -90,11 +100,11 @@ public class Minibase {
         }
     }
 
-    public BTreeFile getBTree(){
+    public BTreeFile getBTree() {
         return bTreeFile;
     }
 
-    public BTreeFile getSecondaryBTree(){
+    public BTreeFile getSecondaryBTree() {
         return bTreeFile1;
     }
 
@@ -114,6 +124,22 @@ public class Minibase {
         this.maxValueLength = maxValueLength;
     }
 
+    public int getMaxRowKeyLength() {
+        return maxRowKeyLength;
+    }
+
+    public int getMaxColumnKeyLength() {
+        return maxColumnKeyLength;
+    }
+
+    public int getMaxTimeStampLength() {
+        return maxTimeStampLength;
+    }
+
+    public int getMaxValueLength() {
+        return maxValueLength;
+    }
+
     public int getNumberOfIndexPages() {
         return numberOfIndexPages;
     }
@@ -122,17 +148,25 @@ public class Minibase {
         this.numberOfIndexPages = numberOfIndexPages;
     }
 
-    public void incrementNumberOfIndexPages(){
+    public void incrementNumberOfIndexPages() {
         ++numberOfIndexPages;
     }
 
-    public void setMaxKeyEntrySize(int size){
-        if(size < maxKeyEntrySize){
+    public void setMaxKeyEntrySize(int size) {
+        if (size < maxKeyEntrySize) {
             maxKeyEntrySize = size;
         }
     }
 
-    public int getMaxKeyEntrySize(){
+    public int getMaxKeyEntrySize() {
         return maxKeyEntrySize;
+    }
+
+    public AttrType[] getAttrTypes() {
+        return attrTypes;
+    }
+
+    public short[] getAttrSizes() {
+        return attrSizes;
     }
 }

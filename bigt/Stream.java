@@ -5,6 +5,7 @@ import btree.KeyDataEntry;
 import btree.LeafData;
 import btree.StringKey;
 import btree.IntegerKey;
+import global.AttrType;
 import global.RID;
 
 public class Stream {
@@ -28,7 +29,7 @@ public class Stream {
 
         switch (bigT.getType()) {
             case 2:
-                System.out.println("rowFilter: " + rowFilter);
+                //System.out.println("rowFilter: " + rowFilter);
 
                 if(rowFilters.length==1)
                     scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
@@ -138,18 +139,35 @@ public class Stream {
             try {
                 ++numberOfMapsFound;
                 Map map2 = Minibase.getInstance().getBigTable().getMap(rid);
-                map2.setOffsets(map2.getOffset());
+                map2.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                 return map2;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
-//        RID rid = new RID();
-//        Map map = scanBigT.getNext(rid);
-//        map.setOffsets(map.getOffset());
-//        return map;
     }
+
+    public BTreeData getNextMap() throws Exception {
+        KeyDataEntry entry = scan.get_next();
+        BTreeData bData;
+        if (entry == null) {
+            return null;
+        }
+        RID rid = ((LeafData) entry.data).getData();
+        if (rid != null) {
+            try{
+                Map map2 = Minibase.getInstance().getBigTable().getMap(rid);
+                map2.setOffsets(map2.getOffset());
+                bData = new BTreeData(rid,map2,entry.key);
+                return  bData;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 
 //    public void scanBigTCode() throws Exception{
 //        System.out.println("Scanning the big table");

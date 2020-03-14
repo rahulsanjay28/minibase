@@ -516,7 +516,18 @@ public class Map implements GlobalConst {
 
         return newFldOffset;
     }
-
+    /**
+     * Print out the Map
+     *
+     *
+     */
+    public void print(){
+        try {
+            System.out.println(this.getRowLabel() +"  "+ this.getColumnLabel() +"  "+ this.getTimeStamp()+"  "+this.getValue());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Print out the Map
      *
