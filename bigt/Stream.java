@@ -14,7 +14,7 @@ public class Stream {
     private Scan scanBigT;
     private RID rid;
     private BigT bigT;
-    private boolean scanEntireBigT = false;
+    private boolean scanEntireBigT;
 
     public Stream(BigT bigtable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         this.numberOfMapsFound = 0;
@@ -31,50 +31,86 @@ public class Stream {
             case 2:
                 //System.out.println("rowFilter: " + rowFilter);
 
-                if(rowFilters.length==1)
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
-                else
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]));
+                if(rowFilters[0].compareTo("*")!=0) {
+                    scanEntireBigT = false;
+
+                    if(rowFilters.length==1)
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
+                    else
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]));
 //                rid = getFirstRID();
 //                System.out.println("position call " + scanBigT.position(rid));
+                }
+                else
+                {
+                    //Scan everything
+                    scanEntireBigT=true;
+                }
+
+
                 break;
             case 3:
-                if(columnFilters.length==1)
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
-                else
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1]));
-                break;
-            case 4:
 
-                if(rowFilters.length==1 && columnFilters[0].compareTo("*")==0)
+                if(columnFilters[0].compareTo("*")!=0)
+                {
+                    scanEntireBigT = false;
+                    if(columnFilters.length==1)
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
+                    else
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1]));
+                }
+                else
                 {
                     scanEntireBigT = true;
                 }
-                if(columnFilters.length==1 && rowFilters.length==1)
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
 
-                else if(rowFilters.length==1 && columnFilters.length!=1)
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
+                break;
+            case 4:
 
-                else if(rowFilters.length!=1 && columnFilters.length==1)
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
+//                if(rowFilters.length==1 && columnFilters[0].compareTo("*")==0)
+//                {
+//                    scanEntireBigT = true;
+//                }
+//
+                if(rowFilters[0].compareTo("*")!=0 && columnFilters[0].compareTo("*")!=0){
+                    scanEntireBigT = false;
+                    if(columnFilters.length==1 && rowFilters.length==1)
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
 
+                    else if(rowFilters.length==1 && columnFilters.length!=1)
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
+
+                    else if(rowFilters.length!=1 && columnFilters.length==1)
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
+
+                    else
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1]));
+
+                    //scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
+                    scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
+                }
                 else
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1]));
-
-                //scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
-                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
-
+                {
+                    scanEntireBigT = true;
+                }
 
                 break;
             case 5:
-                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
-                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
+
+                if(rowFilters[0].compareTo("*")!=0 && valueFilters[0].compareTo("*")!=0){
+                    scanEntireBigT = false;
+                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
+                    scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
+                }
+                else {
+                    scanEntireBigT = true;
+                }
 
                 break;
             default:
                 //need to change this, normal scan will have less read cost than this
-                scanBigT = new Scan(bigT);
+                //scanBigT = new Scan(bigT);
+                scanEntireBigT = true;
                 break;
         }
     }
@@ -119,7 +155,7 @@ public class Stream {
     }
 
     public Map getNext() throws Exception {
-        if(bigT.getType() == 1 || scanEntireBigT){
+        if(scanEntireBigT){
             //System.out.println("Scanning entire big t");
             RID rid = new RID();
             Map map = scanBigT.getNext(rid);
