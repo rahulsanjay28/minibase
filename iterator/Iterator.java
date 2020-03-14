@@ -6,6 +6,8 @@ import diskmgr.Page;
 import global.Flags;
 import global.PageId;
 import global.SystemDefs;
+import heap.InvalidTupleSizeException;
+import heap.InvalidTypeException;
 import index.IndexException;
 
 import java.io.IOException;

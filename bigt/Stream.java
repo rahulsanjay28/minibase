@@ -5,6 +5,7 @@ import btree.KeyDataEntry;
 import btree.LeafData;
 import btree.StringKey;
 import btree.IntegerKey;
+import global.AttrType;
 import global.RID;
 
 public class Stream {
@@ -21,10 +22,7 @@ public class Stream {
         scanBigT = new Scan(bigtable);
         switch (bigT.getType()) {
             case 2:
-                System.out.println("rowFilter: " + rowFilter);
                 scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
-//                rid = getFirstRID();
-//                System.out.println("position call " + scanBigT.position(rid));
                 break;
             case 3:
                 scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
@@ -80,18 +78,15 @@ public class Stream {
             try {
                 ++numberOfMapsFound;
                 Map map2 = Minibase.getInstance().getBigTable().getMap(rid);
-                map2.setOffsets(map2.getOffset());
+                map2.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                 return map2;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         return null;
-//        RID rid = new RID();
-//        Map map = scanBigT.getNext(rid);
-//        map.setOffsets(map.getOffset());
-//        return map;
     }
+
     public BTreeData getNextMap() throws Exception {
         KeyDataEntry entry = scan.get_next();
         BTreeData bData;

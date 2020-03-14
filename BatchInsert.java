@@ -1,18 +1,15 @@
-import bigt.*;
-import bigt.Scan;
+import bigt.BTreeData;
+import bigt.Map;
+import bigt.Minibase;
+import bigt.Stream;
 import btree.*;
 import diskmgr.PCounter;
-import global.AttrType;
+import global.MapOrder;
 import global.RID;
-import global.SystemDefs;
 import heap.*;
-import iterator.MapUtils;
+import iterator.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * compile this file using the command "javac BatchInsert.java"
@@ -26,24 +23,8 @@ public class BatchInsert {
     private static int maxTimeStampLength = Integer.MIN_VALUE;
     private static int maxValueLength = Integer.MIN_VALUE;
 
-    public static void main(String[] args) throws Exception{
-//        batchInsert(args[0], args[1], args[2], args[3]);
-    }
-
-    // This class is used for temporary in-memory sorting to check the number of reads and writes, need to remove this
-    // once external sort works
-    class Temp {
-        String rowKey;
-        String columnKey;
-        String timestamp;
-        String value;
-
-        public Temp(String rowKey, String columnKey, String timestamp, String value) {
-            this.rowKey = rowKey;
-            this.columnKey = columnKey;
-            this.timestamp = timestamp;
-            this.value = value;
-        }
+    public static void main(String[] args) throws Exception {
+//        execute(args[0], args[1], args[2], args[3]);
     }
 
     /**
@@ -53,8 +34,9 @@ public class BatchInsert {
      * @param type
      * @param bigTableName
      */
-    public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception{
+    public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception {
 
+        //Finding the max lengths of rowKey, columnKey, timeStamp and value
         String line = "";
         try {
             BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
@@ -71,103 +53,70 @@ public class BatchInsert {
         System.out.println("maxTimeStampLength: " + maxTimeStampLength);
         System.out.println("maxValueLength: " + maxValueLength);
 
+        //We should set these lengths before calling Minibase.getInstance().init()
         Minibase.getInstance().setMaxRowKeyLength(maxRowKeyLength);
         Minibase.getInstance().setMaxColumnKeyLength(maxColumnKeyLength);
         Minibase.getInstance().setMaxTimeStampLength(maxTimeStampLength);
         Minibase.getInstance().setMaxValueLength(maxValueLength);
+
         Minibase.getInstance().init(bigTableName, Integer.parseInt(type), Integer.parseInt(numBuf));
 
-        ArrayList<Temp> maps = new ArrayList<>();
-
-        //check if database is restarted, should not insert again
-        if(!SystemDefs.MINIBASE_RESTART_FLAG) {
-            //Reading data from the csv file and inserting into the BigTable
-            line = "";
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
-                while ((line = br.readLine()) != null) {
-                    String[] fields = line.split(",");
-                    maps.add(new Temp(fields[0], fields[1], fields[2], fields[3]));
-//                    insertMap(fields[0], fields[1], fields[2], fields[3], Integer.parseInt(type));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            //maps.sort(Comparator.comparing(o -> o.rowKey));
-
-            for(Temp temp : maps){
-                insertMap(temp.rowKey, temp.columnKey, temp.timestamp, temp.value, Integer.parseInt(type));
-            }
-            System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
-            System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
-            System.out.println("Max Key entry size " + Minibase.getInstance().getMaxKeyEntrySize());
-            System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
-            System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
-        }else{
-            System.out.println("Database already exists");
-        }
-    }
-
-    private static void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value){
-        //update the max lengths of each field in the map to use it indexing
-
-        OutputStream out = new ByteArrayOutputStream();
-        DataOutputStream rowStream = new DataOutputStream(out);
-        DataOutputStream columnStream = new DataOutputStream(out);
-        DataOutputStream timeStampStream = new DataOutputStream(out);
-        DataOutputStream valueStream = new DataOutputStream(out);
-
+        //As we should not use in-memory sorting, we are using sorting tools provided by the minibase
+        //This is a temporary heap file used for sorting purposes
+        Heapfile tempHeapFile = new Heapfile("tempFile");
         try {
-            rowStream.writeUTF(rowKey);
-            if(rowStream.size() > maxRowKeyLength){
-                maxRowKeyLength = rowStream.size();
-            }
-
-            columnStream.writeUTF(columnKey);
-            if(columnStream.size() > maxColumnKeyLength){
-                maxColumnKeyLength = columnStream.size();
-            }
-
-            timeStampStream.writeUTF(timestamp);
-            if(timeStampStream.size() > maxTimeStampLength){
-                maxTimeStampLength = timeStampStream.size();
-            }
-
-            valueStream.writeUTF(value);
-            if(valueStream.size() > maxValueLength){
-                maxValueLength = valueStream.size();
+            BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                tempHeapFile.insertMap(getMap(fields[0], fields[1], fields[2], fields[3]).getMapByteArray());
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    /**
-     * This method will be called for each row in the data file
-     *
-     * @param rowKey
-     * @param columnKey
-     * @param timestamp
-     * @param value
-     */
-    private static void insertMap(String rowKey, String columnKey, String timestamp, String value, int type) throws
-            Exception {
-//        System.out.println(rowKey + " " + columnKey + " " + timestamp + " " + value);
-        Map map = new Map();
-        BatchInsert batchInsert = new BatchInsert();
-        AttrType[] attrTypes = new AttrType[4];
-        attrTypes[0] = new AttrType(AttrType.attrString);
-        attrTypes[1] = new AttrType(AttrType.attrString);
-        attrTypes[2] = new AttrType(AttrType.attrInteger);
-        attrTypes[3] = new AttrType(AttrType.attrString);
 
-        short[] attrSizes = new short[3];
-        attrSizes[0] = (short) (rowKey.getBytes().length);
-        attrSizes[1] = (short) (columnKey.getBytes().length);
-        attrSizes[2] = (short) (value.getBytes().length);
+        // create an iterator by open a file scan
+        FldSpec[] projlist = new FldSpec[4];
+        RelSpec rel = new RelSpec(RelSpec.outer);
+        projlist[0] = new FldSpec(rel, 1);
+        projlist[1] = new FldSpec(rel, 2);
+        projlist[2] = new FldSpec(rel, 3);
+        projlist[3] = new FldSpec(rel, 4);
+
+        FileScan fscan = null;
 
         try {
-            map.setHdr((short) 4, attrTypes, attrSizes);
+            fscan = new FileScan("tempFile", Minibase.getInstance().getAttrTypes(),
+                    Minibase.getInstance().getAttrSizes(), (short) 4, 4, projlist, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Sort sort = null;
+        try {
+            sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
+                    , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 240);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Map m = sort.get_next();
+        while (m != null) {
+            m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            insertMap(m, Integer.parseInt(type));
+            m = sort.get_next();
+        }
+
+        System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
+        System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
+        System.out.println("Max Key entry size " + Minibase.getInstance().getMaxKeyEntrySize());
+        System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
+        System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
+    }
+
+    private Map getMap(String rowKey, String columnKey, String timestamp, String value) {
+        Map map = new Map();
+        try {
+            map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
         } catch (Exception e) {
             System.err.println("*** error in Tuple.setHdr() ***");
             e.printStackTrace();
@@ -175,7 +124,7 @@ public class BatchInsert {
 
         Map map1 = new Map(map.size());
         try {
-            map1.setHdr((short) 4, attrTypes, attrSizes);
+            map1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
         } catch (Exception e) {
             System.err.println("*** error in Tuple.setHdr() ***");
             e.printStackTrace();
@@ -190,24 +139,69 @@ public class BatchInsert {
             e.printStackTrace();
         }
 
-        try {
-            // Check for the Index Type
-            batchInsert.checkVersions(map1);
+        return map1;
+    }
 
-            RID rid = Minibase.getInstance().getBigTable().insertMap(map1.getMapByteArray());
+    private static void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value) {
+        //update the max lengths of each field in the map to use it indexing
+
+        OutputStream out = new ByteArrayOutputStream();
+        DataOutputStream rowStream = new DataOutputStream(out);
+        DataOutputStream columnStream = new DataOutputStream(out);
+        DataOutputStream timeStampStream = new DataOutputStream(out);
+        DataOutputStream valueStream = new DataOutputStream(out);
+
+        try {
+            rowStream.writeUTF(rowKey);
+            if (rowStream.size() > maxRowKeyLength) {
+                maxRowKeyLength = rowStream.size();
+            }
+
+            columnStream.writeUTF(columnKey);
+            if (columnStream.size() > maxColumnKeyLength) {
+                maxColumnKeyLength = columnStream.size();
+            }
+
+            timeStampStream.writeUTF(timestamp);
+            if (timeStampStream.size() > maxTimeStampLength) {
+                maxTimeStampLength = timeStampStream.size();
+            }
+
+            valueStream.writeUTF(value);
+            if (valueStream.size() > maxValueLength) {
+                maxValueLength = valueStream.size();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This method will be called for each row in the data file
+     *
+     * @param map
+     * @param type
+     */
+    private static void insertMap(Map map, int type) throws
+            Exception {
+        try {
+            //This method takes care of maintaining only 3 versions of a map at any instant
+            //Need to uncomment this once filtering and ordering works
+//            batchInsert.checkVersions(map1);
+            RID rid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
 
             //inserting into the index file
-            if(type == 2) {
-                Minibase.getInstance().getBTree().insert(new StringKey(rowKey), rid);
-            }else if(type == 3){
-                Minibase.getInstance().getBTree().insert(new StringKey(columnKey), rid);
-            }
-            else if(type == 4){
-                Minibase.getInstance().getBTree().insert(new StringKey(rowKey + columnKey), rid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(Integer.parseInt(timestamp)), rid);
-            }else if(type == 5){
-                Minibase.getInstance().getBTree().insert(new StringKey(rowKey + value), rid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(Integer.parseInt(timestamp)), rid);
+            if (type == 2) {
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel()), rid);
+            } else if (type == 3) {
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getColumnLabel()), rid);
+            } else if (type == 4) {
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getColumnLabel()),
+                        rid);
+                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), rid);
+            } else if (type == 5) {
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getValue()), rid);
+                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), rid);
             }
         } catch (InvalidSlotNumberException | InvalidTupleSizeException | SpaceNotAvailableException |
                 HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
@@ -223,12 +217,9 @@ public class BatchInsert {
         BTreeData[] bDataMaps = new BTreeData[50]; //change it to 3
         //System.out.println("----------------------New map--------------------------");
         //map.print();
-        if(Minibase.getInstance().getBigTable().getType() == 1 ){
+        if (Minibase.getInstance().getBigTable().getType() == 1) {
 
-        }
-        else {
-
-
+        } else {
             try {
                 stream = Minibase.getInstance().getBigTable().openStream(6, map.getRowLabel(), map.getColumnLabel(), "*");
                 bData = stream.getNextMap();
@@ -281,8 +272,6 @@ public class BatchInsert {
                             }
 
                         }
-
-
                     }
 
                 }

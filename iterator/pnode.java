@@ -2,7 +2,7 @@ package iterator;
 
 import bigt.Map;
 
-public class pnode extends iterator.pnode {
+public class pnode {
     /**
      * which run does this tuple belong
      */

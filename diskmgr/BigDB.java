@@ -455,7 +455,7 @@ public class BigDB implements GlobalConst {
             // Pin the newly-allocated directory page.
             hpid.pid = nexthpid.pid;
 
-            pinPage(hpid, apage, true/*no diskIO*/);
+            pinPage(hpid, apage, false/*no diskIO*/);
             dp = new BigDBDirectoryPage(apage);
 
             free_slot = 0;
@@ -571,7 +571,6 @@ public class BigDB implements GlobalConst {
 
             // System.out.println("get_file_entry do-loop01: "+name);
             hpid.pid = nexthpid.pid;
-
             // Pin the header page.
             pinPage(hpid, apage, false /*no diskIO*/);
 
@@ -864,7 +863,6 @@ class BigDBHeaderPage implements bigPageUsedBytes, GlobalConst {
 
         int num_entries = (MAX_SPACE - pageusedbytes) / SIZE_OF_FILE_ENTRY;
         setNumOfEntries(num_entries);
-
         for (int index = 0; index < num_entries; ++index)
             initFileEntry(INVALID_PAGE, index);
     }
