@@ -37,7 +37,8 @@ public class Query {
         System.out.println("Executing query");
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
-        HashSet set = new HashSet();
+        HashSet set_row = new HashSet();
+        HashSet set_col = new HashSet();
         SystemDefs.JavabaseBM.setNumBuffers(Integer.parseInt(numBuf));
 
         if(Minibase.getInstance().getBigTable().getType()!= Integer.parseInt(type))
@@ -58,14 +59,16 @@ public class Query {
             ) {
                 System.out.println(map.getRowLabel() + " " + map.getColumnLabel() + " " +
                         map.getTimeStamp() + " " + map.getValue());
-                set.add(map.getRowLabel());
+                set_row.add(map.getRowLabel());
+                set_col.add(map.getColumnLabel());
             }
             map = stream.getNext();
             if(map == null){
                 System.out.println("map is null");
             }
         }
-        System.out.println(set.size());
+        System.out.println("Number of Distinct rows: "+set_row.size());
+        System.out.println("Number of Distinct columns: "+set_col.size());
         stream.unsetScanEntireBigT();
         System.out.println("Total Number of Maps found " + stream.getNumberOfMapsFound());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
