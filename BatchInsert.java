@@ -192,10 +192,11 @@ public class BatchInsert {
      */
     private static void insertMap(Map map, int type) throws
             Exception {
+        BatchInsert batchInsert = new BatchInsert();
         try {
             //This method takes care of maintaining only 3 versions of a map at any instant
             //Need to uncomment this once filtering and ordering works
-//            batchInsert.checkVersions(map1);
+            batchInsert.checkVersions(map);
             RID rid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
 
             //inserting into the index file
@@ -217,8 +218,37 @@ public class BatchInsert {
         }
     }
 
-    private void checkVersions(Map map) {
-        int indexType = Minibase.getInstance().getBigTable().getType();
+    private void checkVersions(Map newMap) {
+        Stream stream = null;
+        try {
+            stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(), "*");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (stream == null) {
+            System.out.println("stream null");
+            return;
+        }
+        Map map[] = new Map[20];
+        int i = 0;
+        try {
+            map[i] = stream.getNext();
+
+
+            while (map[i] != null) {
+                map[i].print();
+                i++;
+                map[i] = stream.getNext();
+
+            }
+            if (i == 3) {
+                stream.findAndDeleteMap(map[0]);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       /* int indexType = Minibase.getInstance().getBigTable().getType();
         Stream stream;
         BTreeData bData;
         BTFileScan scan;
@@ -258,6 +288,7 @@ public class BatchInsert {
                         bData.getMap().print();
                         bData = stream.getNextMap();
                     }*/
+       /*
                     }
                     if (Minibase.getInstance().getBigTable().getType() == 4 || Minibase.getInstance().getBigTable().getType() == 5) {
                         scan = Minibase.getInstance().getSecondaryBTree().new_scan(new StringKey(Integer.toString(bDataMaps[0].getMap().getTimeStamp())), new StringKey(Integer.toString(bDataMaps[0].getMap().getTimeStamp())));
@@ -286,7 +317,9 @@ public class BatchInsert {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
     }
 }
+
+
