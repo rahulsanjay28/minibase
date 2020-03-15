@@ -262,6 +262,11 @@ class BufHashTbl implements GlobalConst {
 
     }
 
+    public void clearHashTable() {
+        for (int i = 0; i < HTSIZE; i++)
+            ht[i] = null;
+    }
+
 }
 
 // *****************************************************
@@ -575,7 +580,6 @@ public class BufMgr implements GlobalConst {
             if (emptyPage == false) {
                 try {
                     apage.setpage(bufPool[frameNo]);
-
                     read_page(pin_pgid, apage);
                 } catch (Exception e) {
 
@@ -833,8 +837,22 @@ public class BufMgr implements GlobalConst {
         return numBuffers;
     }
 
-    public void setNumBuffers(int numBuf) {
+    public void setNumBuffers(int numBuf) throws Exception {
+        for (int i = 0; i < numBuffers; ++i) {
+            if (frmeTable[i].pageNo.pid != INVALID_PAGE) {
+                frmeTable[i].dirty = true;
+            }
+            frmeTable[i].pin_cnt = 0;
+        }
+        flushAllPages();
+        hashTable.clearHashTable();
         this.numBuffers = numBuf;
+        frmeTable = new FrameDesc[numBuffers];
+        for (int i = 0; i < numBuffers; i++)  // initialize frameTable
+            frmeTable[i] = new FrameDesc();
+        bufPool = new byte[numBuffers][MAX_SPACE];
+        replacer = new Clock(this);
+        replacer.setBufferManager(this);
     }
 
     /**
