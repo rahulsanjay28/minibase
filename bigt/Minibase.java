@@ -25,6 +25,8 @@ public class Minibase {
     private int maxValueLength;
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
+    private int distinctRowCount;
+    private int distinctColumnCount;
 
     private AttrType[] attrTypes;
     private short[] attrSizes;
@@ -168,5 +170,22 @@ public class Minibase {
 
     public short[] getAttrSizes() {
         return attrSizes;
+    }
+
+    public int getDistinctRowCount() {
+        return distinctRowCount;
+    }
+
+    public void setDistinctRowCount(int distinctRowCount) {
+        this.distinctRowCount = distinctRowCount;
+    }
+
+    public int getDistinctColumnCount() {
+
+        return distinctColumnCount;
+    }
+
+    public void setDistinctColumnCount(int distinctColumnCount) {
+        this.distinctColumnCount = distinctColumnCount;
     }
 }

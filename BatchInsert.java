@@ -10,6 +10,7 @@ import heap.*;
 import iterator.*;
 
 import java.io.*;
+import java.util.HashSet;
 
 /**
  * compile this file using the command "javac BatchInsert.java"
@@ -98,19 +99,30 @@ public class BatchInsert {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        HashSet set_row = new HashSet();
+        HashSet set_col = new HashSet();
 
         Map m = sort.get_next();
         while (m != null) {
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
             insertMap(m, Integer.parseInt(type));
+            set_row.add(m.getRowLabel());
+            set_col.add(m.getColumnLabel());
             m = sort.get_next();
         }
+        int row_count = set_row.size();
+        Minibase.getInstance().setDistinctRowCount(row_count);
+        int col_count = set_col.size();
+        Minibase.getInstance().setDistinctColumnCount(col_count);
+
 
         System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
         System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
         System.out.println("Max Key entry size " + Minibase.getInstance().getMaxKeyEntrySize());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
+        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
+        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
     }
 
     private Map getMap(String rowKey, String columnKey, String timestamp, String value) {
