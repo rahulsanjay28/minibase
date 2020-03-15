@@ -33,6 +33,11 @@ public class Query {
         PCounter.getInstance().setWriteCount(0);
         SystemDefs.JavabaseBM.setNumBuffers(Integer.parseInt(numBuf));
 
+        if (!Minibase.getInstance().getBigTable().getName().equals(bigTableName)) {
+            System.out.println("Bigtable name mismatch. Aborting search.");
+            return;
+        }
+
         if (Minibase.getInstance().getBigTable().getType() != Integer.parseInt(type)) {
             System.out.println("Bigtable and Query type mismatch. Aborting search.");
             return;

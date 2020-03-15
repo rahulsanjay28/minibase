@@ -408,7 +408,7 @@ public class Sort extends Iterator implements GlobalConst {
             if (cur_node == null) break;
             p_elems_curr_Q--;
 
-            comp_res = MapUtils.CompareMapWithValue(sortFldType, cur_node.map, _sort_fld, lastElem);  // need tuple_utils.java
+            comp_res = MapUtils.CustomCompare(cur_node.map, lastElem);  // need tuple_utils.java
 
             if ((comp_res < 0 && order.mapOrder == MapOrder.Ascending) || (comp_res > 0 && order.mapOrder == MapOrder.Descending)) {
                 // doesn't fit in current run, put into the other queue

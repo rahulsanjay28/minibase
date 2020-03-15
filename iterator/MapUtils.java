@@ -244,20 +244,13 @@ public class MapUtils {
         int m1_i, m2_i;
         switch (map_fld_no) {
             case 1:
+                m1.setRowLabel(m2.getRowLabel());
+                break;
             case 2:
-            case 4:
-                try {
-                    if (map_fld_no == 1) {
-                        m1.setRowLabel(m2.getRowLabel());
-                    } else if (map_fld_no == 2) {
-                        m1.setColumnLabel(m2.getColumnLabel());
-                    } else if (map_fld_no == 4) {
-                        m1.setValue(m2.getValue());
-                    }
-                } catch (Exception e) {
-                    throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by mapUtils.java");
-                }
+                m1.setColumnLabel(m2.getColumnLabel());
             case 3:
+                m1.setTimeStamp(m2.getTimeStamp());
+            case 4:
                 m1.setValue(m2.getValue());
         }
     }

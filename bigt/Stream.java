@@ -21,6 +21,7 @@ public class Stream {
     private BigT bigT;
     private boolean scanEntireBigT;
     private Sort filteredAndSortedData;
+    private Heapfile tempHeapFile;
 
     public Stream(BigT bigtable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         this.numberOfMapsFound = 0;
@@ -98,7 +99,7 @@ public class Stream {
 
     private void filterAndSortByOrderType(int orderType, String[] rowFilters, String[] columnFilters,
                                           String[] valueFilters) throws Exception{
-        Heapfile tempHeapFile = new Heapfile("tempfile1");
+        tempHeapFile = new Heapfile("tempfile1");
         if (scanEntireBigT) {
             //System.out.println("Scanning entire big t");
             RID rid = new RID();
@@ -148,9 +149,27 @@ public class Stream {
         }
 
         Minibase.getInstance().setOrderType(orderType);
+        int sortField = -1;
+        int maxLength = -1;
+        switch (orderType){
+            case 1:
+            case 3:
+                sortField = 1;
+                maxLength = Minibase.getInstance().getMaxRowKeyLength();
+                break;
+            case 2:
+            case 4:
+                sortField = 2;
+                maxLength = Minibase.getInstance().getMaxColumnKeyLength();
+                break;
+            case 6:
+                sortField = 3;
+                maxLength = Minibase.getInstance().getMaxTimeStampLength();
+                break;
+        }
         try {
             filteredAndSortedData = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, 3, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 240);
+                    , fscan, sortField, new MapOrder(MapOrder.Ascending), maxLength, 240);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,7 +237,12 @@ public class Stream {
     }
 
     public Map getNext() throws Exception {
-        return filteredAndSortedData.get_next();
+        Map m = filteredAndSortedData.get_next();
+        if(m == null){
+            System.out.println("Deleting temp file used for sorting");
+            tempHeapFile.deleteFile();
+        }
+        return m;
     }
 
     public BTreeData getNextMap() throws Exception {

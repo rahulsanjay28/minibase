@@ -42,14 +42,10 @@ public class BatchInsert {
         PCounter.getInstance().setWriteCount(0);
         //Finding the max lengths of rowKey, columnKey, timeStamp and value
         String line = "";
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
-            while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
-                updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
+        while ((line = br.readLine()) != null) {
+            String[] fields = line.split(",");
+            updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
         }
 
         System.out.println("maxRowKeyLength: " + maxRowKeyLength);
@@ -68,14 +64,10 @@ public class BatchInsert {
         //As we should not use in-memory sorting, we are using sorting tools provided by the minibase
         //This is a temporary heap file used for sorting purposes
         Heapfile tempHeapFile = new Heapfile("tempFile");
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
-            while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
-                tempHeapFile.insertMap(getMap(fields[0], fields[1], fields[2], fields[3]).getMapByteArray());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        br = new BufferedReader(new FileReader(dataFileName + ".csv"));
+        while ((line = br.readLine()) != null) {
+            String[] fields = line.split(",");
+            tempHeapFile.insertMap(getMap(fields[0], fields[1], fields[2], fields[3]).getMapByteArray());
         }
 
         // create an iterator by open a file scan
@@ -118,14 +110,14 @@ public class BatchInsert {
         int col_count = set_col.size();
         Minibase.getInstance().setDistinctColumnCount(col_count);
 
-
         System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
         System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
-        System.out.println("Max Key entry size " + Minibase.getInstance().getMaxKeyEntrySize());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
         System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
         System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
+
+        tempHeapFile.deleteFile();
     }
 
     private Map getMap(String rowKey, String columnKey, String timestamp, String value) {
