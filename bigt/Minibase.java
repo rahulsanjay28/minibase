@@ -31,6 +31,8 @@ public class Minibase {
     private AttrType[] attrTypes;
     private short[] attrSizes;
 
+    private int orderType;
+
     private Minibase() {
 
     }
@@ -187,5 +189,13 @@ public class Minibase {
 
     public void setDistinctColumnCount(int distinctColumnCount) {
         this.distinctColumnCount = distinctColumnCount;
+    }
+
+    public int getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(int orderType) {
+        this.orderType = orderType;
     }
 }

@@ -523,7 +523,14 @@ public class Map implements GlobalConst {
      */
     public void print(){
         try {
-            System.out.println(this.getRowLabel() +"  "+ this.getColumnLabel() +"  "+ this.getTimeStamp()+"  "+this.getValue());
+            System.out.println(this.getRowLabel() +
+                    String.format("%"+ (Minibase.getInstance().getMaxRowKeyLength() - this.getRowLabel().length())+"s", "") +
+                    this.getColumnLabel() +
+                    String.format("%"+ (Minibase.getInstance().getMaxColumnKeyLength() - this.getColumnLabel().length())+"s", "")
+                    + this.getTimeStamp()+
+                    String.format("%"+ (Minibase.getInstance().getMaxTimeStampLength() - Integer.toString(this.getTimeStamp()).length())+"s", "")
+                    +
+                    this.getValue());
         } catch (IOException e) {
             e.printStackTrace();
         }

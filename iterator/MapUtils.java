@@ -1,14 +1,12 @@
 package iterator;
 
 
-import heap.*;
-import global.*;
+import bigt.Map;
+import bigt.Minibase;
+import global.AttrType;
+import heap.FieldNumberOutOfBoundException;
 
-import java.io.*;
-
-import bigt.*;
-
-import java.lang.*;
+import java.io.IOException;
 
 
 /**
@@ -77,6 +75,78 @@ public class MapUtils {
         return -1;
     }
 
+    public static int CustomCompare(Map m1, Map m2) throws IOException {
+        switch (Minibase.getInstance().getOrderType()) {
+            case 1:
+                if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
+                    return 1;
+                } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
+                    return -1;
+                } else {
+                    if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) >= 0) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            case 2:
+                if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) > 0) {
+                    return 1;
+                } else if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0) {
+                    return -1;
+                } else {
+                    if (m1.getRowLabel().compareTo(m2.getRowLabel()) >= 0) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            case 3:
+                if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
+                    return 1;
+                } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
+                    return -1;
+                } else {
+                    if (m1.getTimeStamp() > m2.getTimeStamp()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            case 4:
+                if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) > 0) {
+                    return 1;
+                } else if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0) {
+                    return -1;
+                } else {
+                    if (m1.getTimeStamp() > m2.getTimeStamp()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            case 6:
+                if(m1.getTimeStamp() > m2.getTimeStamp()){
+                    return 1;
+                }else if(m1.getTimeStamp() < m2.getTimeStamp()){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            default:
+                if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
+                    return 1;
+                } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
+                    return -1;
+                } else {
+                    if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) >= 0) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+        }
+    }
 
     /**
      * This function  compares  map1 with another map2 whose
@@ -84,13 +154,13 @@ public class MapUtils {
      *
      * @param fldType   the type of the field being compared.
      * @param m1        one map
-     * @param m2     another Map.
+     * @param m2        another Map.
      * @param m1_fld_no the field numbers in the maps to be compared.
      * @return 0        if the two are equal,
      * 1        if the map is greater,
      * -1        if the map is smaller,
-     * @throws UnknowAttrType    don't know the attribute type
-     * @throws IOException       some I/O fault
+     * @throws UnknowAttrType      don't know the attribute type
+     * @throws IOException         some I/O fault
      * @throws TupleUtilsException exception from this class
      */
     public static int CompareMapWithValue(AttrType fldType,
@@ -105,12 +175,12 @@ public class MapUtils {
     /**
      * This function Compares two map inn all fields
      *
-     * @param m1     the first map
-     * @param m2     the secocnd map
+     * @param m1 the first map
+     * @param m2 the secocnd map
      * @return 0        if the two are not equal,
      * 1        if the two are equal,
-     * @throws UnknowAttrType    don't know the attribute type
-     * @throws IOException       some I/O fault
+     * @throws UnknowAttrType      don't know the attribute type
+     * @throws IOException         some I/O fault
      * @throws TupleUtilsException exception from this class
      */
 
@@ -127,10 +197,10 @@ public class MapUtils {
     /**
      * get the string specified by the field number
      *
-     * @param m1   the map
+     * @param m1    the map
      * @param fldno the field number
      * @return the content of the field number
-     * @throws IOException       some I/O fault
+     * @throws IOException         some I/O fault
      * @throws TupleUtilsException exception from this class
      */
     public static String Value(Map m1, int fldno)
@@ -148,12 +218,12 @@ public class MapUtils {
     /**
      * set up a map in specified field from a map
      *
-     * @param m1   the map to be set
-     * @param m2     the given map
-     * @param map_fld_no  the field number
-     * @param fldType the map attr type
-     * @throws UnknowAttrType    don't know the attribute type
-     * @throws IOException       some I/O fault
+     * @param m1         the map to be set
+     * @param m2         the given map
+     * @param map_fld_no the field number
+     * @param fldType    the map attr type
+     * @throws UnknowAttrType      don't know the attribute type
+     * @throws IOException         some I/O fault
      * @throws TupleUtilsException exception from this class
      */
     public static void SetValue(Map m1, Map m2, int map_fld_no, AttrType fldType)
@@ -185,7 +255,7 @@ public class MapUtils {
     /**
      * set up the Jtuple's attrtype, string size,field number for using join
      *
-     * @param Jmap       reference to an actual tuple  - no memory has been malloced
+     * @param Jmap         reference to an actual tuple  - no memory has been malloced
      * @param res_attrs    attributes type of result tuple
      * @param in1          array of the attributes of the tuple (ok)
      * @param len_in1      num of attributes of in1
@@ -253,7 +323,7 @@ public class MapUtils {
     /**
      * set up the Jtuple's attrtype, string size,field number for using project
      *
-     * @param Jmap       reference to an actual tuple  - no memory has been malloced
+     * @param Jmap         reference to an actual tuple  - no memory has been malloced
      * @param res_attrs    attributes type of result tuple
      * @param in1          array of the attributes of the tuple (ok)
      * @param len_in1      num of attributes of in1
