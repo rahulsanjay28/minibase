@@ -37,6 +37,9 @@ public class BatchInsert {
      */
     public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception {
 
+        //Setting the read and write count to zero
+        PCounter.getInstance().setReadCount(0);
+        PCounter.getInstance().setWriteCount(0);
         //Finding the max lengths of rowKey, columnKey, timeStamp and value
         String line = "";
         try {

@@ -822,12 +822,14 @@ public class BigT implements Filetype, GlobalConst {
         PageId currentDataPageId = new PageId();
         RID currentDataPageRid = new RID();
 
-        status = _findDataPage(rid,
-                currentDirPageId, dirPage,
-                currentDataPageId, dataPage,
-                currentDataPageRid);
+//        status = _findDataPage(rid,
+//                currentDirPageId, dirPage,
+//                currentDataPageId, dataPage,
+//                currentDataPageRid);
 
-        if (status != true) return null; // record not found
+//        if (status != true) return null; // record not found
+        currentDataPageId = rid.pageNo;
+        pinPage(rid.pageNo, dataPage, false/*Rddisk*/);
 
         Map aMap = new Map();
         aMap = dataPage.getMap(rid);
@@ -840,7 +842,7 @@ public class BigT implements Filetype, GlobalConst {
 
         unpinPage(currentDataPageId, false /*undirty*/);
 
-        unpinPage(currentDirPageId, false /*undirty*/);
+//        unpinPage(currentDirPageId, false /*undirty*/);
 
 
         return aMap;  //(true?)OK, but the caller need check if aMap==NULL
