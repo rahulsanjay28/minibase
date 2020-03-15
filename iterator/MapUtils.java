@@ -83,10 +83,16 @@ public class MapUtils {
                 } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
                     return -1;
                 } else {
-                    if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) >= 0) {
+                    if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) > 0) {
                         return 1;
-                    } else {
+                    } else if(m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0){
                         return -1;
+                    }else{
+                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                            return 1;
+                        }else{
+                            return -1;
+                        }
                     }
                 }
             case 2:
@@ -95,10 +101,16 @@ public class MapUtils {
                 } else if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0) {
                     return -1;
                 } else {
-                    if (m1.getRowLabel().compareTo(m2.getRowLabel()) >= 0) {
+                    if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
                         return 1;
-                    } else {
+                    } else if(m1.getRowLabel().compareTo(m2.getRowLabel()) < 0){
                         return -1;
+                    }else{
+                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                            return 1;
+                        }else{
+                            return -1;
+                        }
                     }
                 }
             case 3:
@@ -107,7 +119,7 @@ public class MapUtils {
                 } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
                     return -1;
                 } else {
-                    if (m1.getTimeStamp() > m2.getTimeStamp()) {
+                    if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                         return 1;
                     } else {
                         return -1;
@@ -119,19 +131,17 @@ public class MapUtils {
                 } else if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0) {
                     return -1;
                 } else {
-                    if (m1.getTimeStamp() > m2.getTimeStamp()) {
+                    if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                         return 1;
                     } else {
                         return -1;
                     }
                 }
             case 6:
-                if(m1.getTimeStamp() > m2.getTimeStamp()){
+                if(m1.getTimeStamp() >= m2.getTimeStamp()){
                     return 1;
-                }else if(m1.getTimeStamp() < m2.getTimeStamp()){
+                }else {
                     return -1;
-                }else{
-                    return 0;
                 }
             default:
                 if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
