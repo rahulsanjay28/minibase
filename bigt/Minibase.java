@@ -50,7 +50,11 @@ public class Minibase {
 
     public void init(String name, int type, int numBuf) {
         String dbpath = "/tmp/" + name + type + ".bigtable-db";
-        SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
+
+        if(Minibase.getInstance().getBigTable() == null || (Minibase.getInstance().getBigTable().getName() != name && Minibase.getInstance().getBigTable().getType()!=type))
+        {
+            SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
+        }
 
         attrTypes = new AttrType[4];
         attrTypes[0] = new AttrType(AttrType.attrString);
