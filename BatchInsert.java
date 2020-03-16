@@ -100,6 +100,8 @@ public class BatchInsert {
         Map m = sort.get_next();
         while (m != null) {
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            m.print();
+            checkVersions(m);
             insertMap(m, Integer.parseInt(type));
             set_row.add(m.getRowLabel());
             set_col.add(m.getColumnLabel());
@@ -192,11 +194,11 @@ public class BatchInsert {
      */
     private static void insertMap(Map map, int type) throws
             Exception {
-        BatchInsert batchInsert = new BatchInsert();
+
         try {
             //This method takes care of maintaining only 3 versions of a map at any instant
             //Need to uncomment this once filtering and ordering works
-            batchInsert.checkVersions(map);
+
             RID rid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
 
             //inserting into the index file
@@ -222,32 +224,46 @@ public class BatchInsert {
         Stream stream = null;
         try {
             stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(), "*");
+
+            if (stream == null) {
+                System.out.println("stream null");
+                return;
+            } else {
+                System.out.println(stream.getRidCount());
+                if (stream.getRidCount() == 3) {
+
+
+                    Map map[] = new Map[3];
+                    RID rids[] = stream.getRids();
+                    int maxtimestamp = 0;
+                    RID deleteRid = null;
+                    int i = 0;
+                    int deleteMap = 0;
+                    while (i < 3) {
+
+                        map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
+                        map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                        if (i == 0) {
+                            maxtimestamp = map[i].getTimeStamp();
+                            deleteRid = rids[i];
+                            deleteMap = i;
+                        } else if (maxtimestamp < map[i].getTimeStamp()) {
+                            maxtimestamp = map[i].getTimeStamp();
+                            deleteRid = rids[i];
+                            deleteMap = i;
+                        }
+                        i++;
+
+                    }
+                    System.out.println("Deleteing this map");
+                            map[deleteMap].print();
+                    stream.findAndDeleteMap(deleteRid);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (stream == null) {
-            System.out.println("stream null");
-            return;
-        }
-        Map map[] = new Map[20];
-        int i = 0;
-        try {
-            map[i] = stream.getNext();
-
-
-            while (map[i] != null) {
-                map[i].print();
-                i++;
-                map[i] = stream.getNext();
-
-            }
-            if (i == 3) {
-                stream.findAndDeleteMap(map[0]);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    }
        /* int indexType = Minibase.getInstance().getBigTable().getType();
         Stream stream;
         BTreeData bData;
@@ -319,7 +335,7 @@ public class BatchInsert {
             }
         }*/
 
-    }
+
 }
 
 
