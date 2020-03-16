@@ -301,18 +301,100 @@ public class Stream {
 //            tempRID = ((LeafData)entry.data).getData();
 //        }
 //    }
+    public void closeTempHeapFile(){
+        try {
+            tempHeapFile.deleteFile();
+        } catch (InvalidSlotNumberException e) {
+            e.printStackTrace();
+        } catch (FileAlreadyDeletedException e) {
+            e.printStackTrace();
+        } catch (InvalidTupleSizeException e) {
+            e.printStackTrace();
+        } catch (HFBufMgrException e) {
+            e.printStackTrace();
+        } catch (HFDiskMgrException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 public void findAndDeleteMap(RID deleteRID) {
 
     try {
-        System.out.println("in delete method of strem");
-        Map m = bigT.getMap(deleteRID);
+        //System.out.println("in delete method of strem");
+        Map m = Minibase.getInstance().getBigTable().getMap(deleteRID);
         m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-
+        //System.out.println("Able to get man in Delete method");
         m.print();
-        bigT.deleteMap(deleteRID);
-        if(bigT.getType() > 1){
-
+        Minibase.getInstance().getBigTable().deleteMap(deleteRID);
+        if(Minibase.getInstance().getBigTable().getType() > 1) {
+            switch (bigT.getType()) {
+                case 2:
+                    //System.out.println("Inside the 2 index type to Delete the record");
+                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel()), deleteRID);
+                    break;
+                case 3:
+                    //System.out.println("Inside the 3 index type to Delete the record");
+                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getColumnLabel()), deleteRID);
+                    break;
+                case 4:
+                    //System.out.println("Inside the 4 index type to Delete the record");
+                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getColumnLabel()), deleteRID);
+                    Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
+                    break;
+                case 5:
+                    //System.out.println("Inside the 5 index type to Delete the record");
+                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getValue()), deleteRID);
+                    Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
+                    break;
+            }
         }
+    } catch (IndexInsertRecException e) {
+        e.printStackTrace();
+    } catch (LeafDeleteException e) {
+        e.printStackTrace();
+    } catch (IOException e) {
+        e.printStackTrace();
+    } catch (PinPageException e) {
+        e.printStackTrace();
+    } catch (UnpinPageException e) {
+        e.printStackTrace();
+    } catch (LeafRedistributeException e) {
+        e.printStackTrace();
+    } catch (KeyNotMatchException e) {
+        e.printStackTrace();
+    } catch (InvalidTypeException e) {
+        e.printStackTrace();
+    } catch (HFBufMgrException e) {
+        e.printStackTrace();
+    } catch (HFException e) {
+        e.printStackTrace();
+    } catch (FreePageException e) {
+        e.printStackTrace();
+    } catch (HFDiskMgrException e) {
+        e.printStackTrace();
+    } catch (DeleteRecException e) {
+        e.printStackTrace();
+    } catch (IteratorException e) {
+        e.printStackTrace();
+    } catch (IndexFullDeleteException e) {
+        e.printStackTrace();
+    } catch (DeleteFashionException e) {
+        e.printStackTrace();
+    } catch (InsertRecException e) {
+        e.printStackTrace();
+    } catch (RedistributeException e) {
+        e.printStackTrace();
+    } catch (InvalidSlotNumberException e) {
+        e.printStackTrace();
+    } catch (IndexSearchException e) {
+        e.printStackTrace();
+    } catch (InvalidTupleSizeException e) {
+        e.printStackTrace();
+    } catch (ConstructPageException e) {
+        e.printStackTrace();
+    } catch (RecordNotFoundException e) {
+        e.printStackTrace();
     } catch (Exception e) {
         e.printStackTrace();
     }
