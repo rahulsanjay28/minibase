@@ -100,8 +100,8 @@ public class BatchInsert {
         Map m = sort.get_next();
         while (m != null) {
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            m.print();
-            checkVersions(m);
+            //m.print();
+            //checkVersions(m);
             insertMap(m, Integer.parseInt(type));
             set_row.add(m.getRowLabel());
             set_col.add(m.getColumnLabel());
@@ -239,10 +239,12 @@ public class BatchInsert {
                     RID deleteRid = null;
                     int i = 0;
                     int deleteMap = 0;
+                    //System.out.println("All maps");
                     while (i < 3) {
 
                         map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
                         map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                        map[i].print();
                         if (i == 0) {
                             maxtimestamp = map[i].getTimeStamp();
                             deleteRid = rids[i];
@@ -255,11 +257,14 @@ public class BatchInsert {
                         i++;
 
                     }
-                    System.out.println("Deleteing this map");
+                    //System.out.println("Deleting this map");
                             map[deleteMap].print();
                     stream.findAndDeleteMap(deleteRid);
+
                 }
             }
+            stream.closeTempHeapFile();
+            stream.closeStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
