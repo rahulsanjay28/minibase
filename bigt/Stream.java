@@ -223,8 +223,8 @@ public class Stream {
         return true;
     }
 
-    public void closeStream() {
-
+    public void closeStream() throws Exception {
+        filteredAndSortedData.close();
     }
 
     public RID getFirstRID() throws Exception {
@@ -241,6 +241,7 @@ public class Stream {
         if(m == null){
             System.out.println("Deleting temp file used for sorting");
             tempHeapFile.deleteFile();
+            closeStream();
             return null;
         }
         ++numberOfMapsFound;

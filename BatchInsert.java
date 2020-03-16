@@ -105,6 +105,7 @@ public class BatchInsert {
             set_col.add(m.getColumnLabel());
             m = sort.get_next();
         }
+        sort.close();
         int row_count = set_row.size();
         Minibase.getInstance().setDistinctRowCount(row_count);
         int col_count = set_col.size();

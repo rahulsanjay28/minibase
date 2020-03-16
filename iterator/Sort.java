@@ -665,7 +665,11 @@ public class Sort extends Iterator implements GlobalConst {
 
     @Override
     public void close() throws IOException, JoinsException, SortException, IndexException {
-
+        try {
+            free_buffer_pages(_n_pages, bufs_pids);
+        } catch (IteratorBMException e) {
+            e.printStackTrace();
+        }
     }
 
 
