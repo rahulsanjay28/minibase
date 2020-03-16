@@ -241,6 +241,7 @@ public class Stream {
         if(m == null){
             System.out.println("Deleting temp file used for sorting");
             tempHeapFile.deleteFile();
+            return null;
         }
         ++numberOfMapsFound;
         return m;
