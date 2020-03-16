@@ -1,12 +1,9 @@
 package bigt;
 
-import btree.BTFileScan;
-import btree.KeyDataEntry;
-import btree.LeafData;
-import btree.StringKey;
+import btree.*;
 import global.MapOrder;
 import global.RID;
-import heap.Heapfile;
+import heap.*;
 import iterator.FileScan;
 import iterator.FldSpec;
 import iterator.RelSpec;
@@ -23,9 +20,14 @@ public class Stream {
     private Sort filteredAndSortedData;
     private Heapfile tempHeapFile;
 
+    private RID rids[];
+    private int ridCount;
+
     public Stream(BigT bigtable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         this.numberOfMapsFound = 0;
         this.bigT = bigtable;
+        rids = new RID[3];
+        ridCount = 0;
 
         scanBigT = new Scan(bigtable);
 
@@ -107,6 +109,9 @@ public class Stream {
             while(map != null) {
                 map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                 if(filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                    if(orderType == 6 && ridCount < 3){
+                        rids[ridCount++] = rid;
+                    }
                     tempHeapFile.insertMap(map.getMapByteArray());
                 }
                 map = scanBigT.getNext(rid);
@@ -120,6 +125,9 @@ public class Stream {
                         Map map = Minibase.getInstance().getBigTable().getMap(rid);
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                         if(filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                            if(orderType == 6 && ridCount < 3){
+                                rids[ridCount++] = rid;
+                            }
                             tempHeapFile.insertMap(map.getMapByteArray());
                         }
                     } catch (Exception e) {
@@ -293,8 +301,31 @@ public class Stream {
 //            tempRID = ((LeafData)entry.data).getData();
 //        }
 //    }
+public void findAndDeleteMap(RID deleteRID) {
 
+    try {
+        System.out.println("in delete method of strem");
+        Map m = bigT.getMap(deleteRID);
+        m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+
+        m.print();
+        bigT.deleteMap(deleteRID);
+        if(bigT.getType() > 1){
+
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+}
     public int getNumberOfMapsFound() {
         return numberOfMapsFound;
+    }
+
+    public RID[] getRids() {
+        return rids;
+    }
+    public int getRidCount() {
+        return ridCount;
     }
 }
