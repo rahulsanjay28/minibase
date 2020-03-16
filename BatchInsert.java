@@ -90,7 +90,7 @@ public class BatchInsert {
         Sort sort = null;
         try {
             sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 240);
+                    , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 10);
         } catch (Exception e) {
             e.printStackTrace();
         }

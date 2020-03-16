@@ -1,6 +1,7 @@
 package bigt;
 
 import btree.*;
+import diskmgr.OutOfSpaceException;
 import global.MapOrder;
 import global.RID;
 import heap.*;
@@ -67,14 +68,11 @@ public class Stream {
                     scanEntireBigT = false;
                     if (columnFilters.length == 1 && rowFilters.length == 1) {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
-                    }
-                    else if (rowFilters.length == 1 && columnFilters.length != 1) {
+                    } else if (rowFilters.length == 1 && columnFilters.length != 1) {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
-                    }
-                    else if (rowFilters.length != 1 && columnFilters.length == 1) {
+                    } else if (rowFilters.length != 1 && columnFilters.length == 1) {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
-                    }
-                    else {
+                    } else {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1]));
                     }
                     scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
@@ -100,32 +98,32 @@ public class Stream {
     }
 
     private void filterAndSortByOrderType(int orderType, String[] rowFilters, String[] columnFilters,
-                                          String[] valueFilters) throws Exception{
+                                          String[] valueFilters) throws Exception {
         tempHeapFile = new Heapfile("tempfile1");
         if (scanEntireBigT) {
             //System.out.println("Scanning entire big t");
             RID rid = new RID();
             Map map = scanBigT.getNext(rid);
-            while(map != null) {
+            while (map != null) {
                 map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                if(filterOutput(map, rowFilters, columnFilters, valueFilters)) {
-                    if(orderType == 6 && ridCount < 3){
+                if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                    if (orderType == 6 && ridCount < 3) {
                         rids[ridCount++] = rid;
                     }
                     tempHeapFile.insertMap(map.getMapByteArray());
                 }
                 map = scanBigT.getNext(rid);
             }
-        }else {
+        } else {
             KeyDataEntry entry = scan.get_next();
-            while(entry != null) {
+            while (entry != null) {
                 RID rid = ((LeafData) entry.data).getData();
                 if (rid != null) {
                     try {
                         Map map = Minibase.getInstance().getBigTable().getMap(rid);
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                        if(filterOutput(map, rowFilters, columnFilters, valueFilters)) {
-                            if(orderType == 6 && ridCount < 3){
+                        if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                            if (orderType == 6 && ridCount < 3) {
                                 rids[ridCount++] = rid;
                             }
                             tempHeapFile.insertMap(map.getMapByteArray());
@@ -159,7 +157,7 @@ public class Stream {
         Minibase.getInstance().setOrderType(orderType);
         int sortField = -1;
         int maxLength = -1;
-        switch (orderType){
+        switch (orderType) {
             case 1:
             case 3:
                 sortField = 1;
@@ -177,11 +175,12 @@ public class Stream {
         }
         try {
             filteredAndSortedData = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, sortField, new MapOrder(MapOrder.Ascending), maxLength, 240);
+                    , fscan, sortField, new MapOrder(MapOrder.Ascending), maxLength, 10);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void unsetScanEntireBigT() {
         scanEntireBigT = false;
     }
@@ -232,6 +231,7 @@ public class Stream {
     }
 
     public void closeStream() throws Exception {
+        System.out.println("Closing Stream");
         filteredAndSortedData.close();
     }
 
@@ -245,8 +245,13 @@ public class Stream {
     }
 
     public Map getNext() throws Exception {
-        Map m = filteredAndSortedData.get_next();
-        if(m == null){
+        Map m = null;
+        try {
+            m = filteredAndSortedData.get_next();
+        } catch (OutOfSpaceException e) {
+            closeStream();
+        }
+        if (m == null) {
             System.out.println("Deleting temp file used for sorting");
             tempHeapFile.deleteFile();
             closeStream();
@@ -290,7 +295,7 @@ public class Stream {
 //        }
 //    }
 
-//    public void temp(){
+    //    public void temp(){
 //                BTLeafPage leafPage;
 //        RID curRid = new RID();  // iterator
 //        leafPage = Minibase.getInstance().getBTree().findRunStart(new StringKey("Michigan"), curRid);  // find first page,rid of key
@@ -301,7 +306,7 @@ public class Stream {
 //            tempRID = ((LeafData)entry.data).getData();
 //        }
 //    }
-    public void closeTempHeapFile(){
+    public void closeTempHeapFile() {
         try {
             tempHeapFile.deleteFile();
         } catch (InvalidSlotNumberException e) {
@@ -318,88 +323,90 @@ public class Stream {
             e.printStackTrace();
         }
     }
-public void findAndDeleteMap(RID deleteRID) {
 
-    try {
-        //System.out.println("in delete method of strem");
-        Map m = Minibase.getInstance().getBigTable().getMap(deleteRID);
-        m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-        //System.out.println("Able to get man in Delete method");
-        m.print();
-        Minibase.getInstance().getBigTable().deleteMap(deleteRID);
-        if(Minibase.getInstance().getBigTable().getType() > 1) {
-            switch (bigT.getType()) {
-                case 2:
-                    //System.out.println("Inside the 2 index type to Delete the record");
-                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel()), deleteRID);
-                    break;
-                case 3:
-                    //System.out.println("Inside the 3 index type to Delete the record");
-                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getColumnLabel()), deleteRID);
-                    break;
-                case 4:
-                    //System.out.println("Inside the 4 index type to Delete the record");
-                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getColumnLabel()), deleteRID);
-                    Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
-                    break;
-                case 5:
-                    //System.out.println("Inside the 5 index type to Delete the record");
-                    Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getValue()), deleteRID);
-                    Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
-                    break;
+    public void findAndDeleteMap(RID deleteRID) {
+
+        try {
+            //System.out.println("in delete method of strem");
+            Map m = Minibase.getInstance().getBigTable().getMap(deleteRID);
+            m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            //System.out.println("Able to get man in Delete method");
+            m.print();
+            Minibase.getInstance().getBigTable().deleteMap(deleteRID);
+            if (Minibase.getInstance().getBigTable().getType() > 1) {
+                switch (bigT.getType()) {
+                    case 2:
+                        //System.out.println("Inside the 2 index type to Delete the record");
+                        Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel()), deleteRID);
+                        break;
+                    case 3:
+                        //System.out.println("Inside the 3 index type to Delete the record");
+                        Minibase.getInstance().getBTree().Delete(new StringKey(m.getColumnLabel()), deleteRID);
+                        break;
+                    case 4:
+                        //System.out.println("Inside the 4 index type to Delete the record");
+                        Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getColumnLabel()), deleteRID);
+                        Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
+                        break;
+                    case 5:
+                        //System.out.println("Inside the 5 index type to Delete the record");
+                        Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getValue()), deleteRID);
+                        Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
+                        break;
+                }
             }
+        } catch (IndexInsertRecException e) {
+            e.printStackTrace();
+        } catch (LeafDeleteException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PinPageException e) {
+            e.printStackTrace();
+        } catch (UnpinPageException e) {
+            e.printStackTrace();
+        } catch (LeafRedistributeException e) {
+            e.printStackTrace();
+        } catch (KeyNotMatchException e) {
+            e.printStackTrace();
+        } catch (InvalidTypeException e) {
+            e.printStackTrace();
+        } catch (HFBufMgrException e) {
+            e.printStackTrace();
+        } catch (HFException e) {
+            e.printStackTrace();
+        } catch (FreePageException e) {
+            e.printStackTrace();
+        } catch (HFDiskMgrException e) {
+            e.printStackTrace();
+        } catch (DeleteRecException e) {
+            e.printStackTrace();
+        } catch (IteratorException e) {
+            e.printStackTrace();
+        } catch (IndexFullDeleteException e) {
+            e.printStackTrace();
+        } catch (DeleteFashionException e) {
+            e.printStackTrace();
+        } catch (InsertRecException e) {
+            e.printStackTrace();
+        } catch (RedistributeException e) {
+            e.printStackTrace();
+        } catch (InvalidSlotNumberException e) {
+            e.printStackTrace();
+        } catch (IndexSearchException e) {
+            e.printStackTrace();
+        } catch (InvalidTupleSizeException e) {
+            e.printStackTrace();
+        } catch (ConstructPageException e) {
+            e.printStackTrace();
+        } catch (RecordNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (IndexInsertRecException e) {
-        e.printStackTrace();
-    } catch (LeafDeleteException e) {
-        e.printStackTrace();
-    } catch (IOException e) {
-        e.printStackTrace();
-    } catch (PinPageException e) {
-        e.printStackTrace();
-    } catch (UnpinPageException e) {
-        e.printStackTrace();
-    } catch (LeafRedistributeException e) {
-        e.printStackTrace();
-    } catch (KeyNotMatchException e) {
-        e.printStackTrace();
-    } catch (InvalidTypeException e) {
-        e.printStackTrace();
-    } catch (HFBufMgrException e) {
-        e.printStackTrace();
-    } catch (HFException e) {
-        e.printStackTrace();
-    } catch (FreePageException e) {
-        e.printStackTrace();
-    } catch (HFDiskMgrException e) {
-        e.printStackTrace();
-    } catch (DeleteRecException e) {
-        e.printStackTrace();
-    } catch (IteratorException e) {
-        e.printStackTrace();
-    } catch (IndexFullDeleteException e) {
-        e.printStackTrace();
-    } catch (DeleteFashionException e) {
-        e.printStackTrace();
-    } catch (InsertRecException e) {
-        e.printStackTrace();
-    } catch (RedistributeException e) {
-        e.printStackTrace();
-    } catch (InvalidSlotNumberException e) {
-        e.printStackTrace();
-    } catch (IndexSearchException e) {
-        e.printStackTrace();
-    } catch (InvalidTupleSizeException e) {
-        e.printStackTrace();
-    } catch (ConstructPageException e) {
-        e.printStackTrace();
-    } catch (RecordNotFoundException e) {
-        e.printStackTrace();
-    } catch (Exception e) {
-        e.printStackTrace();
+
     }
 
-}
     public int getNumberOfMapsFound() {
         return numberOfMapsFound;
     }
@@ -407,6 +414,7 @@ public void findAndDeleteMap(RID deleteRID) {
     public RID[] getRids() {
         return rids;
     }
+
     public int getRidCount() {
         return ridCount;
     }

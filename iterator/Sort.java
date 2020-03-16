@@ -137,7 +137,7 @@ public class Sort extends Iterator implements GlobalConst {
         o_buf.init(bufs, _n_pages, map_size, temp_files[0], false); // Change Obuf.java
         //    output_tuple = null;
 
-        max_elems_in_heap = 200;
+        max_elems_in_heap = 5000;
         sortFldLen = sort_fld_len;
 
         Q = new pnodeSplayPQ(sort_fld, in[sort_fld - 1], order);
@@ -628,7 +628,6 @@ public class Sort extends Iterator implements GlobalConst {
 
             // need iobufs.java
             i_buf[i].init(temp_files[i], apage, 1, map_size, n_maps[i]);
-
             cur_node = new pnode();
             cur_node.run_num = i;
 
@@ -665,6 +664,12 @@ public class Sort extends Iterator implements GlobalConst {
 
     @Override
     public void close() throws IOException, JoinsException, SortException, IndexException {
+        try {
+            _am.close();
+        } catch (Exception e) {
+            throw new SortException(e, "Sort.java: error in closing iterator.");
+        }
+
         try {
             free_buffer_pages(_n_pages, bufs_pids);
         } catch (IteratorBMException e) {

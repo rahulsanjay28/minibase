@@ -500,6 +500,15 @@ public class BufMgr implements GlobalConst {
         hashTable.display();
     }
 
+    public void printPinnedFrameCount() {
+        int count = 0;
+        for (int i = 0; i < numBuffers; i++) {
+            if (replacer.state_bit[i].state == replacer.Pinned) {
+                ++count;
+            }
+        }
+        System.out.println("pinnedFrameCount " + count);
+    }
 
     /**
      * Check if this page is in buffer pool, otherwise
@@ -536,7 +545,6 @@ public class BufMgr implements GlobalConst {
         boolean bst, bst2;
         PageId oldpageNo = new PageId(-1);
         int needwrite = 0;
-
         frameNo = hashTable.lookup(pin_pgid);
 
         if (frameNo < 0) {           // Not in the buffer pool
@@ -631,7 +639,6 @@ public class BufMgr implements GlobalConst {
             PageUnpinnedException,
             HashEntryNotFoundException,
             InvalidFrameNumberException {
-
         int frameNo;
 
         frameNo = hashTable.lookup(PageId_in_a_DB);
