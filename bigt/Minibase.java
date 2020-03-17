@@ -19,10 +19,10 @@ public class Minibase {
     private BTreeFile bTreeFile;
     private BTreeFile bTreeFile1;
 
-    private int maxRowKeyLength;
-    private int maxColumnKeyLength;
-    private int maxTimeStampLength;
-    private int maxValueLength;
+    private int maxRowKeyLength = 21;
+    private int maxColumnKeyLength = 19;
+    private int maxTimeStampLength = 7;
+    private int maxValueLength = 7;
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
     private int distinctRowCount;
@@ -51,8 +51,7 @@ public class Minibase {
     public void init(String name, int type, int numBuf) {
         String dbpath = "/tmp/" + name + type + ".bigtable-db";
 
-        if(Minibase.getInstance().getBigTable() == null || (Minibase.getInstance().getBigTable().getName() != name && Minibase.getInstance().getBigTable().getType()!=type))
-        {
+        if (Minibase.getInstance().getBigTable() == null || (Minibase.getInstance().getBigTable().getName() != name && Minibase.getInstance().getBigTable().getType() != type)) {
             SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
         }
 
@@ -93,7 +92,6 @@ public class Minibase {
         if (type != 0) {
             try {
                 bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 1);
-                BTreeFile.traceFilename("TRACE");
             } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
                 e.printStackTrace();
             }
@@ -202,4 +200,6 @@ public class Minibase {
     public void setOrderType(int orderType) {
         this.orderType = orderType;
     }
+
+
 }
