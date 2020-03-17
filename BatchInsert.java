@@ -6,6 +6,7 @@ import btree.*;
 import diskmgr.PCounter;
 import global.MapOrder;
 import global.RID;
+import global.SystemDefs;
 import heap.*;
 import iterator.*;
 
@@ -19,13 +20,9 @@ import java.util.HashSet;
 
 public class BatchInsert {
 
-    private static int maxRowKeyLength = Integer.MIN_VALUE;
-    private static int maxColumnKeyLength = Integer.MIN_VALUE;
-    private static int maxTimeStampLength = Integer.MIN_VALUE;
-    private static int maxValueLength = Integer.MIN_VALUE;
-
     public static void main(String[] args) throws Exception {
-//        execute(args[0], args[1], args[2], args[3]);
+        BatchInsert batchInsert = new BatchInsert();
+        batchInsert.execute(args[0], args[1], args[2], args[3]);
     }
 
     /**
@@ -37,34 +34,17 @@ public class BatchInsert {
      */
     public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception {
 
-        //Setting the read and write count to zero
+        //Setting the read and write count to zero for every batch insert
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
-        //Finding the max lengths of rowKey, columnKey, timeStamp and value
-        String line = "";
-        BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
-        while ((line = br.readLine()) != null) {
-            String[] fields = line.split(",");
-            updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
-        }
 
-        System.out.println("maxRowKeyLength: " + maxRowKeyLength);
-        System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
-        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
-        System.out.println("maxValueLength: " + maxValueLength);
-
-        //We should set these lengths before calling Minibase.getInstance().init()
-        Minibase.getInstance().setMaxRowKeyLength(maxRowKeyLength);
-        Minibase.getInstance().setMaxColumnKeyLength(maxColumnKeyLength);
-        Minibase.getInstance().setMaxTimeStampLength(maxTimeStampLength);
-        Minibase.getInstance().setMaxValueLength(maxValueLength);
-
-        Minibase.getInstance().init(bigTableName, Integer.parseInt(type), Integer.parseInt(numBuf));
+        Minibase.getInstance().init(dataFileName, bigTableName, Integer.parseInt(type), Integer.parseInt(numBuf));
 
         //As we should not use in-memory sorting, we are using sorting tools provided by the minibase
         //This is a temporary heap file used for sorting purposes
-        Heapfile tempHeapFile = new Heapfile("tempFile");
-        br = new BufferedReader(new FileReader(dataFileName + ".csv"));
+        Heapfile tempHeapFile = new Heapfile("batch_insert_temp_heap_file");
+        String line = "";
+        BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
         while ((line = br.readLine()) != null) {
             String[] fields = line.split(",");
             tempHeapFile.insertMap(getMap(fields[0], fields[1], fields[2], fields[3]).getMapByteArray());
@@ -81,7 +61,7 @@ public class BatchInsert {
         FileScan fscan = null;
 
         try {
-            fscan = new FileScan("tempFile", Minibase.getInstance().getAttrTypes(),
+            fscan = new FileScan("batch_insert_temp_heap_file", Minibase.getInstance().getAttrTypes(),
                     Minibase.getInstance().getAttrSizes(), (short) 4, 4, projlist, null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -120,7 +100,11 @@ public class BatchInsert {
         System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
         System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
 
+        //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
+
+        //This ensures flushing all the pages to disk
+        SystemDefs.JavabaseBM.setNumBuffers(0);
     }
 
     private Map getMap(String rowKey, String columnKey, String timestamp, String value) {
@@ -152,47 +136,13 @@ public class BatchInsert {
         return map1;
     }
 
-    private static void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value) {
-        //update the max lengths of each field in the map to use it indexing
-
-        OutputStream out = new ByteArrayOutputStream();
-        DataOutputStream rowStream = new DataOutputStream(out);
-        DataOutputStream columnStream = new DataOutputStream(out);
-        DataOutputStream timeStampStream = new DataOutputStream(out);
-        DataOutputStream valueStream = new DataOutputStream(out);
-
-        try {
-            rowStream.writeUTF(rowKey);
-            if (rowStream.size() > maxRowKeyLength) {
-                maxRowKeyLength = rowStream.size();
-            }
-
-            columnStream.writeUTF(columnKey);
-            if (columnStream.size() > maxColumnKeyLength) {
-                maxColumnKeyLength = columnStream.size();
-            }
-
-            timeStampStream.writeUTF(timestamp);
-            if (timeStampStream.size() > maxTimeStampLength) {
-                maxTimeStampLength = timeStampStream.size();
-            }
-
-            valueStream.writeUTF(value);
-            if (valueStream.size() > maxValueLength) {
-                maxValueLength = valueStream.size();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * This method will be called for each row in the data file
      *
      * @param map
      * @param type
      */
-    private static void insertMap(Map map, int type) throws
+    private void insertMap(Map map, int type) throws
             Exception {
 
         try {

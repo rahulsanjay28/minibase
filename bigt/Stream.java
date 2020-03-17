@@ -29,7 +29,6 @@ public class Stream {
         this.bigT = bigtable;
         rids = new RID[3];
         ridCount = 0;
-
         scanBigT = new Scan(bigtable);
 
         String rowFilters[] = sanitizefilter(rowFilter);
@@ -99,7 +98,7 @@ public class Stream {
 
     private void filterAndSortByOrderType(int orderType, String[] rowFilters, String[] columnFilters,
                                           String[] valueFilters) throws Exception {
-        tempHeapFile = new Heapfile("tempfile1");
+        tempHeapFile = new Heapfile("query_temp_heap_file");
         if (scanEntireBigT) {
             //System.out.println("Scanning entire big t");
             RID rid = new RID();
@@ -148,12 +147,11 @@ public class Stream {
         FileScan fscan = null;
 
         try {
-            fscan = new FileScan("tempfile1", Minibase.getInstance().getAttrTypes(),
+            fscan = new FileScan("query_temp_heap_file", Minibase.getInstance().getAttrTypes(),
                     Minibase.getInstance().getAttrSizes(), (short) 4, 4, projlist, null);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         Minibase.getInstance().setOrderType(orderType);
         int sortField = -1;
         int maxLength = -1;

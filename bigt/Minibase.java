@@ -10,7 +10,7 @@ import heap.HFBufMgrException;
 import heap.HFDiskMgrException;
 import heap.HFException;
 
-import java.io.IOException;
+import java.io.*;
 
 public class Minibase {
 
@@ -19,10 +19,11 @@ public class Minibase {
     private BTreeFile bTreeFile;
     private BTreeFile bTreeFile1;
 
-    private int maxRowKeyLength = 21;
-    private int maxColumnKeyLength = 19;
-    private int maxTimeStampLength = 7;
-    private int maxValueLength = 7;
+    private int maxRowKeyLength = Integer.MIN_VALUE;
+    private int maxColumnKeyLength = Integer.MIN_VALUE;
+    private int maxTimeStampLength = Integer.MIN_VALUE;
+    private int maxValueLength = Integer.MIN_VALUE;
+
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
     private int distinctRowCount;
@@ -48,12 +49,23 @@ public class Minibase {
         return bigT;
     }
 
-    public void init(String name, int type, int numBuf) {
-        String dbpath = "/tmp/" + name + type + ".bigtable-db";
-
-        if (Minibase.getInstance().getBigTable() == null || (Minibase.getInstance().getBigTable().getName() != name && Minibase.getInstance().getBigTable().getType() != type)) {
-            SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
+    public void init(String dataFileName, String name, int type, int numBuf) {
+        if(dataFileName != null && dataFileName.length() != 0) {
+            findMaxKeyLengths(dataFileName);
+        }else{
+            maxRowKeyLength = 21;
+            maxColumnKeyLength = 19;
+            maxTimeStampLength = 7;
+            maxValueLength = 7;
         }
+
+        System.out.println("maxRowKeyLength: " + maxRowKeyLength);
+        System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
+        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
+        System.out.println("maxValueLength: " + maxValueLength);
+
+        String dbpath = "/tmp/" + name + type + ".bigtable-db";
+        SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
 
         attrTypes = new AttrType[4];
         attrTypes[0] = new AttrType(AttrType.attrString);
@@ -68,13 +80,7 @@ public class Minibase {
 
         try {
             bigT = new BigT(name, type);
-        } catch (HFException e) {
-            e.printStackTrace();
-        } catch (HFBufMgrException e) {
-            e.printStackTrace();
-        } catch (HFDiskMgrException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
             e.printStackTrace();
         }
 
@@ -103,6 +109,53 @@ public class Minibase {
             } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void findMaxKeyLengths(String dataFileName){
+        //Finding the max lengths of rowKey, columnKey, timeStamp and value for the data provided
+        try {
+            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
+            while ((line = br.readLine()) != null) {
+                String[] fields = line.split(",");
+                updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+    private void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value) {
+        //update the max lengths of each field in the map to use it indexing
+
+        OutputStream out = new ByteArrayOutputStream();
+        DataOutputStream rowStream = new DataOutputStream(out);
+        DataOutputStream columnStream = new DataOutputStream(out);
+        DataOutputStream timeStampStream = new DataOutputStream(out);
+        DataOutputStream valueStream = new DataOutputStream(out);
+
+        try {
+            rowStream.writeUTF(rowKey);
+            if (rowStream.size() > maxRowKeyLength) {
+                maxRowKeyLength = rowStream.size();
+            }
+
+            columnStream.writeUTF(columnKey);
+            if (columnStream.size() > maxColumnKeyLength) {
+                maxColumnKeyLength = columnStream.size();
+            }
+
+            timeStampStream.writeUTF(timestamp);
+            if (timeStampStream.size() > maxTimeStampLength) {
+                maxTimeStampLength = timeStampStream.size();
+            }
+
+            valueStream.writeUTF(value);
+            if (valueStream.size() > maxValueLength) {
+                maxValueLength = valueStream.size();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -4,6 +4,8 @@ import bufmgr.BufMgr;
 //import catalog.Catalog;
 import diskmgr.BigDB;
 
+import java.io.File;
+
 public class SystemDefs {
     public static BufMgr JavabaseBM;
     public static BigDB JavabaseDB;
@@ -67,6 +69,11 @@ public class SystemDefs {
         MINIBASE_DBNAME = new String(JavabaseDBName);
 
         // create or open the DB
+        File file = new File(dbname);
+        if(file.exists()){
+            System.out.println("DB file exists, so just reopening");
+            MINIBASE_RESTART_FLAG = true;
+        }
 
         if ((MINIBASE_RESTART_FLAG) || (num_pgs == 0)) {//open an existing database
             try {

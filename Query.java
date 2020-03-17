@@ -4,15 +4,14 @@ import bigt.Stream;
 import diskmgr.PCounter;
 import global.SystemDefs;
 
-import java.io.IOException;
-
 /**
  * Compile this class using the command "javac Query.java"
  * Then run "java Query bigtablename type ordertype rowfilter columnfilter valuefilter numbuf"
  */
 public class Query {
     public static void main(String[] args) throws Exception {
-//        query(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+        Query query = new Query();
+        query.execute(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
     }
 
     /**
@@ -28,10 +27,12 @@ public class Query {
      */
     public void execute(String bigTableName, String type, String orderType, String rowFilter, String columnFilter,
                         String valueFilter, String numBuf) throws Exception {
-        System.out.println("Executing query");
+        System.out.println("Executing query ");
+
+        //Setting read and write count to zero before every query
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
-        SystemDefs.JavabaseBM.setNumBuffers(Integer.parseInt(numBuf));
+        Minibase.getInstance().init("", bigTableName, Integer.parseInt(type), Integer.parseInt(numBuf));
 
         if (!Minibase.getInstance().getBigTable().getName().equals(bigTableName)) {
             System.out.println("Bigtable name mismatch. Aborting search.");
@@ -58,5 +59,6 @@ public class Query {
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
 
+        SystemDefs.JavabaseBM.setNumBuffers(0);
     }
 }
