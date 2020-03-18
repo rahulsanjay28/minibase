@@ -80,7 +80,7 @@ public class BatchInsert {
         Map m = sort.get_next();
         while (m != null) {
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            //m.print();
+            m.print();
             checkVersions(m);
             insertMap(m, Integer.parseInt(type));
             set_row.add(m.getRowLabel());
@@ -92,13 +92,16 @@ public class BatchInsert {
         Minibase.getInstance().setDistinctRowCount(row_count);
         int col_count = set_col.size();
         Minibase.getInstance().setDistinctColumnCount(col_count);
-
+        //this.getDistinctCount();
         System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
         System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
+        //System.out.println("Total number of map count " + Minibase.getInstance().getMapCount());
+        //System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
         System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
         System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
+        //System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
 
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
@@ -179,7 +182,7 @@ public class BatchInsert {
                 System.out.println("Yet to initialize the stream");
                 return;
             } else {
-                System.out.println(stream.getRidCount());
+                //System.out.println(stream.getRidCount());
                 if (stream.getRidCount() == 3) {
 
 
@@ -219,7 +222,35 @@ public class BatchInsert {
             e.printStackTrace();
         }
     }
+public void getDistinctCount(){
+    HashSet set_row = new HashSet();
+    HashSet set_col = new HashSet();
+    HashSet set_map = new HashSet();
+    Stream stream = null;
+    try {
+        stream = Minibase.getInstance().getBigTable().openStream(1, "*", "*", "*");
 
+        if (stream == null) {
+            System.out.println("Yet to initialize the stream");
+            return;
+        } else {
+            Map map = stream.getNext();
+            while (map != null) {
+                map.print();
+                set_row.add(map.getRowLabel().trim());
+                set_col.add(map.getColumnLabel().trim());
+                set_map.add(map.getRowLabel().trim()+map.getColumnLabel().trim());
+                map = stream.getNext();
+            }
+
+            Minibase.getInstance().setDistinctRowCount(set_row.size());
+            Minibase.getInstance().setDistinctColumnCount(set_col.size());
+            Minibase.getInstance().setMapCount(set_map.size());
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
 }
 
