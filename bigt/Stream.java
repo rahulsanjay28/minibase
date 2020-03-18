@@ -107,7 +107,9 @@ public class Stream {
                 map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                 if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
                     if (orderType == 6 && ridCount < 3) {
-                        rids[ridCount++] = rid;
+                        //map.print();
+                        RID vcRid = new RID(rid.pageNo,rid.slotNo);
+                        rids[ridCount++] = vcRid;
                     }
                     tempHeapFile.insertMap(map.getMapByteArray());
                 }
@@ -123,8 +125,11 @@ public class Stream {
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                         if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
                             if (orderType == 6 && ridCount < 3) {
-                                rids[ridCount++] = rid;
+                                //map.print();
+                                RID vcRid = new RID(rid.pageNo,rid.slotNo);
+                                rids[ridCount++] = vcRid;
                             }
+                            //System.out.println(map.getRowLabel());
                             tempHeapFile.insertMap(map.getMapByteArray());
                         }
                     } catch (Exception e) {
@@ -325,10 +330,9 @@ public class Stream {
     public void findAndDeleteMap(RID deleteRID) {
 
         try {
-            //System.out.println("in delete method of strem");
+            //System.out.println("in delete method of stream");
             Map m = Minibase.getInstance().getBigTable().getMap(deleteRID);
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            //System.out.println("Able to get man in Delete method");
             m.print();
             Minibase.getInstance().getBigTable().deleteMap(deleteRID);
             if (Minibase.getInstance().getBigTable().getType() > 1) {
@@ -344,12 +348,12 @@ public class Stream {
                     case 4:
                         //System.out.println("Inside the 4 index type to Delete the record");
                         Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getColumnLabel()), deleteRID);
-                        Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
+                        Minibase.getInstance().getSecondaryBTree().Delete(new IntegerKey(m.getTimeStamp()), deleteRID);
                         break;
                     case 5:
                         //System.out.println("Inside the 5 index type to Delete the record");
                         Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getValue()), deleteRID);
-                        Minibase.getInstance().getSecondaryBTree().Delete(new StringKey(Integer.toString(m.getTimeStamp())), deleteRID);
+                        Minibase.getInstance().getSecondaryBTree().Delete(new IntegerKey(m.getTimeStamp()), deleteRID);
                         break;
                 }
             }
