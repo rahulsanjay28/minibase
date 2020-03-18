@@ -33,6 +33,7 @@ public class Minibase {
     private short[] attrSizes;
 
     private int orderType;
+    private boolean CHECK_VERSIONS_ENABLED = false;
 
     private Minibase() {
 
@@ -50,9 +51,9 @@ public class Minibase {
     }
 
     public void init(String dataFileName, String name, int type, int numBuf) {
-        if(dataFileName != null && dataFileName.length() != 0) {
+        if (dataFileName != null && dataFileName.length() != 0) {
             findMaxKeyLengths(dataFileName);
-        }else{
+        } else {
             maxRowKeyLength = 21;
             maxColumnKeyLength = 19;
             maxTimeStampLength = 7;
@@ -97,7 +98,7 @@ public class Minibase {
 
         if (type != 0) {
             try {
-                bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 1);
+                bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 0);
             } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
                 e.printStackTrace();
             }
@@ -105,14 +106,14 @@ public class Minibase {
 
         if (type == 4 || type == 5) {
             try {
-                bTreeFile1 = new BTreeFile(name + type + "_index_1", AttrType.attrInteger, 4, 1);
+                bTreeFile1 = new BTreeFile(name + type + "_index_1", AttrType.attrInteger, 4, 0);
             } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void findMaxKeyLengths(String dataFileName){
+    private void findMaxKeyLengths(String dataFileName) {
         //Finding the max lengths of rowKey, columnKey, timeStamp and value for the data provided
         try {
             String line = "";
@@ -121,10 +122,11 @@ public class Minibase {
                 String[] fields = line.split(",");
                 updateMaxKeyLengths(fields[0], fields[1], fields[2], fields[3]);
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     private void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value) {
         //update the max lengths of each field in the map to use it indexing
 
@@ -254,5 +256,11 @@ public class Minibase {
         this.orderType = orderType;
     }
 
+    public boolean isCheckVersionsEnabled() {
+        return CHECK_VERSIONS_ENABLED;
+    }
 
+    public void setCheckVersionsEnabled(boolean flag) {
+        CHECK_VERSIONS_ENABLED = flag;
+    }
 }

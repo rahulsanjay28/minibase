@@ -1,16 +1,21 @@
-import bigt.BTreeData;
 import bigt.Map;
 import bigt.Minibase;
 import bigt.Stream;
-import btree.*;
+import btree.IntegerKey;
+import btree.StringKey;
 import diskmgr.PCounter;
 import global.MapOrder;
 import global.RID;
 import global.SystemDefs;
 import heap.*;
-import iterator.*;
+import iterator.FileScan;
+import iterator.FldSpec;
+import iterator.RelSpec;
+import iterator.Sort;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 
 /**
@@ -78,9 +83,9 @@ public class BatchInsert {
         HashSet set_col = new HashSet();
 
         Map m = sort.get_next();
+        Minibase.getInstance().setCheckVersionsEnabled(true);
         while (m != null) {
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            m.print();
             checkVersions(m);
             insertMap(m, Integer.parseInt(type));
             set_row.add(m.getRowLabel());
@@ -177,80 +182,62 @@ public class BatchInsert {
         Stream stream = null;
         try {
             stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(), "*");
+            if (stream == null) {
+                System.out.println("Yet to initialize the stream");
+            } else {
+                if (stream.getRidCount() == 3) {
+                    Map[] map = new Map[3];
+                    RID[] rids = stream.getRids();
+
+                    for (int i = 0; i < 3; i++) {
+                        map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
+                        map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                    }
+                    RID deleteRID = null;
+                    if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
+                        deleteRID = rids[0];
+                    } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
+                        deleteRID = rids[0];
+                    } else {
+                        deleteRID = rids[0];
+                    }
+                    stream.findAndDeleteMap(deleteRID);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getDistinctCount() {
+        HashSet set_row = new HashSet();
+        HashSet set_col = new HashSet();
+        HashSet set_map = new HashSet();
+        Stream stream = null;
+        try {
+            stream = Minibase.getInstance().getBigTable().openStream(1, "*", "*", "*");
 
             if (stream == null) {
                 System.out.println("Yet to initialize the stream");
                 return;
             } else {
-                //System.out.println(stream.getRidCount());
-                if (stream.getRidCount() == 3) {
-
-
-                    Map map[] = new Map[3];
-                    RID rids[] = stream.getRids();
-                    int maxtimestamp = 0;
-                    RID deleteRid = null;
-                    int i = 0;
-                    int deleteMap = 0;
-                    //System.out.println("All maps");
-                    while (i < 3) {
-
-                        map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
-                        map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                        //map[i].print();
-                        if (i == 0) {
-                            maxtimestamp = map[i].getTimeStamp();
-                            deleteRid = rids[i];
-                            deleteMap = i;
-                        } else if (maxtimestamp < map[i].getTimeStamp()) {
-                            maxtimestamp = map[i].getTimeStamp();
-                            deleteRid = rids[i];
-                            deleteMap = i;
-                        }
-                        i++;
-
-                    }
-                    System.out.println("Deleting map with oldest timestamp");
-                    //map[deleteMap].print();
-                    stream.findAndDeleteMap(deleteRid);
-
+                Map map = stream.getNext();
+                while (map != null) {
+                    map.print();
+                    set_row.add(map.getRowLabel().trim());
+                    set_col.add(map.getColumnLabel().trim());
+                    set_map.add(map.getRowLabel().trim() + map.getColumnLabel().trim());
+                    map = stream.getNext();
                 }
+
+                Minibase.getInstance().setDistinctRowCount(set_row.size());
+                Minibase.getInstance().setDistinctColumnCount(set_col.size());
+//                Minibase.getInstance().setMapCount(set_map.size());
             }
-            //stream.closeTempHeapFile();
-            //stream.closeStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-public void getDistinctCount(){
-    HashSet set_row = new HashSet();
-    HashSet set_col = new HashSet();
-    HashSet set_map = new HashSet();
-    Stream stream = null;
-    try {
-        stream = Minibase.getInstance().getBigTable().openStream(1, "*", "*", "*");
-
-        if (stream == null) {
-            System.out.println("Yet to initialize the stream");
-            return;
-        } else {
-            Map map = stream.getNext();
-            while (map != null) {
-                map.print();
-                set_row.add(map.getRowLabel().trim());
-                set_col.add(map.getColumnLabel().trim());
-                set_map.add(map.getRowLabel().trim()+map.getColumnLabel().trim());
-                map = stream.getNext();
-            }
-
-            Minibase.getInstance().setDistinctRowCount(set_row.size());
-            Minibase.getInstance().setDistinctColumnCount(set_col.size());
-            Minibase.getInstance().setMapCount(set_map.size());
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
 
 }
 
