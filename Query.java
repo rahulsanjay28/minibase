@@ -55,6 +55,7 @@ public class Query {
             map = stream.getNext();
         }
         stream.unsetScanEntireBigT();
+        stream.unsetScanJustTimeStempTree();
         System.out.println("Total Number of Maps found " + stream.getNumberOfMapsFound());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());

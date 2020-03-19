@@ -18,8 +18,12 @@ public class Stream {
     private Scan scanBigT;
     private BigT bigT;
     private boolean scanEntireBigT;
+    private boolean scanJustTimeStampTree;
     private Sort filteredAndSortedData;
     private Heapfile tempHeapFile;
+    private String rowFilters[];
+    private String columnFilters[];
+    private String valueFilters[];
 
     private RID rids[];
     private int ridCount;
@@ -30,10 +34,10 @@ public class Stream {
         rids = new RID[3];
         ridCount = 0;
         scanBigT = new Scan(bigtable);
-
-        String rowFilters[] = sanitizefilter(rowFilter);
-        String columnFilters[] = sanitizefilter(columnFilter);
-        String valueFilters[] = sanitizefilter(valueFilter);
+        scanJustTimeStampTree = false;
+        rowFilters = sanitizefilter(rowFilter);
+        columnFilters = sanitizefilter(columnFilter);
+        valueFilters = sanitizefilter(valueFilter);
 
         switch (bigT.getType()) {
             case 2:
@@ -100,6 +104,11 @@ public class Stream {
                                           String[] valueFilters) throws Exception {
         if (!Minibase.getInstance().isCheckVersionsEnabled()) {
             tempHeapFile = new Heapfile("query_temp_heap_file");
+        }
+
+        if ((bigT.getType() == 4 || bigT.getType() == 5) && orderType == 6){
+            scanJustTimeStampTree = true;
+            return;
         }
         if (scanEntireBigT) {
             //System.out.println("Scanning entire big t");
@@ -195,6 +204,9 @@ public class Stream {
     public void unsetScanEntireBigT() {
         scanEntireBigT = false;
     }
+    public void unsetScanJustTimeStempTree() {
+        scanJustTimeStampTree = false;
+    }
 
     public String[] sanitizefilter(String filter) {
         String s[];
@@ -256,20 +268,46 @@ public class Stream {
     }
 
     public Map getNext() throws Exception {
+        Map m=null;
         if (filteredAndSortedData == null) {
             System.out.println("something is wrong, might be check versions flag is enabled");
             return null;
         }
-        Map m = null;
-        try {
-            m = filteredAndSortedData.get_next();
-        } catch (OutOfSpaceException e) {
-            closeStream();
+        if(scanJustTimeStampTree){
+            //System.out.println("Scanning Just TimeStemp Tree");
+            KeyDataEntry entry = scan2.get_next();
+            if(entry!=null) {
+                RID rid = ((LeafData) entry.data).getData();
+                if (rid != null) {
+                    try {
+                        Map map = Minibase.getInstance().getBigTable().getMap(rid);
+                        map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                        if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                            ++numberOfMapsFound;
+                            return map;
+                        } else {
+                            return getNext();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
-        if (m == null) {
-            System.out.println("Deleting temp file used for sorting");
-            tempHeapFile.deleteFile();
-            closeStream();
+        else {
+            try {
+                m = filteredAndSortedData.get_next();
+            } catch (OutOfSpaceException e) {
+                closeStream();
+            }
+        }
+        if(m == null){
+            if(!scanJustTimeStampTree) {
+                System.out.println("Deleting temp file used for sorting");
+                tempHeapFile.deleteFile();
+                closeStream();
+            }
+
             return null;
         }
         ++numberOfMapsFound;
