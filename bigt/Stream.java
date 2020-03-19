@@ -102,14 +102,14 @@ public class Stream {
 
     private void filterAndSortByOrderType(int orderType, String[] rowFilters, String[] columnFilters,
                                           String[] valueFilters) throws Exception {
+
+        int maxTS = 0, minTS = Integer.MAX_VALUE;
+
         if (!Minibase.getInstance().isCheckVersionsEnabled()) {
             tempHeapFile = new Heapfile("query_temp_heap_file");
         }
 
-        if ((bigT.getType() == 4 || bigT.getType() == 5) && orderType == 6){
-            scanJustTimeStampTree = true;
-            return;
-        }
+
         if (scanEntireBigT) {
             //System.out.println("Scanning entire big t");
             RID rid = new RID();
@@ -117,6 +117,8 @@ public class Stream {
             while (map != null) {
                 map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                 if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                    maxTS = Math.max(maxTS, map.getTimeStamp());
+                    minTS = Math.min(minTS, map.getTimeStamp());
                     if (orderType == 6 && ridCount < 3) {
                         //map.print();
                         RID vcRid = new RID(rid.pageNo, rid.slotNo);
@@ -137,6 +139,8 @@ public class Stream {
                         Map map = Minibase.getInstance().getBigTable().getMap(rid);
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                         if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
+                            maxTS = Math.max(maxTS, map.getTimeStamp());
+                            minTS = Math.min(minTS, map.getTimeStamp());
                             if (orderType == 6 && ridCount < 3) {
                                 //map.print();
                                 RID vcRid = new RID(rid.pageNo, rid.slotNo);
@@ -153,6 +157,12 @@ public class Stream {
                 }
                 entry = scan.get_next();
             }
+        }
+
+        if ((bigT.getType() == 4 || bigT.getType() == 5) && orderType == 6){
+            scanJustTimeStampTree = true;
+            scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(new IntegerKey(minTS), new IntegerKey(maxTS));
+            //return;
         }
 
         if (!Minibase.getInstance().isCheckVersionsEnabled()) {
