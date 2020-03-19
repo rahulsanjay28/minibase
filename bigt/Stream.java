@@ -80,9 +80,13 @@ public class Stream {
                 }
                 break;
             case 5:
-                if (rowFilters[0].compareTo("*") != 0 && valueFilters[0].compareTo("*") != 0) {
+                if (rowFilters[0].compareTo("*") != 0) {
                     scanEntireBigT = false;
-                    scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
+                    if(valueFilters[0].compareTo("*") != 0) {
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
+                    }else{
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), null);
+                    }
                     scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
                 } else {
                     scanEntireBigT = true;
@@ -128,6 +132,16 @@ public class Stream {
                     try {
                         Map map = Minibase.getInstance().getBigTable().getMap(rid);
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                        if(bigT.getType() == 5){
+                            if(rowFilters.length == 1 && rowFilters[0].compareTo(map.getRowLabel()) != 0){
+                                break;
+                            }else if(rowFilters.length == 2){
+                                if((map.getRowLabel().compareTo(rowFilters[0]) < 0)
+                                        || (map.getRowLabel().compareTo(rowFilters[1]) > 0)){
+                                    break;
+                                }
+                            }
+                        }
                         if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
                             if (orderType == 6 && ridCount < 3) {
                                 //map.print();
@@ -318,34 +332,22 @@ public class Stream {
 //        }
 //    }
 
-    //    public void temp(){
-//                BTLeafPage leafPage;
+//    public void temp() throws Exception {
+//        BTLeafPage leafPage;
 //        RID curRid = new RID();  // iterator
-//        leafPage = Minibase.getInstance().getBTree().findRunStart(new StringKey("Michigan"), curRid);  // find first page,rid of key
+//        leafPage = Minibase.getInstance().getBTree().findRunStart(new StringKey("California"), curRid);  // find first page,rid of key
 //        if (leafPage == null) {
 //            System.out.println("Error in findRunStart");
-//        }else {
+//        } else {
 //            KeyDataEntry entry = leafPage.getCurrent(curRid);
-//            tempRID = ((LeafData)entry.data).getData();
+//            RID tempRID = ((LeafData) entry.data).getData();
+//            Map map = Minibase.getInstance().getBigTable().getMap(tempRID);
+//            map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+//            System.out.println("Got this");
+//            map.print();
 //        }
 //    }
-    public void closeTempHeapFile() {
-        try {
-            tempHeapFile.deleteFile();
-        } catch (InvalidSlotNumberException e) {
-            e.printStackTrace();
-        } catch (FileAlreadyDeletedException e) {
-            e.printStackTrace();
-        } catch (InvalidTupleSizeException e) {
-            e.printStackTrace();
-        } catch (HFBufMgrException e) {
-            e.printStackTrace();
-        } catch (HFDiskMgrException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public void findAndDeleteMap(RID deleteRID) {
 

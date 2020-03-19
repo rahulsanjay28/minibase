@@ -25,6 +25,8 @@ import java.util.HashSet;
 
 public class BatchInsert {
 
+    private int numberOfMapsInserted;
+
     public static void main(String[] args) throws Exception {
         BatchInsert batchInsert = new BatchInsert();
         batchInsert.execute(args[0], args[1], args[2], args[3]);
@@ -85,6 +87,7 @@ public class BatchInsert {
         Map m = sort.get_next();
         Minibase.getInstance().setCheckVersionsEnabled(true);
         while (m != null) {
+            ++numberOfMapsInserted;
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
             checkVersions(m);
             insertMap(m, Integer.parseInt(type));
@@ -97,16 +100,14 @@ public class BatchInsert {
         Minibase.getInstance().setDistinctRowCount(row_count);
         int col_count = set_col.size();
         Minibase.getInstance().setDistinctColumnCount(col_count);
-        //this.getDistinctCount();
-        System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
-        System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
+
+//        System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
+//        System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
+        System.out.println("Total number of maps inserted into the big table " + numberOfMapsInserted);
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
-        //System.out.println("Total number of map count " + Minibase.getInstance().getMapCount());
-        //System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
-        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
-        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
-        //System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
+//        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
+//        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
 
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
@@ -181,7 +182,8 @@ public class BatchInsert {
     private void checkVersions(Map newMap) {
         Stream stream = null;
         try {
-            stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(), "*");
+            stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(),
+                    newMap.getValue());
             if (stream == null) {
                 System.out.println("Yet to initialize the stream");
             } else {
@@ -202,6 +204,7 @@ public class BatchInsert {
                         deleteRID = rids[0];
                     }
                     stream.findAndDeleteMap(deleteRID);
+                    --numberOfMapsInserted;
                 }
                 stream.closeStream();
             }
