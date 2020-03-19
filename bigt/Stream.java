@@ -117,6 +117,7 @@ public class Stream {
                         tempHeapFile.insertMap(map.getMapByteArray());
                     }
                 }
+                rid = new RID();
                 map = scanBigT.getNext(rid);
             }
         } else {
@@ -242,8 +243,15 @@ public class Stream {
     }
 
     public void closeStream() throws Exception {
-        System.out.println("Closing Stream");
-        filteredAndSortedData.close();
+        if (filteredAndSortedData != null) {
+            filteredAndSortedData.close();
+        }
+        if (scanBigT != null) {
+            scanBigT.closescan();
+        }
+        if (scan != null) {
+            scan.DestroyBTreeFileScan();
+        }
     }
 
     public RID getFirstRID() throws Exception {

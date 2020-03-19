@@ -203,8 +203,16 @@ public class BatchInsert {
                     }
                     stream.findAndDeleteMap(deleteRID);
                 }
+                stream.closeStream();
             }
         } catch (Exception e) {
+            if(stream != null) {
+                try {
+                    stream.closeStream();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
             e.printStackTrace();
         }
     }
