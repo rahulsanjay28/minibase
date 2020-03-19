@@ -112,6 +112,12 @@ public class BatchInsert {
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
 
+        if(Minibase.getInstance().getBTree() != null) {
+            Minibase.getInstance().getBTree().close();
+        }
+        if(Minibase.getInstance().getSecondaryBTree() != null) {
+            Minibase.getInstance().getSecondaryBTree().close();
+        }
         //This ensures flushing all the pages to disk
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }
