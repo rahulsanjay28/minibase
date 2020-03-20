@@ -59,8 +59,12 @@ public class Query {
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
 
-        Minibase.getInstance().getBTree().close();
-        Minibase.getInstance().getSecondaryBTree().close();
+        if(Minibase.getInstance().getBTree() != null) {
+            Minibase.getInstance().getBTree().close();
+        }
+        if(Minibase.getInstance().getSecondaryBTree() != null) {
+            Minibase.getInstance().getSecondaryBTree().close();
+        }
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }
 }
