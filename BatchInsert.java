@@ -41,6 +41,7 @@ public class BatchInsert {
      */
     public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception {
 
+        long startTime = System.currentTimeMillis();
         //Setting the read and write count to zero for every batch insert
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
@@ -101,6 +102,8 @@ public class BatchInsert {
         int col_count = set_col.size();
         Minibase.getInstance().setDistinctColumnCount(col_count);
 
+        long endTime = System.currentTimeMillis();
+        System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
 //        System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
 //        System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
         System.out.println("Total number of maps inserted into the big table " + numberOfMapsInserted);
@@ -189,7 +192,7 @@ public class BatchInsert {
         Stream stream = null;
         try {
             stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(),
-                    newMap.getValue());
+                    "*");
             if (stream == null) {
                 System.out.println("Yet to initialize the stream");
             } else {
@@ -201,15 +204,15 @@ public class BatchInsert {
                         map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
                         map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                     }
-                    RID deleteRID = null;
+                    int deleteRID = -1;
                     if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
-                        deleteRID = rids[0];
+                        deleteRID = 0;
                     } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
-                        deleteRID = rids[0];
+                        deleteRID = 1;
                     } else {
-                        deleteRID = rids[0];
+                        deleteRID = 2;
                     }
-                    stream.findAndDeleteMap(deleteRID);
+                    stream.findAndDeleteMap(rids[deleteRID]);
                     --numberOfMapsInserted;
                 }
                 stream.closeStream();

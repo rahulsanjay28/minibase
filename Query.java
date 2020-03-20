@@ -28,6 +28,7 @@ public class Query {
     public void execute(String bigTableName, String type, String orderType, String rowFilter, String columnFilter,
                         String valueFilter, String numBuf) throws Exception {
         System.out.println("Executing query ");
+        long startTime = System.currentTimeMillis();
 
         //Setting read and write count to zero before every query
         PCounter.getInstance().setReadCount(0);
@@ -55,6 +56,13 @@ public class Query {
             map = stream.getNext();
         }
         stream.unsetScanEntireBigT();
+
+        long endTime = System.currentTimeMillis();
+        if((endTime - startTime) > 1000){
+            System.out.println("Total time taken in seconds " + (endTime - startTime)/1000);
+        }else {
+            System.out.println("Total time taken in milliseconds " + (endTime - startTime));
+        }
         System.out.println("Total Number of Maps found " + stream.getNumberOfMapsFound());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
