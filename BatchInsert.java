@@ -5,7 +5,7 @@ import btree.IntegerKey;
 import btree.StringKey;
 import diskmgr.PCounter;
 import global.MapOrder;
-import global.RID;
+import global.MID;
 import global.SystemDefs;
 import heap.*;
 import iterator.FileScan;
@@ -87,11 +87,14 @@ public class BatchInsert {
 
         Map m = sort.get_next();
         Minibase.getInstance().setCheckVersionsEnabled(true);
+        boolean readyToInsert;
         while (m != null) {
             ++numberOfMapsInserted;
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            checkVersions(m);
-            insertMap(m, Integer.parseInt(type));
+            readyToInsert = checkVersions(m);
+            if (readyToInsert) {
+                insertMap(m, Integer.parseInt(type));
+            }
             set_row.add(m.getRowLabel());
             set_col.add(m.getColumnLabel());
             m = sort.get_next();
@@ -169,20 +172,20 @@ public class BatchInsert {
             //This method takes care of maintaining only 3 versions of a map at any instant
             //Need to uncomment this once filtering and ordering works
 
-            RID rid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
+            MID mid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
 
             //inserting into the index file
             if (type == 2) {
-                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel()), rid);
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel()), mid);
             } else if (type == 3) {
-                Minibase.getInstance().getBTree().insert(new StringKey(map.getColumnLabel()), rid);
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getColumnLabel()), mid);
             } else if (type == 4) {
                 Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getColumnLabel()),
-                        rid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), rid);
+                        mid);
+                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), mid);
             } else if (type == 5) {
-                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getValue()), rid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), rid);
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getValue()), mid);
+                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), mid);
             }
         } catch (InvalidSlotNumberException | InvalidTupleSizeException | SpaceNotAvailableException |
                 HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
@@ -190,33 +193,37 @@ public class BatchInsert {
         }
     }
 
-    private void checkVersions(Map newMap) {
+    private boolean checkVersions(Map newMap) throws Exception {
         Stream stream = null;
+        boolean readyToInsert = true;
         try {
             stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(),
                     "*");
             if (stream == null) {
                 System.out.println("Yet to initialize the stream");
             } else {
-                if (stream.getRidCount() == 3) {
-                    Map[] map = new Map[3];
-                    RID[] rids = stream.getRids();
-
-                    for (int i = 0; i < 3; i++) {
-                        map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
-                        map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                Map[] map = new Map[stream.getMidCount()];
+                MID[] mids = stream.getMids();
+                for (int i = 0; i < stream.getMidCount(); i++) {
+                    map[i] = Minibase.getInstance().getBigTable().getMap(mids[i]);
+                    map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                    if(map[i].getTimeStamp() == newMap.getTimeStamp()){
+                        readyToInsert = false;
                     }
-                    int deleteRID = -1;
-                    if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
-                        deleteRID = 0;
-                    } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
-                        deleteRID = 1;
-                    } else {
-                        deleteRID = 2;
-                    }
-                    stream.findAndDeleteMap(rids[deleteRID]);
-                    --numberOfMapsInserted;
                 }
+                    if(readyToInsert && stream.getMidCount() == 3) {
+                        int deleteMID = -1;
+                        if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
+                            deleteMID = 0;
+                        } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
+                            deleteMID = 1;
+                        } else {
+                            deleteMID = 2;
+                        }
+                        stream.findAndDeleteMap(mids[deleteMID]);
+                        --numberOfMapsInserted;
+                    }
+
                 stream.closeStream();
             }
         } catch (Exception e) {
@@ -229,6 +236,7 @@ public class BatchInsert {
             }
             e.printStackTrace();
         }
+        return readyToInsert;
     }
 
     public void getDistinctCount() {

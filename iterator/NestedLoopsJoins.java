@@ -4,7 +4,6 @@ package iterator;
 import heap.*;
 import global.*;
 import bufmgr.*;
-import diskmgr.*;
 import index.*;
 
 import java.lang.*;
@@ -189,7 +188,7 @@ public class NestedLoopsJoins extends Iterator {
             // is no match (with pred),get a tuple from the inner.
 
 
-            RID rid = new RID();
+            MID rid = new MID();
             while ((inner_tuple = inner.getNext(rid)) != null) {
                 inner_tuple.setHdr((short) in2_len, _in2, t2_str_sizescopy);
                 if (PredEval.Eval(RightFilter, inner_tuple, null, _in2, null) == true) {

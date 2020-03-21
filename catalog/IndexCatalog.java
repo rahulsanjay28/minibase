@@ -74,7 +74,7 @@ public class IndexCatalog extends Heapfile
       RelDesc record = null;
       int status;
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       int count = 0;
       
@@ -161,7 +161,7 @@ public class IndexCatalog extends Heapfile
 	   Exception
     {
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null; 
       
       if ((relation == null)||(attrName == null))
@@ -218,7 +218,7 @@ public class IndexCatalog extends Heapfile
       AttrDesc record = null;
       int status;
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       int count = 0;
       
@@ -331,7 +331,7 @@ public class IndexCatalog extends Heapfile
     throws IOException,
 	   IndexCatalogException
     {
-      RID rid;
+      MID rid;
       
       try {
 	make_tuple(tuple, record);
@@ -357,7 +357,7 @@ public class IndexCatalog extends Heapfile
 	   IndexCatalogException
     {
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       IndexDesc record = null;
       
@@ -418,7 +418,7 @@ public class IndexCatalog extends Heapfile
 	   IndexCatalogException,
 	   java.lang.Exception
     {
-      RID    	rid = null;
+      MID rid = null;
       IndexDesc indexRec = null;
       AttrDesc  attrRec = null;
       int   	intKey = 0;

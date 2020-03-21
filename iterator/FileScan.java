@@ -3,7 +3,7 @@ package iterator;
 import bigt.Map;
 import bufmgr.PageNotReadException;
 import global.AttrType;
-import global.RID;
+import global.MID;
 import heap.*;
 
 import java.io.IOException;
@@ -112,7 +112,7 @@ public class FileScan extends Iterator {
             UnknowAttrType,
             FieldNumberOutOfBoundException,
             WrongPermat {
-        RID rid = new RID();
+        MID rid = new MID();
         ;
 
         while (true) {

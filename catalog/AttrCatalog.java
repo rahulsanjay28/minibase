@@ -9,8 +9,6 @@ package catalog;
 import java.io.*;
 import global.*;
 import heap.*;
-import bufmgr.*;
-import diskmgr.*;
 
 
 public class AttrCatalog extends Heapfile
@@ -77,7 +75,7 @@ public class AttrCatalog extends Heapfile
 	   Catalogattrnotfound
     {
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null; 
       
       
@@ -130,7 +128,7 @@ public class AttrCatalog extends Heapfile
       AttrDesc attrRec = null;
       int status;
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       int count = 0;
       
@@ -302,7 +300,7 @@ public class AttrCatalog extends Heapfile
     throws AttrCatalogException, 
 	   IOException
     {
-      RID rid;
+      MID rid;
       
       try {
 	make_tuple(tuple, record);
@@ -330,7 +328,7 @@ public class AttrCatalog extends Heapfile
 	   
     {
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       AttrDesc record = null;
       

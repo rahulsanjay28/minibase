@@ -8,7 +8,7 @@ package btree;
 
 import global.GlobalConst;
 import global.PageId;
-import global.RID;
+import global.MID;
 import global.SystemDefs;
 
 import java.io.IOException;
@@ -24,8 +24,8 @@ public class BTFileScan extends IndexFileScan
     BTreeFile bfile;
     String treeFilename;     // B+ tree we're scanning
     BTLeafPage leafPage;   // leaf page containing current record
-    RID curRid;       // position in current leaf; note: this is
-    // the RID of the key/RID pair within the
+    MID curMid;       // position in current leaf; note: this is
+    // the MID of the key/MID pair within the
     // leaf page.
     boolean didfirst;        // false only before getNext is called
     boolean deletedcurrent;  // true after deleteCurrent is called (read
@@ -57,9 +57,9 @@ public class BTFileScan extends IndexFileScan
             if ((deletedcurrent && didfirst) || (!deletedcurrent && !didfirst)) {
                 didfirst = true;
                 deletedcurrent = false;
-                entry = leafPage.getCurrent(curRid);
+                entry = leafPage.getCurrent(curMid);
             } else {
-                entry = leafPage.getNext(curRid);
+                entry = leafPage.getNext(curMid);
             }
 
             while (entry == null) {
@@ -72,7 +72,7 @@ public class BTFileScan extends IndexFileScan
 
                 leafPage = new BTLeafPage(nextpage, keyType);
 
-                entry = leafPage.getFirst(curRid);
+                entry = leafPage.getFirst(curMid);
             }
 
             if (endkey != null)
@@ -110,10 +110,10 @@ public class BTFileScan extends IndexFileScan
             if ((deletedcurrent == true) || (didfirst == false))
                 return;
 
-            entry = leafPage.getCurrent(curRid);
+            entry = leafPage.getCurrent(curMid);
             SystemDefs.JavabaseBM.unpinPage(leafPage.getCurPage(), false);
             bfile.Delete(entry.key, ((LeafData) entry.data).getData());
-            leafPage = bfile.findRunStart(entry.key, curRid);
+            leafPage = bfile.findRunStart(entry.key, curMid);
 
             deletedcurrent = true;
             return;

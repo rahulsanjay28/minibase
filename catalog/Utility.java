@@ -7,10 +7,9 @@
 package catalog;
 
 import java.io.*;
-import bufmgr.*;
+
 import global.*;
 import heap.*;
-import diskmgr.*;
 import btree.*;
 
 public class Utility implements Catalogglobal{
@@ -22,7 +21,7 @@ public class Utility implements Catalogglobal{
  void deleteRecUT(String relation, attrNode item){};
 
  // DELETES INDEX ENRIES FOR RECORDS
- void deleteRecIndexesUT(String relation, RID rid, Tuple tuple){};
+ void deleteRecIndexesUT(String relation, MID rid, Tuple tuple){};
 
  // WRAPS INSERT UTILITY  IN TX
  public static void insertRecordUT(String relation, int attrCnt, attrNode [] attrList)
@@ -75,7 +74,7 @@ public static void insertRecUT(String relation, int attrCnt, attrNode [] attrLis
 	 Exception
  {
  RelDesc  relRec = null;
- RID      rid = null;
+ MID rid = null;
  int status;
  AttrType attrType = new AttrType(AttrType.attrInteger);
  int      attrPos = 0;

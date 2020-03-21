@@ -1,7 +1,5 @@
 package index;
 import global.*;
-import bufmgr.*;
-import diskmgr.*; 
 import btree.*;
 import iterator.*;
 import heap.*; 
@@ -138,7 +136,7 @@ public class IndexScan extends Iterator {
 	   UnknownKeyTypeException,
 	   IOException
   {
-    RID rid;
+    MID rid;
     int unused;
     KeyDataEntry nextentry = null;
 
