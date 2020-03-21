@@ -75,6 +75,21 @@ public class BatchInsert {
             e.printStackTrace();
         }
 
+//        This is for the clustering strategy - Sort uses this ordertype to sort the records
+        switch (type) {
+            case "3":
+                Minibase.getInstance().setOrderType(2);
+                break;
+            case "4":
+                Minibase.getInstance().setOrderType(4);
+                break;
+            case "5":
+                Minibase.getInstance().setOrderType(3);
+                break;
+            default:
+                Minibase.getInstance().setOrderType(1);
+        }
+
         Sort sort = null;
         try {
             sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
