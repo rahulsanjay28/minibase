@@ -87,11 +87,14 @@ public class BatchInsert {
 
         Map m = sort.get_next();
         Minibase.getInstance().setCheckVersionsEnabled(true);
+        boolean readyToInsert;
         while (m != null) {
             ++numberOfMapsInserted;
             m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            checkVersions(m);
-            insertMap(m, Integer.parseInt(type));
+            readyToInsert = checkVersions(m);
+            if (readyToInsert) {
+                insertMap(m, Integer.parseInt(type));
+            }
             set_row.add(m.getRowLabel());
             set_col.add(m.getColumnLabel());
             m = sort.get_next();
@@ -188,33 +191,37 @@ public class BatchInsert {
         }
     }
 
-    private void checkVersions(Map newMap) {
+    private boolean checkVersions(Map newMap) {
         Stream stream = null;
+        boolean readyToInsert = true;
         try {
             stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(),
                     "*");
             if (stream == null) {
                 System.out.println("Yet to initialize the stream");
             } else {
-                if (stream.getRidCount() == 3) {
-                    Map[] map = new Map[3];
-                    RID[] rids = stream.getRids();
-
-                    for (int i = 0; i < 3; i++) {
-                        map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
-                        map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                Map[] map = new Map[stream.getRidCount()];
+                RID[] rids = stream.getRids();
+                for (int i = 0; i < stream.getRidCount(); i++) {
+                    map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
+                    map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                    if(map[i].getTimeStamp() == newMap.getTimeStamp()){
+                        readyToInsert = false;
                     }
-                    int deleteRID = -1;
-                    if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
-                        deleteRID = 0;
-                    } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
-                        deleteRID = 1;
-                    } else {
-                        deleteRID = 2;
-                    }
-                    stream.findAndDeleteMap(rids[deleteRID]);
-                    --numberOfMapsInserted;
                 }
+                    if(readyToInsert && stream.getRidCount() == 3) {
+                        int deleteRID = -1;
+                        if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
+                            deleteRID = 0;
+                        } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
+                            deleteRID = 1;
+                        } else {
+                            deleteRID = 2;
+                        }
+                        stream.findAndDeleteMap(rids[deleteRID]);
+                        --numberOfMapsInserted;
+                    }
+
                 stream.closeStream();
             }
         } catch (Exception e) {
@@ -227,6 +234,7 @@ public class BatchInsert {
             }
             e.printStackTrace();
         }
+        return readyToInsert;
     }
 
     public void getDistinctCount() {
