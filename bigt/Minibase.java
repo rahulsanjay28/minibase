@@ -55,13 +55,13 @@ public class Minibase {
             findMaxKeyLengths(dataFileName);
         }
 
+        String dbpath = "/tmp/" + name + type + ".bigtable-db";
+        SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
+
         System.out.println("maxRowKeyLength: " + maxRowKeyLength);
         System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
         System.out.println("maxTimeStampLength: " + maxTimeStampLength);
         System.out.println("maxValueLength: " + maxValueLength);
-
-        String dbpath = "/tmp/" + name + type + ".bigtable-db";
-        SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
 
         attrTypes = new AttrType[4];
         attrTypes[0] = new AttrType(AttrType.attrString);

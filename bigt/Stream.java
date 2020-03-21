@@ -43,7 +43,7 @@ public class Stream {
                     if (rowFilters.length == 1) {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
                     } else {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]));
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1] + 'Z'));
                     }
                 } else {
                     //Scan everything
@@ -56,41 +56,71 @@ public class Stream {
                     if (columnFilters.length == 1) {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
                     } else {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1]));
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1] + 'Z'));
                     }
                 } else {
                     scanEntireBigT = true;
                 }
                 break;
             case 4:
-                if (rowFilters[0].compareTo("*") != 0 && columnFilters[0].compareTo("*") != 0) {
-                    scanEntireBigT = false;
-                    if (columnFilters.length == 1 && rowFilters.length == 1) {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
-                    } else if (rowFilters.length == 1 && columnFilters.length != 1) {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
-                    } else if (rowFilters.length != 1 && columnFilters.length == 1) {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
-                    } else {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1]));
+                if(rowFilters.length == 1){
+                    if (rowFilters[0].compareTo("*") != 0) {
+                        scanEntireBigT = false;
+                        if(columnFilters.length == 1){
+                            if (columnFilters[0].compareTo("*") != 0) {
+                                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter + 'Z'));
+                            } else {
+                                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter + 'Z'));
+                            }
+                        }else{
+                            scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1] + 'Z'));
+                        }
+                    }else{
+                        scanEntireBigT = true;
                     }
-                    scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
-                } else {
-                    scanEntireBigT = true;
+                }else{
+                    scanEntireBigT = false;
+                    if(columnFilters.length == 1){
+                        if(columnFilters[0].compareTo("*") != 0){
+                            scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter + 'Z'));
+                        }else{
+                            scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]+'Z'));
+                        }
+                    }else{
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1] + 'Z'));
+                    }
                 }
+                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
                 break;
             case 5:
-                if (rowFilters[0].compareTo("*") != 0) {
-                    scanEntireBigT = false;
-                    if (valueFilters[0].compareTo("*") != 0) {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
-                    } else {
-                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), null);
+                if(rowFilters.length == 1){
+                    if (rowFilters[0].compareTo("*") != 0) {
+                        scanEntireBigT = false;
+                        if(valueFilters.length == 1){
+                            if (valueFilters[0].compareTo("*") != 0) {
+                                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter + 'Z'));
+                            } else {
+                                scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter + 'Z'));
+                            }
+                        }else{
+                            scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilter + valueFilters[0]), new StringKey(rowFilter + valueFilters[1] + 'Z'));
+                        }
+                    }else{
+                        scanEntireBigT = true;
                     }
-                    scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
-                } else {
-                    scanEntireBigT = true;
+                }else{
+                    scanEntireBigT = false;
+                    if(valueFilters.length == 1){
+                        if(valueFilters[0].compareTo("*") != 0){
+                            scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + valueFilter), new StringKey(rowFilters[1] + valueFilter + 'Z'));
+                        }else{
+                            scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]+'Z'));
+                        }
+                    }else{
+                        scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + valueFilters[0]), new StringKey(rowFilters[1] + valueFilters[1] + 'Z'));
+                    }
                 }
+                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
                 break;
             default:
                 scanEntireBigT = true;
@@ -132,16 +162,6 @@ public class Stream {
                     try {
                         Map map = Minibase.getInstance().getBigTable().getMap(mid);
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                        if (bigT.getType() == 5) {
-                            if (rowFilters.length == 1 && rowFilters[0].compareTo(map.getRowLabel()) != 0) {
-                                break;
-                            } else if (rowFilters.length == 2) {
-                                if ((map.getRowLabel().compareTo(rowFilters[0]) < 0)
-                                        || (map.getRowLabel().compareTo(rowFilters[1]) > 0)) {
-                                    break;
-                                }
-                            }
-                        }
                         if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
                             if (orderType == 6 && midCount < 3) {
                                 //map.print();
