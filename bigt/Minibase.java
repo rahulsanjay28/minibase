@@ -53,11 +53,6 @@ public class Minibase {
     public void init(String dataFileName, String name, int type, int numBuf) {
         if (dataFileName != null && dataFileName.length() != 0) {
             findMaxKeyLengths(dataFileName);
-        } else {
-            maxRowKeyLength = 21;
-            maxColumnKeyLength = 19;
-            maxTimeStampLength = 7;
-            maxValueLength = 7;
         }
 
         System.out.println("maxRowKeyLength: " + maxRowKeyLength);

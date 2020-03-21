@@ -66,6 +66,9 @@ public class Query {
         System.out.println("Total Number of Maps found " + stream.getNumberOfMapsFound());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
+        System.out.println("Total number of distinct row values " + Minibase.getInstance().getDistinctRowCount());
+        System.out.println("Total number of distinct column values " + Minibase.getInstance().getDistinctColumnCount());
+
 
         if(Minibase.getInstance().getBTree() != null) {
             Minibase.getInstance().getBTree().close();

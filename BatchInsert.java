@@ -102,6 +102,8 @@ public class BatchInsert {
         int col_count = set_col.size();
         Minibase.getInstance().setDistinctColumnCount(col_count);
 
+        SystemDefs.JavabaseDB.setDistinctRowCol();
+
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
 //        System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
@@ -109,8 +111,8 @@ public class BatchInsert {
         System.out.println("Total number of maps inserted into the big table " + numberOfMapsInserted);
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
-//        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
-//        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
+        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
+        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
 
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();

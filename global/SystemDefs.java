@@ -1,10 +1,13 @@
 package global;
 
+import bigt.Minibase;
 import bufmgr.BufMgr;
 //import catalog.Catalog;
 import diskmgr.BigDB;
+import diskmgr.DiskMgrException;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SystemDefs {
     public static BufMgr JavabaseBM;
@@ -93,5 +96,9 @@ public class SystemDefs {
                 Runtime.getRuntime().exit(1);
             }
         }
+    }
+
+    public void SetDistinctRowCol() throws IOException, DiskMgrException {
+        JavabaseDB.setDistinctRowCol();
     }
 }
