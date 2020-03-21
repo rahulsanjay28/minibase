@@ -2,7 +2,7 @@ package iterator;
 
 import bigt.Map;
 import global.GlobalConst;
-import global.RID;
+import global.MID;
 import heap.Heapfile;
 import heap.InvalidTupleSizeException;
 import heap.Scan;
@@ -147,7 +147,7 @@ public class SpoofIbuf implements GlobalConst {
         curr_page = 0;
         while (curr_page < _n_pages) {
             while (t_read < t_per_pg) {
-                RID rid = new RID();
+                MID rid = new MID();
                 try {
                     if ((t = bt_scan.getNext(rid)) == null) return tot_read;
                     t_copy = t.getMapByteArray();

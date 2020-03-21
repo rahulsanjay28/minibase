@@ -4,9 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.lang.*;
 
-import heap.*;
-import bufmgr.*;
-import diskmgr.*;
 import global.*;
 import btree.*;
 
@@ -133,7 +130,7 @@ class BTDriver implements GlobalConst {
         int key, n, m, num, choice, lowkeyInt, hikeyInt;
         KeyClass lowkey, hikey;
         KeyDataEntry entry;
-        RID rid;
+        MID rid;
         choice = 1;
         deleteFashion = 1; //full delete
         try {
@@ -181,7 +178,7 @@ class BTDriver implements GlobalConst {
                         key = GetStuff.getChoice();
                         if (key < 0) break;
                         pageno.pid = key;
-                        rid = new RID(pageno, key);
+                        rid = new MID(pageno, key);
                         file.insert(new IntegerKey(key), rid);
                         break;
                     case 6:
@@ -190,7 +187,7 @@ class BTDriver implements GlobalConst {
                         key = GetStuff.getChoice();
                         if (key < 0) break;
                         pageno.pid = key;
-                        rid = new RID(pageno, key);
+                        rid = new MID(pageno, key);
                         file.Delete(new IntegerKey(key), rid);
                         break;
                     case 7:
@@ -242,7 +239,7 @@ class BTDriver implements GlobalConst {
                             break;
                         for (key = lowkeyInt; key <= hikeyInt; key++) {
                             pageno.pid = key;
-                            rid = new RID(pageno, key);
+                            rid = new MID(pageno, key);
                             file.Delete(new IntegerKey(key), rid);
                         }
                         break;
@@ -328,12 +325,12 @@ class BTDriver implements GlobalConst {
             file.traceFilename("TRACE");
 
             KeyClass key;
-            RID rid = new RID();
+            MID rid = new MID();
             PageId pageno = new PageId();
             for (int i = 0; i < n; i++) {
                 key = new IntegerKey(i);
                 pageno.pid = i;
-                rid = new RID(pageno, i);
+                rid = new MID(pageno, i);
 
                 file.insert(key, rid);
 
@@ -356,12 +353,12 @@ class BTDriver implements GlobalConst {
             file.traceFilename("TRACE");
 
             KeyClass key;
-            RID rid = new RID();
+            MID rid = new MID();
             PageId pageno = new PageId();
             for (int i = 0; i < n; i++) {
                 key = new IntegerKey(n - i);
                 pageno.pid = n - i;
-                rid = new RID(pageno, n - i);
+                rid = new MID(pageno, n - i);
 
                 file.insert(key, rid);
 
@@ -405,12 +402,12 @@ class BTDriver implements GlobalConst {
 
 
             KeyClass key;
-            RID rid = new RID();
+            MID rid = new MID();
             PageId pageno = new PageId();
             for (int i = 0; i < n; i++) {
                 key = new IntegerKey(k[i]);
                 pageno.pid = k[i];
-                rid = new RID(pageno, k[i]);
+                rid = new MID(pageno, k[i]);
 
                 file.insert(key, rid);
 
@@ -453,12 +450,12 @@ class BTDriver implements GlobalConst {
 
 
             KeyClass key;
-            RID rid = new RID();
+            MID rid = new MID();
             PageId pageno = new PageId();
             for (int i = 0; i < n; i++) {
                 key = new IntegerKey(k[i]);
                 pageno.pid = k[i];
-                rid = new RID(pageno, k[i]);
+                rid = new MID(pageno, k[i]);
 
                 file.insert(key, rid);
 
@@ -482,7 +479,7 @@ class BTDriver implements GlobalConst {
             for (int i = 0; i < m; i++) {
                 key = new IntegerKey(k[i]);
                 pageno.pid = k[i];
-                rid = new RID(pageno, k[i]);
+                rid = new MID(pageno, k[i]);
 
                 if (file.Delete(key, rid) == false) {
                     System.out.println("*********************************************************");
@@ -532,12 +529,12 @@ class BTDriver implements GlobalConst {
 
 
             KeyClass key;
-            RID rid = new RID();
+            MID rid = new MID();
             PageId pageno = new PageId();
             for (int i = 0; i < n; i++) {
                 key = new StringKey("**" + k[i]);
                 pageno.pid = k[i];
-                rid = new RID(pageno, k[i]);
+                rid = new MID(pageno, k[i]);
 
                 file.insert(key, rid);
 
@@ -561,7 +558,7 @@ class BTDriver implements GlobalConst {
             for (int i = 0; i < m; i++) {
                 key = new StringKey("**" + k[i]);
                 pageno.pid = k[i];
-                rid = new RID(pageno, k[i]);
+                rid = new MID(pageno, k[i]);
 
                 if (file.Delete(key, rid) == false) {
                     System.out.println("*********************************************************");

@@ -3,8 +3,6 @@ package tests;
 import java.io.*;
 
 import global.*;
-import bufmgr.*;
-import diskmgr.*;
 import heap.*;
 import iterator.*;
 import index.*;
@@ -141,7 +139,7 @@ class IndexDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test1.in"
-        RID rid;
+        MID rid;
         Heapfile f = null;
         try {
             f = new Heapfile("test1.in");
@@ -197,7 +195,7 @@ class IndexDriver extends TestDriver
 
         System.out.println("BTreeIndex created successfully.\n");
 
-        rid = new RID();
+        rid = new MID();
         String key = null;
         Tuple temp = null;
 
@@ -339,7 +337,7 @@ class IndexDriver extends TestDriver
 
         int size = t.size();
 
-        RID rid;
+        MID rid;
         Heapfile f = null;
 
         // open existing data file
@@ -369,7 +367,7 @@ class IndexDriver extends TestDriver
 
         System.out.println("BTreeIndex opened successfully.\n");
 
-        rid = new RID();
+        rid = new MID();
         String key = null;
         Tuple temp = null;
 
@@ -569,7 +567,7 @@ class IndexDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test3.in"
-        RID rid;
+        MID rid;
         Heapfile f = null;
         try {
             f = new Heapfile("test3.in");
@@ -634,7 +632,7 @@ class IndexDriver extends TestDriver
 
         System.out.println("BTreeIndex created successfully.\n");
 
-        rid = new RID();
+        rid = new MID();
         int key = 0;
         Tuple temp = null;
 

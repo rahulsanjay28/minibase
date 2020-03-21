@@ -1,12 +1,9 @@
 package tests;
 
 import java.io.*;
-import java.util.*;
 import java.lang.*;
 
 import heap.*;
-import bufmgr.*;
-import diskmgr.*;
 import global.*;
 import chainexception.*;
 
@@ -92,7 +89,7 @@ class HFDriver extends TestDriver implements GlobalConst {
 
         System.out.println("\n  Test 1: Insert and scan fixed-size records\n");
         boolean status = OK;
-        RID rid = new RID();
+        MID rid = new MID();
         Heapfile f = null;
 
         System.out.println("  - Create a heap file\n");
@@ -260,7 +257,7 @@ class HFDriver extends TestDriver implements GlobalConst {
         System.out.println("\n  Test 2: Delete fixed-size records\n");
         boolean status = OK;
         Scan scan = null;
-        RID rid = new RID();
+        MID rid = new MID();
         Heapfile f = null;
 
         System.out.println("  - Open the same heap file as test 1\n");
@@ -395,7 +392,7 @@ class HFDriver extends TestDriver implements GlobalConst {
         System.out.println("\n  Test 3: Update fixed-size records\n");
         boolean status = OK;
         Scan scan = null;
-        RID rid = new RID();
+        MID rid = new MID();
         Heapfile f = null;
 
         System.out.println("  - Open the same heap file as tests 1 and 2\n");
@@ -577,7 +574,7 @@ class HFDriver extends TestDriver implements GlobalConst {
         System.out.println("\n  Test 4: Test some error conditions\n");
         boolean status = OK;
         Scan scan = null;
-        RID rid = new RID();
+        MID rid = new MID();
         Heapfile f = null;
 
         try {

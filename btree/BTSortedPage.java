@@ -10,7 +10,7 @@ package btree;
 import bigt.Minibase;
 import diskmgr.Page;
 import global.PageId;
-import global.RID;
+import global.MID;
 import global.SystemDefs;
 import heap.HFPage;
 import heap.InvalidSlotNumberException;
@@ -96,14 +96,14 @@ public class BTSortedPage extends HFPage {
      * the same positions on the  page.
      *
      * @param entry the entry to be inserted. Input parameter.
-     * @return its rid where the entry was inserted; null if no space left.
+     * @return its mid where the entry was inserted; null if no space left.
      * @throws InsertRecException error when insert
      */
-    protected RID insertRecord(KeyDataEntry entry)
+    protected MID insertRecord(KeyDataEntry entry)
             throws InsertRecException {
         int i;
         short nType;
-        RID rid;
+        MID mid;
         byte[] record;
         // ASSERTIONS:
         // - the slot directory is compressed; Inserts will occur at the end
@@ -118,8 +118,8 @@ public class BTSortedPage extends HFPage {
 
             record = BT.getBytesFromEntry(entry);
             Minibase.getInstance().setMaxKeyEntrySize(record.length);
-            rid = super.insertMap(record);
-            if (rid == null) return null;
+            mid = super.insertMap(record);
+            if (mid == null) return null;
 
             if (entry.data instanceof LeafData)
                 nType = NodeType.LEAF;
@@ -157,8 +157,8 @@ public class BTSortedPage extends HFPage {
             // (starting at slot 0)
             // - slot directory compacted
 
-            rid.slotNo = i;
-            return rid;
+            mid.slotNo = i;
+            return mid;
         } catch (Exception e) {
             throw new InsertRecException(e, "insert record failed");
         }
@@ -171,15 +171,15 @@ public class BTSortedPage extends HFPage {
      * Deletes a record from a sorted record page. It also calls
      * HFPage.compact_slot_dir() to compact the slot directory.
      *
-     * @param rid it specifies where a record will be deleted
-     * @return true if success; false if rid is invalid(no record in the rid).
+     * @param mid it specifies where a record will be deleted
+     * @return true if success; false if mid is invalid(no record in the mid).
      * @throws DeleteRecException error when delete
      */
-    public boolean deleteSortedRecord(RID rid)
+    public boolean deleteSortedRecord(MID mid)
             throws DeleteRecException {
         try {
 
-            deleteMap(rid);
+            deleteMap(mid);
             compact_slot_dir();
             return true;
             // ASSERTIONS:

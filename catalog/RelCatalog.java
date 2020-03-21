@@ -11,7 +11,7 @@ import bufmgr.*;
 import global.*;
 import heap.*;
 import diskmgr.*;
-import index.*;
+
 public class RelCatalog extends Heapfile
   implements  GlobalConst, Catalogglobal
 {
@@ -59,7 +59,7 @@ public class RelCatalog extends Heapfile
 	   Catalogrelnotfound
     {
       int recSize;
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       
       if (relation == null)
@@ -288,7 +288,7 @@ public class RelCatalog extends Heapfile
     throws RelCatalogException, 
 	   IOException
     {
-      RID rid;
+      MID rid;
       
       try {
 	make_tuple(tuple, record);
@@ -314,7 +314,7 @@ public class RelCatalog extends Heapfile
 	   Catalogmissparam,
 	   Catalogattrnotfound
     {
-      RID rid = null;
+      MID rid = null;
       Scan pscan = null;
       int recSize;
       RelDesc record = null;

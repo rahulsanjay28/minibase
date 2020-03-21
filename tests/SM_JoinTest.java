@@ -4,15 +4,10 @@ package tests;
 import iterator.*;
 import heap.*;
 import global.*;
-import index.*;
 
 import java.io.*;
 import java.util.*;
 import java.lang.*;
-
-import diskmgr.*;
-import bufmgr.*;
-import btree.*;
 
 /**
  * Here is the implementation for the tests. There are N tests performed.
@@ -180,7 +175,7 @@ class JoinsDriver implements GlobalConst {
         int size = t.size();
 
         // inserting the tuple into file "sailors"
-        RID rid;
+        MID rid;
         Heapfile f = null;
         try {
             f = new Heapfile("sailors.in");

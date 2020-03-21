@@ -5,7 +5,7 @@ import btree.IntegerKey;
 import btree.StringKey;
 import diskmgr.PCounter;
 import global.MapOrder;
-import global.RID;
+import global.MID;
 import global.SystemDefs;
 import heap.*;
 import iterator.FileScan;
@@ -170,20 +170,20 @@ public class BatchInsert {
             //This method takes care of maintaining only 3 versions of a map at any instant
             //Need to uncomment this once filtering and ordering works
 
-            RID rid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
+            MID mid = Minibase.getInstance().getBigTable().insertMap(map.getMapByteArray());
 
             //inserting into the index file
             if (type == 2) {
-                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel()), rid);
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel()), mid);
             } else if (type == 3) {
-                Minibase.getInstance().getBTree().insert(new StringKey(map.getColumnLabel()), rid);
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getColumnLabel()), mid);
             } else if (type == 4) {
                 Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getColumnLabel()),
-                        rid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), rid);
+                        mid);
+                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), mid);
             } else if (type == 5) {
-                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getValue()), rid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), rid);
+                Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getValue()), mid);
+                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), mid);
             }
         } catch (InvalidSlotNumberException | InvalidTupleSizeException | SpaceNotAvailableException |
                 HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
@@ -191,7 +191,7 @@ public class BatchInsert {
         }
     }
 
-    private boolean checkVersions(Map newMap) {
+    private boolean checkVersions(Map newMap) throws Exception {
         Stream stream = null;
         boolean readyToInsert = true;
         try {
@@ -200,25 +200,25 @@ public class BatchInsert {
             if (stream == null) {
                 System.out.println("Yet to initialize the stream");
             } else {
-                Map[] map = new Map[stream.getRidCount()];
-                RID[] rids = stream.getRids();
-                for (int i = 0; i < stream.getRidCount(); i++) {
-                    map[i] = Minibase.getInstance().getBigTable().getMap(rids[i]);
+                Map[] map = new Map[stream.getMidCount()];
+                MID[] mids = stream.getMids();
+                for (int i = 0; i < stream.getMidCount(); i++) {
+                    map[i] = Minibase.getInstance().getBigTable().getMap(mids[i]);
                     map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                     if(map[i].getTimeStamp() == newMap.getTimeStamp()){
                         readyToInsert = false;
                     }
                 }
-                    if(readyToInsert && stream.getRidCount() == 3) {
-                        int deleteRID = -1;
+                    if(readyToInsert && stream.getMidCount() == 3) {
+                        int deleteMID = -1;
                         if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
-                            deleteRID = 0;
+                            deleteMID = 0;
                         } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
-                            deleteRID = 1;
+                            deleteMID = 1;
                         } else {
-                            deleteRID = 2;
+                            deleteMID = 2;
                         }
-                        stream.findAndDeleteMap(rids[deleteRID]);
+                        stream.findAndDeleteMap(mids[deleteMID]);
                         --numberOfMapsInserted;
                     }
 

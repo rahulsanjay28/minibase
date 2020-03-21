@@ -161,7 +161,7 @@ public class BT implements GlobalConst {
                 data = new IndexData(Convert.getIntValue(offset + length - 4, from));
             } else if (nodeType == NodeType.LEAF) {
                 n = 8;
-                RID rid = new RID();
+                MID rid = new MID();
                 rid.slotNo = Convert.getIntValue(offset + length - 8, from);
                 rid.pageNo = new PageId();
                 rid.pageNo.pid = Convert.getIntValue(offset + length - 4, from);
@@ -269,7 +269,7 @@ public class BT implements GlobalConst {
             System.out.println("Current Page ID: " + indexPage.getCurPage().pid);
             System.out.println("Left Link      : " + indexPage.getLeftLink().pid);
 
-            RID rid = new RID();
+            MID rid = new MID();
 
             for (KeyDataEntry entry = indexPage.getFirst(rid); entry != null;
                  entry = indexPage.getNext(rid)) {
@@ -293,7 +293,7 @@ public class BT implements GlobalConst {
             System.out.println("Left Link      : " + leafPage.getPrevPage().pid);
             System.out.println("Right Link     : " + leafPage.getNextPage().pid);
 
-            RID rid = new RID();
+            MID rid = new MID();
 
             for (KeyDataEntry entry = leafPage.getFirst(rid); entry != null;
                  entry = leafPage.getNext(rid)) {
@@ -376,7 +376,7 @@ public class BT implements GlobalConst {
             System.out.println(i + prefix + indexPage.getPrevPage());
             _printTree(indexPage.getPrevPage(), prefix, i, keyType);
 
-            RID rid = new RID();
+            MID rid = new MID();
             for (KeyDataEntry entry = indexPage.getFirst(rid); entry != null;
                  entry = indexPage.getNext(rid)) {
                 System.out.println(i + prefix + (IndexData) entry.data);
@@ -443,7 +443,7 @@ public class BT implements GlobalConst {
 
             _printAllLeafPages(indexPage.getPrevPage(), keyType);
 
-            RID rid = new RID();
+            MID rid = new MID();
             for (KeyDataEntry entry = indexPage.getFirst(rid); entry != null;
                  entry = indexPage.getNext(rid)) {
                 _printAllLeafPages(((IndexData) entry.data).getData(), keyType);

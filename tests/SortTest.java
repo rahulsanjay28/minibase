@@ -3,11 +3,8 @@ package tests;
 import java.io.*;
 
 import global.*;
-import bufmgr.*;
-import diskmgr.*;
 import heap.*;
 import iterator.*;
-import index.*;
 
 import java.util.Random;
 
@@ -144,7 +141,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test1.in"
-        RID rid;
+        MID rid;
         Heapfile f = null;
         try {
             f = new Heapfile("test1.in");
@@ -290,7 +287,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test2.in"
-        RID rid;
+        MID rid;
         Heapfile f = null;
         try {
             f = new Heapfile("test2.in");
@@ -442,7 +439,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file "test3.in"
-        RID rid;
+        MID rid;
         Heapfile f = null;
         try {
             f = new Heapfile("test3.in");
@@ -705,7 +702,7 @@ class SORTDriver extends TestDriver
         int size = t.size();
 
         // Create unsorted data file
-        RID rid1, rid2;
+        MID rid1, rid2;
         Heapfile f1 = null;
         Heapfile f2 = null;
         try {
