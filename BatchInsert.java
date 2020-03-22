@@ -132,7 +132,7 @@ public class BatchInsert {
 
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
-        System.out.println("Number of maps inserted into the big table in this batch insertion" + numberOfMapsInserted);
+        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
         System.out.println("Total maps in the Big Table " + Minibase.getInstance().getBigTable().getMapCnt());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
