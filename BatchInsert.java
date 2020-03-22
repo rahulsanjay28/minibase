@@ -56,12 +56,10 @@ public class BatchInsert {
         BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
         while ((line = br.readLine()) != null) {
             String[] fields = line.split(",");
-            int c= 0;
-            if(fields[0].startsWith(UTF8_BOM) && c==0){
-                System.out.println("Before:"+fields[0]);
+            if(fields[0].startsWith(UTF8_BOM)){
+
                 fields[0]=fields[0].substring(1).trim();
-                System.out.println("Before:"+fields[0]);
-                c++;
+
             }
 
             tempHeapFile.insertMap(getMap(fields[0],fields[1],fields[2],fields[3]).getMapByteArray());
