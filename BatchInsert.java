@@ -145,7 +145,7 @@ public class BatchInsert {
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }
 
-    private Map getMap(String rowKey, String columnKey, String timestamp, String value) {
+    private Map getMap(String rowKey, String columnKey, String value, String timestamp) {
         Map map = new Map();
         try {
             map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
