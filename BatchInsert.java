@@ -124,9 +124,8 @@ public class BatchInsert {
 
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
-//        System.out.println("Total number of pages " + Minibase.getInstance().getBigTable().getCount());
-//        System.out.println("Total number of index pages " + Minibase.getInstance().getNumberOfIndexPages());
-        System.out.println("Total number of maps inserted into the big table " + numberOfMapsInserted);
+        System.out.println("Number of maps inserted into the big table in this batch insertion" + numberOfMapsInserted);
+        System.out.println("Total maps in the Big Table " + Minibase.getInstance().getBigTable().getMapCnt());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
         System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
@@ -224,6 +223,7 @@ public class BatchInsert {
                     map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                     if(map[i].getTimeStamp() == newMap.getTimeStamp()){
                         readyToInsert = false;
+                        --numberOfMapsInserted;
                     }
                 }
                     if(readyToInsert && stream.getMidCount() == 3) {
@@ -253,37 +253,6 @@ public class BatchInsert {
         }
         return readyToInsert;
     }
-
-    public void getDistinctCount() {
-        HashSet set_row = new HashSet();
-        HashSet set_col = new HashSet();
-        HashSet set_map = new HashSet();
-        Stream stream = null;
-        try {
-            stream = Minibase.getInstance().getBigTable().openStream(1, "*", "*", "*");
-
-            if (stream == null) {
-                System.out.println("Yet to initialize the stream");
-                return;
-            } else {
-                Map map = stream.getNext();
-                while (map != null) {
-                    map.print();
-                    set_row.add(map.getRowLabel().trim());
-                    set_col.add(map.getColumnLabel().trim());
-                    set_map.add(map.getRowLabel().trim() + map.getColumnLabel().trim());
-                    map = stream.getNext();
-                }
-
-                Minibase.getInstance().setDistinctRowCount(set_row.size());
-                Minibase.getInstance().setDistinctColumnCount(set_col.size());
-//                Minibase.getInstance().setMapCount(set_map.size());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
 
 

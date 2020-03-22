@@ -56,7 +56,7 @@ public class Minibase {
         }
 
         String dbpath = "/tmp/" + name + type + ".bigtable-db";
-        SystemDefs systemDefs = new SystemDefs(dbpath, 20000, numBuf, "Clock");
+        SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
 
         System.out.println("maxRowKeyLength: " + maxRowKeyLength);
         System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
