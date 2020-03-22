@@ -258,4 +258,15 @@ public class Minibase {
     public void setCheckVersionsEnabled(boolean flag) {
         CHECK_VERSIONS_ENABLED = flag;
     }
+
+    public String getTransformedValue(String value){
+        //Tranform the value so that comparisions will be correct
+        int numberOfZerosToAppend = Minibase.getInstance().getMaxValueLength() - value.length();
+        StringBuilder transFormedValue = new StringBuilder();
+        for(int i=0;i<numberOfZerosToAppend;++i){
+            transFormedValue.append("0");
+        }
+        transFormedValue.append(value);
+        return transFormedValue.toString();
+    }
 }

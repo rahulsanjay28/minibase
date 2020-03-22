@@ -35,6 +35,15 @@ public class Stream {
         String columnFilters[] = sanitizefilter(columnFilter);
         String valueFilters[] = sanitizefilter(valueFilter);
 
+        if(valueFilters.length == 1){
+            if(!valueFilters[0].equals("*")){
+                valueFilters[0] = Minibase.getInstance().getTransformedValue(valueFilters[0]);
+            }
+        }else{
+            valueFilters[0] = Minibase.getInstance().getTransformedValue(valueFilters[0]);
+            valueFilters[1] = Minibase.getInstance().getTransformedValue(valueFilters[1]);
+        }
+
         switch (bigT.getType()) {
             case 2:
                 if (rowFilters[0].compareTo("*") != 0) {

@@ -166,7 +166,7 @@ public class BatchInsert {
             map1.setRowLabel(rowKey);
             map1.setColumnLabel(columnKey);
             map1.setTimeStamp(Integer.parseInt(timestamp));
-            map1.setValue(value);
+            map1.setValue(Minibase.getInstance().getTransformedValue(value));
         } catch (IOException e) {
             e.printStackTrace();
         }
