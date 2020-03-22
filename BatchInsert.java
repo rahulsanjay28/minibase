@@ -229,7 +229,7 @@ public class BatchInsert {
                 for (int i = 0; i < stream.getMidCount(); i++) {
                     map[i] = Minibase.getInstance().getBigTable().getMap(mids[i]);
                     map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                    if(map[i].getTimeStamp() == newMap.getTimeStamp()){
+                    if(newMap.getTimeStamp() <= map[i].getTimeStamp()){
                         readyToInsert = false;
                         --numberOfMapsInserted;
                     }
