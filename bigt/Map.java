@@ -527,10 +527,10 @@ public class Map implements GlobalConst {
                     String.format("%"+ (Minibase.getInstance().getMaxRowKeyLength() - this.getRowLabel().length())+"s", "") +
                     this.getColumnLabel() +
                     String.format("%"+ (Minibase.getInstance().getMaxColumnKeyLength() - this.getColumnLabel().length())+"s", "")
-                    + this.getTimeStamp()+
-                    String.format("%"+ (Minibase.getInstance().getMaxTimeStampLength() - Integer.toString(this.getTimeStamp()).length())+"s", "")
+                    + this.getValue()+
+                    String.format("%"+ (Minibase.getInstance().getMaxValueLength() - this.getValue().length())+"s", "")
                     +
-                    this.getValue());
+                    this.getTimeStamp());
         } catch (IOException e) {
             e.printStackTrace();
         }
