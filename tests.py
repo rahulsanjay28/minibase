@@ -38,7 +38,11 @@ def TestQuery(type):
     os.system("javac Query.java")
     orderList=[1,2,3,4,6]
     #'"*" "*" "*"'
-    filters = ['[California,Greece] [Donkey,Fox] "*"', '[California,Greece] Fox "*"']
+    filters = ['California "*" "*"', '[California,Greece] "*" "*"',
+               '"*" Fox "*"', '"*" [Donkey,Fox] "*"',
+               '"*" "*" 8000', '"*" "*" [200,8000]',
+               'California1 Fox "*"', '[Kalifornia,Punk] "*" "*"',
+               '"*" [A,Z] "*"', '"*" "*" "*"']
 
     # for filter in filters:
     #     print(filter)
@@ -60,7 +64,8 @@ def TestQuery(type):
              if (stderr):
                 print(stderr)
              #print("ERR "+stderr)
-             os.system("echo " + query + " >> " + TESTS_OUTPUTFILE)
+             os.system("echo %%%%%%%%%%%%%%%   ----\>  " + query + " >> " + TESTS_OUTPUTFILE)
+             os.system("head -30 op.txt >> " + TESTS_OUTPUTFILE)
              os.system("tail -5 op.txt >> " + TESTS_OUTPUTFILE)
              #os.system("echo ------------------------------------------------------------------------------- >> " + TESTS_OUTPUTFILE)
              os.system("echo >> "+ TESTS_OUTPUTFILE)
@@ -76,8 +81,7 @@ if __name__=="__main__":
     if(os.path.exists(TESTS_OUTPUTFILE)):
         os.remove(TESTS_OUTPUTFILE)
 
-    bigtType = [2,3,4,5]
-
+    bigtType = [1,2,3,4,5]
 
     for type in bigtType:
         print("TYPE" , type)
