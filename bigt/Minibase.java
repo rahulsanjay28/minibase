@@ -19,10 +19,10 @@ public class Minibase {
     private BTreeFile bTreeFile;
     private BTreeFile bTreeFile1;
 
-    private int maxRowKeyLength = Integer.MIN_VALUE;
-    private int maxColumnKeyLength = Integer.MIN_VALUE;
-    private int maxTimeStampLength = Integer.MIN_VALUE;
-    private int maxValueLength = Integer.MIN_VALUE;
+    private int maxRowKeyLength = 19;
+    private int maxColumnKeyLength = 17;
+    private int maxTimeStampLength = 5;
+    private int maxValueLength = 5;
 
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
@@ -51,9 +51,9 @@ public class Minibase {
     }
 
     public void init(String dataFileName, String name, int type, int numBuf) {
-        if (dataFileName != null && dataFileName.length() != 0) {
-            findMaxKeyLengths(dataFileName);
-        }
+//        if (dataFileName != null && dataFileName.length() != 0) {
+//            findMaxKeyLengths(dataFileName);
+//        }
 
         String dbpath = "/tmp/" + name + type + ".bigtable-db";
         SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
@@ -82,13 +82,13 @@ public class Minibase {
 
         int keySize = -1;
         if (type == 2) {
-            keySize = maxRowKeyLength;
+            keySize = maxRowKeyLength + 2;
         } else if (type == 3) {
-            keySize = maxColumnKeyLength;
+            keySize = maxColumnKeyLength + 2;
         } else if (type == 4) {
-            keySize = maxColumnKeyLength + maxRowKeyLength;
+            keySize = maxColumnKeyLength + maxRowKeyLength + 4;
         } else if (type == 5) {
-            keySize = maxRowKeyLength + maxValueLength;
+            keySize = maxRowKeyLength + maxValueLength + 4;
         }
 
         if (type != 0) {
@@ -122,7 +122,7 @@ public class Minibase {
         }
     }
 
-    private void updateMaxKeyLengths(String rowKey, String columnKey, String timestamp, String value) {
+    private void updateMaxKeyLengths(String rowKey, String columnKey, String value, String timestamp) {
         //update the max lengths of each field in the map to use it indexing
 
         OutputStream out = new ByteArrayOutputStream();

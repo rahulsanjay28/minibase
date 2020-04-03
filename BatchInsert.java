@@ -41,7 +41,6 @@ public class BatchInsert {
      */
     public void execute(String dataFileName, String type, String bigTableName, String numBuf) throws Exception {
         String UTF8_BOM = "\uFEFF";
-        String rowkey = "";
         long startTime = System.currentTimeMillis();
         //Setting the read and write count to zero for every batch insert
         PCounter.getInstance().setReadCount(0);
@@ -57,13 +56,9 @@ public class BatchInsert {
         while ((line = br.readLine()) != null) {
             String[] fields = line.split(",");
             if(fields[0].startsWith(UTF8_BOM)){
-
                 fields[0]=fields[0].substring(1).trim();
-
             }
-
             tempHeapFile.insertMap(getMap(fields[0],fields[1],fields[2],fields[3]).getMapByteArray());
-
         }
 
         // create an iterator by open a file scan
@@ -105,8 +100,6 @@ public class BatchInsert {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        HashSet set_row = new HashSet();
-        HashSet set_col = new HashSet();
 
         Map m = sort.get_next();
         Minibase.getInstance().setCheckVersionsEnabled(true);
@@ -118,26 +111,16 @@ public class BatchInsert {
             if (readyToInsert) {
                 insertMap(m, Integer.parseInt(type));
             }
-            set_row.add(m.getRowLabel());
-            set_col.add(m.getColumnLabel());
             m = sort.get_next();
         }
         sort.close();
-        int row_count = set_row.size();
-        Minibase.getInstance().setDistinctRowCount(row_count);
-        int col_count = set_col.size();
-        Minibase.getInstance().setDistinctColumnCount(col_count);
-
-        SystemDefs.JavabaseDB.setDistinctRowCol();
 
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
-        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
+//        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
         System.out.println("Total maps in the Big Table " + Minibase.getInstance().getBigTable().getMapCnt());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
-        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
-        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
 
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
@@ -229,7 +212,7 @@ public class BatchInsert {
                 for (int i = 0; i < stream.getMidCount(); i++) {
                     map[i] = Minibase.getInstance().getBigTable().getMap(mids[i]);
                     map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                    if(newMap.getTimeStamp() <= map[i].getTimeStamp()){
+                    if(newMap.getTimeStamp() == map[i].getTimeStamp()){
                         readyToInsert = false;
                         --numberOfMapsInserted;
                     }
