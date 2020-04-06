@@ -13,7 +13,7 @@ import iterator.Sort;
 import java.io.IOException;
 
 public class Stream {
-    private BTFileScan scan, scan2;
+    private BTFileScan scan;
     private int numberOfMapsFound;
     private Scan scanBigT;
     private BigT bigT;
@@ -21,7 +21,7 @@ public class Stream {
     private Sort filteredAndSortedData;
     private Heapfile tempHeapFile;
 
-    private MID mids[];
+    private MID[] mids;
     private int midCount;
 
     public Stream(BigT bigtable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
@@ -31,9 +31,9 @@ public class Stream {
         midCount = 0;
         scanBigT = new Scan(bigtable);
 
-        String rowFilters[] = sanitizefilter(rowFilter);
-        String columnFilters[] = sanitizefilter(columnFilter);
-        String valueFilters[] = sanitizefilter(valueFilter);
+        String[] rowFilters = sanitizefilter(rowFilter);
+        String[] columnFilters = sanitizefilter(columnFilter);
+        String[] valueFilters = sanitizefilter(valueFilter);
 
         if(valueFilters.length == 1){
             if(!valueFilters[0].equals("*")){
@@ -99,7 +99,6 @@ public class Stream {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1] + 'Z'));
                     }
                 }
-                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
                 break;
             case 5:
                 if(rowFilters.length == 1){
@@ -129,7 +128,6 @@ public class Stream {
                         scan = Minibase.getInstance().getBTree().new_scan(new StringKey(rowFilters[0] + valueFilters[0]), new StringKey(rowFilters[1] + valueFilters[1] + 'Z'));
                     }
                 }
-                scan2 = Minibase.getInstance().getSecondaryBTree().new_scan(null, null);
                 break;
             default:
                 scanEntireBigT = true;
@@ -335,12 +333,10 @@ public class Stream {
                 case 4:
                     //System.out.println("Inside the 4 index type to Delete the record");
                     Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getColumnLabel()), deleteMID);
-                    Minibase.getInstance().getSecondaryBTree().Delete(new IntegerKey(m.getTimeStamp()), deleteMID);
                     break;
                 case 5:
                     //System.out.println("Inside the 5 index type to Delete the record");
                     Minibase.getInstance().getBTree().Delete(new StringKey(m.getRowLabel() + m.getValue()), deleteMID);
-                    Minibase.getInstance().getSecondaryBTree().Delete(new IntegerKey(m.getTimeStamp()), deleteMID);
                     break;
             }
         }

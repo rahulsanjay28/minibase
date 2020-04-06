@@ -60,12 +60,8 @@ public class Query {
 //        System.out.println("Total number of distinct row values " + Minibase.getInstance().getDistinctRowCount());
 //        System.out.println("Total number of distinct column values " + Minibase.getInstance().getDistinctColumnCount());
 
-
         if(Minibase.getInstance().getBTree() != null) {
             Minibase.getInstance().getBTree().close();
-        }
-        if(Minibase.getInstance().getSecondaryBTree() != null) {
-            Minibase.getInstance().getSecondaryBTree().close();
         }
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }

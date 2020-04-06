@@ -128,9 +128,6 @@ public class BatchInsert {
         if(Minibase.getInstance().getBTree() != null) {
             Minibase.getInstance().getBTree().close();
         }
-        if(Minibase.getInstance().getSecondaryBTree() != null) {
-            Minibase.getInstance().getSecondaryBTree().close();
-        }
         //This ensures flushing all the pages to disk
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }
@@ -187,10 +184,8 @@ public class BatchInsert {
             } else if (type == 4) {
                 Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getColumnLabel()),
                         mid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), mid);
             } else if (type == 5) {
                 Minibase.getInstance().getBTree().insert(new StringKey(map.getRowLabel() + map.getValue()), mid);
-                Minibase.getInstance().getSecondaryBTree().insert(new IntegerKey(map.getTimeStamp()), mid);
             }
         } catch (InvalidSlotNumberException | InvalidTupleSizeException | SpaceNotAvailableException |
                 HFException | HFBufMgrException | HFDiskMgrException | IOException e) {

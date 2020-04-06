@@ -17,7 +17,6 @@ public class Minibase {
     private static Minibase mInstance;
     private BigT bigT;
     private BTreeFile bTreeFile;
-    private BTreeFile bTreeFile1;
 
     private int maxRowKeyLength = 19;
     private int maxColumnKeyLength = 17;
@@ -55,7 +54,7 @@ public class Minibase {
 //            findMaxKeyLengths(dataFileName);
 //        }
 
-        String dbpath = "/tmp/" + name + type + ".bigtable-db";
+        String dbpath = "/tmp/big_db";
         SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
 
         System.out.println("maxRowKeyLength: " + maxRowKeyLength);
@@ -94,14 +93,6 @@ public class Minibase {
         if (type != 0) {
             try {
                 bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 0);
-            } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (type == 4 || type == 5) {
-            try {
-                bTreeFile1 = new BTreeFile(name + type + "_index_1", AttrType.attrInteger, 4, 0);
             } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
                 e.printStackTrace();
             }
@@ -158,10 +149,6 @@ public class Minibase {
 
     public BTreeFile getBTree() {
         return bTreeFile;
-    }
-
-    public BTreeFile getSecondaryBTree() {
-        return bTreeFile1;
     }
 
     public void setMaxRowKeyLength(int maxRowKeyLength) {

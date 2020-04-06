@@ -18,12 +18,6 @@ public class BigDB implements GlobalConst {
     private int num_pages;
     private String name;
 
-    private int type = 1;
-
-    public BigDB(int type) {
-        this.type = type;
-    }
-
     public BigDB() {
     }
 
