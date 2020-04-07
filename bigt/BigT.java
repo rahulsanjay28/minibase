@@ -1,10 +1,8 @@
 package bigt;
 
+import btree.*;
 import diskmgr.Page;
-import global.GlobalConst;
-import global.PageId;
-import global.MID;
-import global.SystemDefs;
+import global.*;
 import heap.*;
 
 import java.io.IOException;
@@ -50,6 +48,7 @@ public class BigT implements Filetype, GlobalConst {
 
     private String name;
     private int type;
+    private BTreeFile bTreeFile;
 
     PageId _firstDirPageId;   // page number of header page
     int _ftype;
@@ -281,6 +280,25 @@ public class BigT implements Filetype, GlobalConst {
         //  - _fileName valid
         //  - no datapage pinned yet
 
+        int keySize = -1;
+        if (type == 2) {
+            keySize = Minibase.getInstance().getMaxRowKeyLength() + 2;
+        } else if (type == 3) {
+            keySize = Minibase.getInstance().getMaxColumnKeyLength() + 2;
+        } else if (type == 4) {
+            keySize = Minibase.getInstance().getMaxColumnKeyLength() +
+                    Minibase.getInstance().getMaxRowKeyLength() + 4;
+        } else if (type == 5) {
+            keySize = Minibase.getInstance().getMaxRowKeyLength() + Minibase.getInstance().getMaxValueLength() + 4;
+        }
+
+        if (type != 1) {
+            try {
+                bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 0);
+            } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
+                e.printStackTrace();
+            }
+        }
     } // end of constructor
 
     /**
@@ -351,7 +369,7 @@ public class BigT implements Filetype, GlobalConst {
     /**
      * Insert record into file, return its Mid.
      *
-     * @param mapPtr pointer of the record
+     * @param map pointer of the record
      * @return the mid of the record
      * @throws InvalidSlotNumberException invalid slot number
      * @throws InvalidTupleSizeException  invalid tuple size
@@ -361,14 +379,15 @@ public class BigT implements Filetype, GlobalConst {
      * @throws HFDiskMgrException         exception thrown from diskmgr layer
      * @throws IOException                I/O errors
      */
-    public MID insertMap(byte[] mapPtr)
+    public MID insertMap(Map map)
             throws InvalidSlotNumberException,
             InvalidTupleSizeException,
             SpaceNotAvailableException,
             HFException,
             HFBufMgrException,
             HFDiskMgrException,
-            IOException {
+            IOException, UnpinPageException, DeleteRecException, ConvertException, PinPageException, LeafDeleteException, NodeNotMatchException, LeafInsertRecException, IndexInsertRecException, IndexSearchException, KeyTooLongException, KeyNotMatchException, ConstructPageException, IteratorException, InsertException {
+        byte[] mapPtr = map.getMapByteArray();
         int dpinfoLen = 0;
         int recLen = mapPtr.length;
         boolean found;
@@ -581,20 +600,31 @@ public class BigT implements Filetype, GlobalConst {
         unpinPage(currentDirPageId, true /* = DIRTY */);
 
 
+        //inserting into the index file
+        if (type == 2) {
+            bTreeFile.insert(new StringKey(map.getRowLabel()), mid);
+        } else if (type == 3) {
+            bTreeFile.insert(new StringKey(map.getColumnLabel()), mid);
+        } else if (type == 4) {
+            bTreeFile.insert(new StringKey(map.getRowLabel() + map.getColumnLabel()),
+                    mid);
+        } else if (type == 5) {
+            bTreeFile.insert(new StringKey(map.getRowLabel() + map.getValue()), mid);
+        }
+
         return mid;
 
     }
 
     /**
      *
-     * @param orderType
      * @param rowFilter
      * @param columnFilter
      * @param valueFilter
      * @return Stream
      */
-    public Stream openStream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception{
-        Stream stream = new Stream(this, orderType, rowFilter, columnFilter, valueFilter);
+    public BigTStream openStream(String rowFilter, String columnFilter, String valueFilter) throws Exception{
+        BigTStream stream = new BigTStream(this, rowFilter, columnFilter, valueFilter);
         return stream;
     }
 
@@ -1032,6 +1062,10 @@ public class BigT implements Filetype, GlobalConst {
 
     public int getType(){
         return this.type;
+    }
+
+    public BTreeFile getBTree(){
+        return bTreeFile;
     }
 
 }// End of HeapFile

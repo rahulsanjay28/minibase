@@ -1,9 +1,5 @@
 package bigt;
 
-import btree.AddFileEntryException;
-import btree.BTreeFile;
-import btree.ConstructPageException;
-import btree.GetFileEntryException;
 import global.AttrType;
 import global.SystemDefs;
 import heap.HFBufMgrException;
@@ -15,8 +11,7 @@ import java.io.*;
 public class Minibase {
 
     private static Minibase mInstance;
-    private BigT bigT;
-    private BTreeFile bTreeFile;
+    private BigTable bigTable;
 
     private int maxRowKeyLength = 19;
     private int maxColumnKeyLength = 17;
@@ -45,14 +40,11 @@ public class Minibase {
         return mInstance;
     }
 
-    public BigT getBigTable() {
-        return bigT;
+    public BigTable getBigTable() {
+        return bigTable;
     }
 
-    public void init(String dataFileName, String name, int type, int numBuf) {
-//        if (dataFileName != null && dataFileName.length() != 0) {
-//            findMaxKeyLengths(dataFileName);
-//        }
+    public void init(String bigTableName, int numBuf) {
 
         String dbpath = "/tmp/big_db";
         SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
@@ -73,27 +65,13 @@ public class Minibase {
         attrSizes[1] = (short) (maxColumnKeyLength);
         attrSizes[2] = (short) (maxValueLength);
 
-        try {
-            bigT = new BigT(name, type);
-        } catch (HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
-            e.printStackTrace();
-        }
+        bigTable = new BigTable();
 
-        int keySize = -1;
-        if (type == 2) {
-            keySize = maxRowKeyLength + 2;
-        } else if (type == 3) {
-            keySize = maxColumnKeyLength + 2;
-        } else if (type == 4) {
-            keySize = maxColumnKeyLength + maxRowKeyLength + 4;
-        } else if (type == 5) {
-            keySize = maxRowKeyLength + maxValueLength + 4;
-        }
-
-        if (type != 0) {
+        for (int type = 1; type <= 5; ++type) {
             try {
-                bTreeFile = new BTreeFile(name + type + "_index", AttrType.attrString, keySize, 0);
-            } catch (GetFileEntryException | ConstructPageException | IOException | AddFileEntryException e) {
+                BigT bigT = new BigT(bigTableName, type);
+                bigTable.addBigTablePart(bigT);
+            } catch (HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -145,10 +123,6 @@ public class Minibase {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public BTreeFile getBTree() {
-        return bTreeFile;
     }
 
     public void setMaxRowKeyLength(int maxRowKeyLength) {
@@ -246,11 +220,11 @@ public class Minibase {
         CHECK_VERSIONS_ENABLED = flag;
     }
 
-    public String getTransformedValue(String value){
+    public String getTransformedValue(String value) {
         //Tranform the value so that comparisions will be correct
         int numberOfZerosToAppend = Minibase.getInstance().getMaxValueLength() - value.length();
         StringBuilder transFormedValue = new StringBuilder();
-        for(int i=0;i<numberOfZerosToAppend;++i){
+        for (int i = 0; i < numberOfZerosToAppend; ++i) {
             transFormedValue.append("0");
         }
         transFormedValue.append(value);
