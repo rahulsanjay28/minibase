@@ -18,12 +18,6 @@ public class BigDB implements GlobalConst {
     private int num_pages;
     private String name;
 
-    private int type = 1;
-
-    public BigDB(int type) {
-        this.type = type;
-    }
-
     public BigDB() {
     }
 
@@ -58,10 +52,6 @@ public class BigDB implements GlobalConst {
         BigDBFirstPage firstpg = new BigDBFirstPage();
         firstpg.openPage(apage);
         num_pages = firstpg.getNumDBPages();
-        Minibase.getInstance().setMaxRowKeyLength(firstpg.getMaxRowkeyLen());
-        Minibase.getInstance().setMaxColumnKeyLength(firstpg.getMaxColumnkeyLen());
-        Minibase.getInstance().setMaxTimeStampLength(firstpg.getMaxTimestampLen());
-        Minibase.getInstance().setMaxValueLength(firstpg.getMaxValueLen());
 
         //System.out.println("OUTPUT " + firstpg.getDistinctRowcount() + "--" + firstpg.getDistinctColumncount());
         Minibase.getInstance().setDistinctRowCount(firstpg.getDistinctRowcount());
@@ -114,10 +104,6 @@ public class BigDB implements GlobalConst {
         BigDBFirstPage firstpg = new BigDBFirstPage(apage);
 
         firstpg.setNumDBPages(num_pages);
-        firstpg.setMaxRowkeyLen((short)Minibase.getInstance().getMaxRowKeyLength());
-        firstpg.setMaxColumnkeyLen((short)Minibase.getInstance().getMaxColumnKeyLength());
-        firstpg.setMaxTimestampLen((short)Minibase.getInstance().getMaxTimeStampLength());
-        firstpg.setMaxValueLen((short)Minibase.getInstance().getMaxValueLength());
 
         unpinPage(pageId, true /*dirty*/);
 
@@ -1001,12 +987,8 @@ class BigDBHeaderPage implements bigPageUsedBytes, GlobalConst {
 class BigDBFirstPage extends BigDBHeaderPage {
 
     protected static final int NUM_DB_PAGE = MINIBASE_PAGESIZE - 4;
-    protected static final short MAX_ROWKEY_LEN = NUM_DB_PAGE - 2;
-    protected static final short MAX_COLUMNKEY_LEN = MAX_ROWKEY_LEN - 2;
-    protected static final short MAX_TIMESTAMP_LEN = MAX_COLUMNKEY_LEN - 2;
-    protected static final short MAX_VALUE_LEN = MAX_TIMESTAMP_LEN - 2;
-    protected static final int DISTINCT_ROWCOUNT = MAX_VALUE_LEN - 4;
-    protected static final int DISTINCT_COLUMNCOUNT = DISTINCT_ROWCOUNT - 4;
+    protected static final short DISTINCT_ROW_COUNT = NUM_DB_PAGE - 2;
+    protected static final short DISTINCT_COLUMN_COUNT = DISTINCT_ROW_COUNT - 2;
 
     /**
      * Default construtor
@@ -1059,70 +1041,26 @@ class BigDBFirstPage extends BigDBHeaderPage {
         return (Convert.getIntValue(NUM_DB_PAGE, data));
     }
 
-    public void setMaxRowkeyLen(short num)
-            throws IOException {
-        Convert.setShortValue(num, MAX_ROWKEY_LEN, data);
-    }
-
-    public void setMaxColumnkeyLen(short num)
-            throws IOException {
-        Convert.setShortValue(num, MAX_COLUMNKEY_LEN, data);
-    }
-
-    public void setMaxTimestampLen(short num)
-            throws IOException {
-        Convert.setShortValue(num, MAX_TIMESTAMP_LEN, data);
-    }
-
-    public void setMaxValueLen(short num)
-            throws IOException {
-        Convert.setShortValue(num, MAX_VALUE_LEN, data);
-    }
-
     public void setDistinctRowCount(int num)
             throws IOException {
-        Convert.setIntValue(num, DISTINCT_ROWCOUNT, data);
+        Convert.setIntValue(num, DISTINCT_ROW_COUNT, data);
     }
 
     public void setDistinctColumnCount(int num)
             throws IOException {
-        Convert.setIntValue(num, DISTINCT_COLUMNCOUNT, data);
-    }
-
-    public short getMaxRowkeyLen()
-            throws IOException {
-
-        return (Convert.getShortValue(MAX_ROWKEY_LEN, data));
-    }
-
-    public short getMaxColumnkeyLen()
-            throws IOException {
-
-        return (Convert.getShortValue(MAX_COLUMNKEY_LEN, data));
-    }
-
-    public short getMaxTimestampLen()
-            throws IOException {
-
-        return (Convert.getShortValue(MAX_TIMESTAMP_LEN, data));
-    }
-
-    public short getMaxValueLen()
-            throws IOException {
-
-        return (Convert.getShortValue(MAX_VALUE_LEN, data));
+        Convert.setIntValue(num, DISTINCT_COLUMN_COUNT, data);
     }
 
     public int getDistinctRowcount()
             throws IOException {
 
-        return (Convert.getIntValue(DISTINCT_ROWCOUNT, data));
+        return (Convert.getIntValue(DISTINCT_ROW_COUNT, data));
     }
 
     public int getDistinctColumncount()
             throws IOException {
 
-        return (Convert.getIntValue(DISTINCT_COLUMNCOUNT, data));
+        return (Convert.getIntValue(DISTINCT_COLUMN_COUNT, data));
     }
 
 

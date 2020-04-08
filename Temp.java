@@ -4,7 +4,7 @@ public class Temp {
     public static void main(String[] args) {
         String name = "abc";
         String type = "2";
-        String dbname = "/tmp/" + name + type + ".bigtable-db";
+        String dbname = "/tmp/big_db";
         File file = new File(dbname);
         if (file.exists()) {
             file.delete();
