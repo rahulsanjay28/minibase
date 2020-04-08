@@ -186,7 +186,7 @@ public class BigTStream {
         }
     }
 
-    public Map getNext() throws Exception {
+    public Map getNext(MID returnMID) throws Exception {
         if (scanEntireBigT) {
             MID mid = new MID();
             Map map = scanBigT.getNext(mid);
@@ -194,6 +194,8 @@ public class BigTStream {
                 map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                 if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
                     ++numberOfMapsFound;
+                    returnMID.pageNo.pid = mid.pageNo.pid;
+                    returnMID.slotNo = mid.slotNo;
                     return map;
                 }
                 mid = new MID();
@@ -209,6 +211,8 @@ public class BigTStream {
                         map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                         if (filterOutput(map, rowFilters, columnFilters, valueFilters)) {
                             ++numberOfMapsFound;
+                            returnMID.pageNo.pid = mid.pageNo.pid;
+                            returnMID.slotNo = mid.slotNo;
                             return map;
                         }
                     } catch (Exception e) {
