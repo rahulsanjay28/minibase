@@ -122,18 +122,19 @@ public class BatchInsert {
 
         }
 
-       /* Scan sc = tempBTFile.openScan();
+        /*Scan sc = tempBTFile.openScan();
         MID mid = new MID();
         Map m1 = sc.getNext(mid);
-
+        int count=0;
         while(m1!=null){
             m1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
             m1.print();
+            count++;
             m1= sc.getNext(mid);
-        }*/
-
+        }
+        System.out.println(count);
         sort.close();
-
+*/
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
 //        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
