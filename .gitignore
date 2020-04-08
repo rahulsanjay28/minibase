@@ -1,3 +1,5 @@
 *.class
 *.csv
 TestOutput.txt
+.idea
+minibase.iml
