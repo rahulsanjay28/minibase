@@ -56,6 +56,8 @@ public class BigDB implements GlobalConst {
         //System.out.println("OUTPUT " + firstpg.getDistinctRowcount() + "--" + firstpg.getDistinctColumncount());
         Minibase.getInstance().setDistinctRowCount(firstpg.getDistinctRowcount());
         Minibase.getInstance().setDistinctColumnCount(firstpg.getDistinctColumncount());
+        System.out.println("Distinct Row Count:"+firstpg.getDistinctRowcount());
+        System.out.println("Distinct Column Count"+firstpg.getDistinctColumncount());
 
         unpinPage(pageId, false /* undirty*/);
     }

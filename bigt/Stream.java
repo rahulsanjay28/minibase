@@ -1,6 +1,7 @@
 package bigt;
 
 import diskmgr.OutOfSpaceException;
+import global.MID;
 import global.MapOrder;
 import heap.Heapfile;
 import iterator.FileScan;
@@ -19,10 +20,12 @@ public class Stream {
 
         for (BigT bigT : Minibase.getInstance().getBigTable().getBigTableParts()) {
             BigTStream bigTStream = bigT.openStream(rowFilter, columnFilter, valueFilter);
-            Map map = bigTStream.getNext();
+            MID mid = new MID();
+            Map map = bigTStream.getNext(mid);
             while (map != null) {
                 tempHeapFile.insertMap(map.getMapByteArray());
-                map = bigTStream.getNext();
+                mid = new MID();
+                map = bigTStream.getNext(mid);
             }
             bigTStream.closeStream();
         }
