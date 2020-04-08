@@ -1,6 +1,7 @@
 import bigt.Map;
 import bigt.Minibase;
 import diskmgr.PCounter;
+import global.MID;
 import global.MapOrder;
 import global.SystemDefs;
 import heap.*;
@@ -11,7 +12,10 @@ import iterator.Sort;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * compile this file using the command "javac BatchInsert.java"
@@ -77,19 +81,8 @@ public class BatchInsert {
         }
 
 //        This is for the clustering strategy - Sort uses this ordertype to sort the records
-        switch (type) {
-            case "3":
-                Minibase.getInstance().setOrderType(2);
-                break;
-            case "4":
-                Minibase.getInstance().setOrderType(4);
-                break;
-            case "5":
-                Minibase.getInstance().setOrderType(3);
-                break;
-            default:
-                Minibase.getInstance().setOrderType(1);
-        }
+
+        Minibase.getInstance().setOrderType(1);
 
         Sort sort = null;
         try {
@@ -100,15 +93,61 @@ public class BatchInsert {
         }
 
         Map m = sort.get_next();
-        Minibase.getInstance().setCheckVersionsEnabled(true);
-        while (m != null) {
-            ++numberOfMapsInserted;
-            m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            Minibase.getInstance().getBigTable().insertMap(m, this.type);
-            m = sort.get_next();
-        }
-        sort.close();
+        int count=0;
+        m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+        Heapfile tempBTFile = new Heapfile("temp_bt_file");
+        List<byte[]> mapList = new ArrayList<>(3);
+        String oldMapRowKey = null;
+        String oldColumnValue = null;
+        FileWriter fw = new FileWriter("abc.csv");
 
+        //Minibase.getInstance().setCheckVersionsEnabled(true);
+        while (m != null ) {
+            ++numberOfMapsInserted;
+            oldMapRowKey= m.getRowLabel();
+            oldColumnValue = m.getColumnLabel();
+            if(mapList.size() == 3){
+                mapList.remove(0);
+            }
+            //m.print();
+            mapList.add(m.getMapByteArray());
+
+            m = sort.get_next();
+            if(m!=null ){
+               m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());}
+               if(m == null ||(!m.getRowLabel().equals(oldMapRowKey) || !m.getColumnLabel().equals(oldColumnValue))){
+                    for(byte[] map : mapList){
+                        //System.out.println("I-------------");
+                        count++;
+                        tempBTFile.insertMap(map);
+                        Map ma = new Map(map,0,0);
+                        ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                        ma.print();
+                        fw.write( "\n"+ma.getRowLabel()+","+ma.getColumnLabel()+","+ma.getValue()+","+ma.getTimeStamp());
+                    }
+                   //System.out.println("$$$$$$$$$$-------------");
+                    mapList.clear();
+                }
+
+
+
+        }
+        System.out.println(count);
+        fw.close();
+
+        /*Scan sc = tempBTFile.openScan();
+        MID mid = new MID();
+        Map m1 = sc.getNext(mid);
+        int count=0;
+        while(m1!=null){
+            m1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            m1.print();
+            count++;
+            m1= sc.getNext(mid);
+        }
+        System.out.println(count);
+        sort.close();
+*/
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
 //        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
