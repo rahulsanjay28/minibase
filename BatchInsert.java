@@ -100,7 +100,6 @@ public class BatchInsert {
         String oldMapRowKey = null;
         String oldColumnValue = null;
         FileWriter fw = new FileWriter("abc.csv");
-
         //Minibase.getInstance().setCheckVersionsEnabled(true);
         while (m != null ) {
             ++numberOfMapsInserted;
@@ -114,40 +113,42 @@ public class BatchInsert {
 
             m = sort.get_next();
             if(m!=null ){
-               m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());}
-               if(m == null ||(!m.getRowLabel().equals(oldMapRowKey) || !m.getColumnLabel().equals(oldColumnValue))){
-                    for(byte[] map : mapList){
-                        //System.out.println("I-------------");
-                        count++;
-                        tempBTFile.insertMap(map);
-                        Map ma = new Map(map,0,0);
-                        ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                        ma.print();
-                        fw.write( "\n"+ma.getRowLabel()+","+ma.getColumnLabel()+","+ma.getValue()+","+ma.getTimeStamp());
-                    }
-                   //System.out.println("$$$$$$$$$$-------------");
-                    mapList.clear();
+               m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            }
+            if(m == null ||(!m.getRowLabel().equals(oldMapRowKey) || !m.getColumnLabel().equals(oldColumnValue))){
+                for(byte[] map : mapList){
+                    //System.out.println("I-------------");
+                    count++;
+                    tempBTFile.insertMap(map);
+                    Map ma = new Map(map,0,0);
+                    ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+                    ma.print();
+                    fw.write( "\n"+ma.getRowLabel()+","+ma.getColumnLabel()+","+ma.getValue()+","+ma.getTimeStamp());
                 }
-
-
+                //System.out.println("$$$$$$$$$$-------------");
+                mapList.clear();
+            }
 
         }
         System.out.println(count);
         fw.close();
 
-        /*Scan sc = tempBTFile.openScan();
-        MID mid = new MID();
-        Map m1 = sc.getNext(mid);
-        int count=0;
-        while(m1!=null){
-            m1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-            m1.print();
-            count++;
-            m1= sc.getNext(mid);
-        }
-        System.out.println(count);
+//        Scan sc = tempBTFile.openScan();
+//        MID mid = new MID();
+//        Map m1 = sc.getNext(mid);
+//        int count=0;
+//        while(m1!=null){
+//            m1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+//            m1.print();
+//            count++;
+//            m1= sc.getNext(mid);
+//        }
+//        System.out.println(count);
+
         sort.close();
-*/
+
+        System.out.println("BEFORE CALLa");
+        Minibase.getInstance().getBigTable().insertMap(tempBTFile);
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
 //        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
