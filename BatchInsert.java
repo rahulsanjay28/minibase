@@ -95,11 +95,10 @@ public class BatchInsert {
         Map m = sort.get_next();
         int count=0;
         m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-        Heapfile tempBTFile = new Heapfile("temp_bt_file");
         List<byte[]> mapList = new ArrayList<>(3);
         String oldMapRowKey = null;
         String oldColumnValue = null;
-        FileWriter fw = new FileWriter("abc.csv");
+        FileWriter fw = new FileWriter(dataFileName +"_after_removing_duplicates.csv");
 
         //Minibase.getInstance().setCheckVersionsEnabled(true);
         while (m != null ) {
@@ -119,7 +118,6 @@ public class BatchInsert {
                     for(byte[] map : mapList){
                         //System.out.println("I-------------");
                         count++;
-                        tempBTFile.insertMap(map);
                         Map ma = new Map(map,0,0);
                         ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
                         ma.print();
@@ -128,9 +126,6 @@ public class BatchInsert {
                    //System.out.println("$$$$$$$$$$-------------");
                     mapList.clear();
                 }
-
-
-
         }
         System.out.println(count);
         fw.close();
