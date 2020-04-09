@@ -269,19 +269,10 @@ public class MapUtils {
             throws IOException,
             UnknowAttrType,
             TupleUtilsException {
-        String m1_s, m2_s;
-        int m1_i, m2_i;
-        switch (map_fld_no) {
-            case 1:
-                m1.setRowLabel(m2.getRowLabel());
-                break;
-            case 2:
-                m1.setColumnLabel(m2.getColumnLabel());
-            case 3:
-                m1.setTimeStamp(m2.getTimeStamp());
-            case 4:
-                m1.setValue(m2.getValue());
-        }
+        m1.setRowLabel(m2.getRowLabel());
+        m1.setColumnLabel(m2.getColumnLabel());
+        m1.setTimeStamp(m2.getTimeStamp());
+        m1.setValue(m2.getValue());
     }
 
     /**
