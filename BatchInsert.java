@@ -142,7 +142,7 @@ public class BatchInsert {
 //        System.out.println(count);
 
 
-        Minibase.getInstance().getBigTable().readDataAndInsertMaps(dataFileName +"_after_removing_duplicates", type);
+        Minibase.getInstance().getBigTable().insertMap(dataFileName +"_after_removing_duplicates", type);
 
 
         long endTime = System.currentTimeMillis();

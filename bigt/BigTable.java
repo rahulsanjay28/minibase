@@ -26,12 +26,12 @@ public class BigTable {
         bigTableParts.add(null);
     }
 
-    public void readDataAndInsertMaps(Map map, int type) throws Exception{
+    public void insertMap(Map map, int type) throws Exception{
         //need to iterate through the bigTableParts list and check for versions
         bigTableParts.get(type).insertMap(map);
     }
 
-    public void readDataAndInsertMaps(String dataFileName, String typeStr) throws Exception {
+    public void insertMap(String dataFileName, String typeStr) throws Exception {
         int type=Integer.parseInt(typeStr);
         String line = "";
         String UTF8_BOM = "\uFEFF";
@@ -49,7 +49,7 @@ public class BigTable {
                     list.add(GetMap.getMap(fields[0] ,fields[1],fields[2],fields[3]));
                 }
                 else{
-                    insertMaps(list, type);
+                    insertMapUtil(list, type);
                     list.clear();
                     list.add(GetMap.getMap(fields[0] ,fields[1],fields[2],fields[3]));
                 }
@@ -57,7 +57,7 @@ public class BigTable {
         }
         if(list.size()!=0)
         {
-            insertMaps(list, type);
+            insertMapUtil(list, type);
         }
         System.out.println("ALL MAPS INSERTED");
 
@@ -143,7 +143,7 @@ public class BigTable {
         sort.close();
     }
 
-    public void insertMaps(List<Map> mapList, int  type) throws Exception {
+    public void insertMapUtil(List<Map> mapList, int  type) throws Exception {
         int MAP_LIMIT = 3;
         String rowKey = mapList.get(0).getRowLabel(), colKey = mapList.get(0).getColumnLabel();
         BigT bigT=null;
