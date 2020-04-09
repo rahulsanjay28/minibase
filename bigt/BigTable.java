@@ -59,9 +59,12 @@ public class BigTable {
         {
             insertMaps(list, type);
         }
-        //System.out.println("ALL MAPS INSERTED");
+        System.out.println("ALL MAPS INSERTED");
 
         SortRecords(type);
+
+        System.out.println("ALL MAPS SORTED");
+
 //        BigTStream stream=null;
 //        for(int i = 1; i<bigTableParts.size(); i++){
 //            System.out.println("PRITING FOR TYPE------ " + i);

@@ -18,7 +18,9 @@ public class Stream {
     public Stream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         tempHeapFile = new Heapfile("query_temp_heap_file");
 
-        for (BigT bigT : Minibase.getInstance().getBigTable().getBigTableParts()) {
+        BigT bigT=null;
+        for (int i=1; i<Minibase.getInstance().getBigTable().getBigTableParts().size();i++) {
+            bigT = Minibase.getInstance().getBigTable().getBigTableParts().get(i);
             BigTStream bigTStream = bigT.openStream(rowFilter, columnFilter, valueFilter);
             MID mid = new MID();
             Map map = bigTStream.getNext(mid);
