@@ -143,6 +143,29 @@ public class MapUtils {
                 }else {
                     return -1;
                 }
+            case 7:
+                if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
+                    return 1;
+                } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
+                    return -1;
+                } else {
+                    int value1 = m1.getValue().compareTo("")==0? Integer.MIN_VALUE : Integer.parseInt(m1.getValue());
+                    int value2 = m2.getValue().compareTo("")==0? Integer.MIN_VALUE : Integer.parseInt(m2.getValue());
+
+                    if (value1> value2) {
+                        return 1;
+                    } else if (value1 < value2) {
+                        return -1;
+                    }
+                    else
+                    {
+                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                            return 1;
+                        }else {
+                            return -1;
+                        }
+                    }
+                }
             default:
                 if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
                     return 1;

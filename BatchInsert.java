@@ -1,7 +1,6 @@
 import bigt.Map;
 import bigt.Minibase;
 import diskmgr.PCounter;
-import global.MID;
 import global.MapOrder;
 import global.SystemDefs;
 import heap.*;
@@ -10,12 +9,11 @@ import iterator.FldSpec;
 import iterator.RelSpec;
 import iterator.Sort;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import Utility.GetMap;
 
 /**
  * compile this file using the command "javac BatchInsert.java"
@@ -60,7 +58,7 @@ public class BatchInsert {
             if(fields[0].startsWith(UTF8_BOM)){
                 fields[0]=fields[0].substring(1).trim();
             }
-            tempHeapFile.insertMap(getMap(fields[0],fields[1],fields[2],fields[3]).getMapByteArray());
+            tempHeapFile.insertMap(GetMap.getMap(fields[0],fields[1],fields[2],fields[3]).getMapByteArray());
         }
 
         // create an iterator by open a file scan
@@ -129,6 +127,7 @@ public class BatchInsert {
         }
         System.out.println(count);
         fw.close();
+        sort.close();
 
 //        Scan sc = tempBTFile.openScan();
 //        MID mid = new MID();
@@ -142,10 +141,8 @@ public class BatchInsert {
 //        }
 //        System.out.println(count);
 
-        sort.close();
 
-        System.out.println("BEFORE CALLa");
-        //Minibase.getInstance().getBigTable().insertMap(tempBTFile);
+        Minibase.getInstance().getBigTable().readDataAndInsertMaps(dataFileName +"_after_removing_duplicates", type);
 
 
         long endTime = System.currentTimeMillis();
@@ -157,38 +154,10 @@ public class BatchInsert {
 
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
-
+        File file = new File(dataFileName +"_after_removing_duplicates.csv");
+        file.delete();
         //This ensures flushing all the pages to disk
         SystemDefs.JavabaseBM.setNumBuffers(0);
-    }
-
-    private Map getMap(String rowKey, String columnKey, String value, String timestamp) {
-        Map map = new Map();
-        try {
-            map.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-        } catch (Exception e) {
-            System.err.println("*** error in Tuple.setHdr() ***");
-            e.printStackTrace();
-        }
-
-        Map map1 = new Map(map.size());
-        try {
-            map1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-        } catch (Exception e) {
-            System.err.println("*** error in Tuple.setHdr() ***");
-            e.printStackTrace();
-        }
-
-        try {
-            map1.setRowLabel(rowKey);
-            map1.setColumnLabel(columnKey);
-            map1.setTimeStamp(Integer.parseInt(timestamp));
-            map1.setValue(Minibase.getInstance().getTransformedValue(value));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return map1;
     }
 
 //    private boolean checkVersions(Map newMap) throws Exception {
