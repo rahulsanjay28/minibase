@@ -256,26 +256,10 @@ public class Sort extends Iterator implements GlobalConst {
         String s = new String(c);
         //    short fld_no = 1;
 
-        switch (sortFldType.attrType) {
-            case AttrType.attrInteger:
-                //      lastElem.setHdr(fld_no, junk, null);
-                lastElem.setTimeStamp(Integer.MIN_VALUE);
-                break;
-            case AttrType.attrString:
-                if (_sort_fld == 1)
-                    lastElem.setRowLabel(s);
-                else if (_sort_fld == 2)
-                    lastElem.setColumnLabel(s);
-                else if (_sort_fld == 4)
-                    lastElem.setValue(s);
-                break;
-            default:
-                // don't know how to handle attrSymbol, attrNull
-                //System.err.println("error in sort.java");
-                throw new UnknowAttrType("Sort.java: don't know how to handle attrSymbol, attrNull");
-        }
-
-        return;
+        lastElem.setTimeStamp(Integer.MIN_VALUE);
+        lastElem.setRowLabel(s);
+        lastElem.setColumnLabel(s);
+        lastElem.setValue(s);
     }
 
     /**
@@ -299,25 +283,10 @@ public class Sort extends Iterator implements GlobalConst {
         String s = new String(c);
         //    short fld_no = 1;
 
-        switch (sortFldType.attrType) {
-            case AttrType.attrInteger:
-                lastElem.setTimeStamp(Integer.MIN_VALUE);
-                break;
-            case AttrType.attrString:
-                if (_sort_fld == 1)
-                    lastElem.setRowLabel(s);
-                else if (_sort_fld == 2)
-                    lastElem.setColumnLabel(s);
-                else if (_sort_fld == 4)
-                    lastElem.setValue(s);
-                break;
-            default:
-                // don't know how to handle attrSymbol, attrNull
-                //System.err.println("error in sort.java");
-                throw new UnknowAttrType("Sort.java: don't know how to handle attrSymbol, attrNull");
-        }
-
-        return;
+        lastElem.setTimeStamp(Integer.MAX_VALUE);
+        lastElem.setRowLabel(s);
+        lastElem.setColumnLabel(s);
+        lastElem.setValue(s);
     }
 
     /**
