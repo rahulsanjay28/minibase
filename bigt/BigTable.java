@@ -31,6 +31,25 @@ public class BigTable {
         bigTableParts.get(type).insertMap(map);
     }
 
+    public void insertSingleMap(List<Map> mapList, int  type) throws Exception {
+        insertMapUtil(mapList, type);
+        SortRecords(type);
+
+//        BigTStream stream=null;
+//        for(int i = 1; i<bigTableParts.size(); i++){
+//            System.out.println("PRITING FOR TYPE------ " + i);
+//            stream = bigTableParts.get(i).openStream("*","*","*");
+//            MID mid = new MID();
+//            Map map = stream.getNext(mid);
+//            while(map!=null){
+//                map.print();
+//                mid = new MID();
+//                map = stream.getNext(mid);
+//            }
+//            stream.closeStream();
+//        }
+    }
+
     public void insertMap(String dataFileName, String typeStr) throws Exception {
         int type=Integer.parseInt(typeStr);
         String line = "";
