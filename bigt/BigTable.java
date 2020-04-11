@@ -207,7 +207,7 @@ public class BigTable {
         } else if (type == 3) {
             return new StringKey(map.getColumnLabel());
         } else if (type == 4) {
-            return new StringKey(map.getColumnLabel() + map.getRowLabel());
+            return new StringKey(map.getRowLabel() + map.getColumnLabel());
         } else if (type == 5) {
             return new StringKey(map.getRowLabel() + map.getValue());
         }
