@@ -26,12 +26,31 @@ public class BigTable {
         bigTableParts.add(null);
     }
 
-    public void readDataAndInsertMaps(Map map, int type) throws Exception{
+    public void insertMap(Map map, int type) throws Exception{
         //need to iterate through the bigTableParts list and check for versions
         bigTableParts.get(type).insertMap(map);
     }
 
-    public void readDataAndInsertMaps(String dataFileName, String typeStr) throws Exception {
+    public void insertSingleMap(List<Map> mapList, int  type) throws Exception {
+        insertMapUtil(mapList, type);
+        SortRecords(type);
+
+//        BigTStream stream=null;
+//        for(int i = 1; i<bigTableParts.size(); i++){
+//            System.out.println("PRITING FOR TYPE------ " + i);
+//            stream = bigTableParts.get(i).openStream("*","*","*");
+//            MID mid = new MID();
+//            Map map = stream.getNext(mid);
+//            while(map!=null){
+//                map.print();
+//                mid = new MID();
+//                map = stream.getNext(mid);
+//            }
+//            stream.closeStream();
+//        }
+    }
+
+    public void insertMap(String dataFileName, String typeStr) throws Exception {
         int type=Integer.parseInt(typeStr);
         String line = "";
         String UTF8_BOM = "\uFEFF";
@@ -49,7 +68,7 @@ public class BigTable {
                     list.add(GetMap.getMap(fields[0] ,fields[1],fields[2],fields[3]));
                 }
                 else{
-                    insertMaps(list, type);
+                    insertMapUtil(list, type);
                     list.clear();
                     list.add(GetMap.getMap(fields[0] ,fields[1],fields[2],fields[3]));
                 }
@@ -57,7 +76,7 @@ public class BigTable {
         }
         if(list.size()!=0)
         {
-            insertMaps(list, type);
+            insertMapUtil(list, type);
         }
         System.out.println("ALL MAPS INSERTED");
 
@@ -143,7 +162,7 @@ public class BigTable {
         sort.close();
     }
 
-    public void insertMaps(List<Map> mapList, int  type) throws Exception {
+    public void insertMapUtil(List<Map> mapList, int  type) throws Exception {
         int MAP_LIMIT = 3;
         String rowKey = mapList.get(0).getRowLabel(), colKey = mapList.get(0).getColumnLabel();
         BigT bigT=null;
@@ -188,7 +207,7 @@ public class BigTable {
         } else if (type == 3) {
             return new StringKey(map.getColumnLabel());
         } else if (type == 4) {
-            return new StringKey(map.getColumnLabel() + map.getRowLabel());
+            return new StringKey(map.getRowLabel() + map.getColumnLabel());
         } else if (type == 5) {
             return new StringKey(map.getRowLabel() + map.getValue());
         }
