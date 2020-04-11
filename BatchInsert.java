@@ -118,7 +118,7 @@ public class BatchInsert {
                         count++;
                         Map ma = new Map(map,0,0);
                         ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-                        ma.print();
+//                        ma.print();
                         fw.write( "\n"+ma.getRowLabel()+","+ma.getColumnLabel()+","+ma.getValue()+","+ma.getTimeStamp());
                     }
                    //System.out.println("$$$$$$$$$$-------------");

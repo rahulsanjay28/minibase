@@ -795,12 +795,15 @@ public class Heapfile implements Filetype, GlobalConst {
         PageId currentDataPageId = new PageId();
         MID currentDataPageMid = new MID();
 
-        status = _findDataPage(mid,
-                currentDirPageId, dirPage,
-                currentDataPageId, dataPage,
-                currentDataPageMid);
+//        status = _findDataPage(mid,
+//                currentDirPageId, dirPage,
+//                currentDataPageId, dataPage,
+//                currentDataPageMid);
+//
+//        if (status != true) return null; // Map not found
 
-        if (status != true) return null; // Map not found
+        currentDataPageId = mid.pageNo;
+        pinPage(mid.pageNo, dataPage, false/*Rddisk*/);
 
         Map aMap = new Map();
         aMap = dataPage.getMap(mid);
@@ -813,7 +816,7 @@ public class Heapfile implements Filetype, GlobalConst {
 
         unpinPage(currentDataPageId, false /*undirty*/);
 
-        unpinPage(currentDirPageId, false /*undirty*/);
+//        unpinPage(currentDirPageId, false /*undirty*/);
 
 
         return aMap;  //(true?)OK, but the caller need check if atuple==NULL
