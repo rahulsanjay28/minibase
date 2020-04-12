@@ -72,6 +72,7 @@ def Test_Version(type):
     os.system("tail -n +11 op.txt|head -n -5|sed 's/  \+/,/g' > " + TMP_QUERY_FILE)
     if(os.path.exists(TMP_QUERY_FILE)):
         dft= pd.read_csv(TMP_QUERY_FILE,names=colnames,header=None)
+        os.remove(TMP_QUERY_FILE)
     dftmp=dft.sort_values(by=['rowkey','colkey','timestamp'], ascending = True)
     dftmp.reset_index(drop=True, inplace=True)
     if(dftmp.equals(df2)):
