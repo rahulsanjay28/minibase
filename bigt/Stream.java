@@ -1,6 +1,5 @@
 package bigt;
 
-import diskmgr.OutOfSpaceException;
 import global.MID;
 import global.MapOrder;
 import heap.Heapfile;
@@ -14,12 +13,13 @@ public class Stream {
     private Sort filteredAndSortedData;
     private Heapfile tempHeapFile;
     private int numberOfMapsFound;
+    private heap.Scan scan;
 
     public Stream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         tempHeapFile = new Heapfile("query_temp_heap_file");
 
-        BigT bigT=null;
-        for (int i=1; i<Minibase.getInstance().getBigTable().getBigTableParts().size();i++) {
+        BigT bigT = null;
+        for (int i = 1; i < Minibase.getInstance().getBigTable().getBigTableParts().size(); i++) {
             bigT = Minibase.getInstance().getBigTable().getBigTableParts().get(i);
             BigTStream bigTStream = bigT.openStream(rowFilter, columnFilter, valueFilter);
             MID mid = new MID();
@@ -32,6 +32,10 @@ public class Stream {
             bigTStream.closeStream();
         }
 
+        if(orderType == 0){
+            scan = tempHeapFile.openScan();
+            return;
+        }
         //Now temp heap file contains all the filtered data which we have to sort based on the order type
         // create an iterator by open a file scan
         FldSpec[] projlist = new FldSpec[4];
@@ -77,27 +81,29 @@ public class Stream {
     }
 
     public Map getNext() throws Exception {
-        if (filteredAndSortedData == null) {
-            System.out.println("something is wrong");
-            return null;
+        if(scan == null){
+            Map m = filteredAndSortedData.get_next();
+            if(m != null){
+                ++numberOfMapsFound;
+            }
+            return m;
+        }else{
+            MID mid = new MID();
+            return scan.getNext(mid);
         }
-        Map m = null;
-        try {
-            m = filteredAndSortedData.get_next();
-        } catch (OutOfSpaceException e) {
-            e.printStackTrace();
-        }
-        if (m == null) {
-            System.out.println("Deleting temp file used for sorting");
-            tempHeapFile.deleteFile();
-            filteredAndSortedData.close();
-            return null;
-        }
-        ++numberOfMapsFound;
-        return m;
     }
 
-    public int getNumberOfMapsFound(){
+    public int getNumberOfMapsFound() {
         return numberOfMapsFound;
+    }
+
+    public void close() throws Exception {
+        tempHeapFile.deleteFile();
+        if(filteredAndSortedData != null) {
+            filteredAndSortedData.close();
+        }
+        if(scan != null){
+            scan.closescan();
+        }
     }
 }

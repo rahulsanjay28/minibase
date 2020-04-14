@@ -48,6 +48,7 @@ public class Query {
             map.print();
             map = stream.getNext();
         }
+        stream.close();
 
         long endTime = System.currentTimeMillis();
         if ((endTime - startTime) > 1000) {

@@ -38,6 +38,7 @@ public class GetCounts {
             prevRowKey = map.getRowLabel();
             map = stream.getNext();
         }
+        stream.close();
 
         //counting distinct columns
         stream = Minibase.getInstance().getBigTable().openStream(2, "*", "*", "*");
@@ -55,6 +56,7 @@ public class GetCounts {
             prevColumnKey = map.getColumnLabel();
             map = stream.getNext();
         }
+        stream.close();
 
         long endTime = System.currentTimeMillis();
         if ((endTime - startTime) > 1000) {

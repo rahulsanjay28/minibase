@@ -216,8 +216,7 @@ public class BigTable {
 
     public Stream openStream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception{
         //need to iterate through the bigTableParts list, get the maps from each BigT and sort
-        Stream stream = new Stream(orderType, rowFilter, columnFilter, valueFilter);
-        return stream;
+        return new Stream(orderType, rowFilter, columnFilter, valueFilter);
     }
 
     public void addBigTablePart(BigT bigT){
