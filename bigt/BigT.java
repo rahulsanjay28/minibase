@@ -128,17 +128,6 @@ public class BigT implements Filetype, GlobalConst {
                 }
 
                 DataPageInfo dpinfo = new DataPageInfo(aMap);
-                try {
-                    pinPage(dpinfo.pageId, currentDataPage, false/*Rddisk*/);
-
-
-                    //check error;need unpin currentDirPage
-                } catch (Exception e) {
-                    unpinPage(currentDirPageId, false/*undirty*/);
-                    dirpage = null;
-                    datapage = null;
-                    throw e;
-                }
 
 
                 // ASSERTIONS:
@@ -146,6 +135,17 @@ public class BigT implements Filetype, GlobalConst {
                 // - currentDataPage pinned
 
                 if (dpinfo.pageId.pid == mid.pageNo.pid) {
+                    try {
+                        pinPage(dpinfo.pageId, currentDataPage, false/*Rddisk*/);
+
+
+                        //check error;need unpin currentDirPage
+                    } catch (Exception e) {
+                        unpinPage(currentDirPageId, false/*undirty*/);
+                        dirpage = null;
+                        datapage = null;
+                        throw e;
+                    }
                     aMap = currentDataPage.returnMap(mid);
                     // found user's record on the current datapage which itself
                     // is indexed on the current dirpage.  Return both of these.
@@ -158,14 +158,9 @@ public class BigT implements Filetype, GlobalConst {
 
                     rpDataPageMid.pageNo.pid = currentDataPageMid.pageNo.pid;
                     rpDataPageMid.slotNo = currentDataPageMid.slotNo;
+
                     return true;
-                } else {
-                    // user record not found on this datapage; unpin it
-                    // and try the next one
-                    unpinPage(dpinfo.pageId, false /*undirty*/);
-
                 }
-
             }
 
             // if we would have found the correct datapage on the current
