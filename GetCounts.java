@@ -2,6 +2,7 @@ import bigt.Map;
 import bigt.Minibase;
 import bigt.Stream;
 import diskmgr.PCounter;
+import global.SystemDefs;
 
 
 /**
@@ -20,27 +21,54 @@ public class GetCounts {
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
         Minibase.getInstance().init(bigTableName, Integer.parseInt(numBuf));
+
+        //counting distinct rows
         Stream stream = Minibase.getInstance().getBigTable().openStream(1, "*", "*", "*");
         if (stream == null) {
             System.out.println("stream null");
             return;
         }
+        int distinctRowCount = 0;
         Map map = stream.getNext();
+        String prevRowKey = "";
         while (map != null) {
-            map.print();
+            if (!map.getRowLabel().equals(prevRowKey)) {
+                ++distinctRowCount;
+            }
+            prevRowKey = map.getRowLabel();
             map = stream.getNext();
         }
+
+        //counting distinct columns
+        stream = Minibase.getInstance().getBigTable().openStream(2, "*", "*", "*");
+        if (stream == null) {
+            System.out.println("stream null");
+            return;
+        }
+        int distinctColumnCount = 0;
+        map = stream.getNext();
+        String prevColumnKey = "";
+        while (map != null) {
+            if (!map.getColumnLabel().equals(prevColumnKey)) {
+                ++distinctColumnCount;
+            }
+            prevColumnKey = map.getColumnLabel();
+            map = stream.getNext();
+        }
+
         long endTime = System.currentTimeMillis();
         if ((endTime - startTime) > 1000) {
             System.out.println("Total time taken in seconds " + (endTime - startTime) / 1000);
         } else {
             System.out.println("Total time taken in milliseconds " + (endTime - startTime));
         }
-        System.out.println("Total Number of Maps found " + stream.getNumberOfMapsFound());
+        System.out.println("Total Number of maps " + Minibase.getInstance().getBigTable().getMapCount());
+        System.out.println("Total number of distinct rows " + distinctRowCount);
+        System.out.println("Total number of distinct columns " + distinctColumnCount);
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
-        System.out.println("Total number of distinct rows " + Minibase.getInstance().getDistinctRowCount());
-        System.out.println("Total number of distinct columns " + Minibase.getInstance().getDistinctColumnCount());
+
+        SystemDefs.JavabaseBM.setNumBuffers(0);
     }
 }
 
