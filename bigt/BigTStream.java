@@ -28,11 +28,11 @@ public class BigTStream {
         columnFilters = sanitizefilter(columnFilter);
         valueFilters = sanitizefilter(valueFilter);
 
-        if(valueFilters.length == 1){
-            if(!valueFilters[0].equals("*")){
+        if (valueFilters.length == 1) {
+            if (!valueFilters[0].equals("*")) {
                 valueFilters[0] = Minibase.getInstance().getTransformedValue(valueFilters[0]);
             }
-        }else{
+        } else {
             valueFilters[0] = Minibase.getInstance().getTransformedValue(valueFilters[0]);
             valueFilters[1] = Minibase.getInstance().getTransformedValue(valueFilters[1]);
         }
@@ -45,7 +45,7 @@ public class BigTStream {
                     if (rowFilters.length == 1) {
                         scan = bigT.getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
                     } else {
-                        scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1] + 'Z'));
+                        scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1] + Character.MAX_VALUE));
                     }
                 } else {
                     //Scan everything
@@ -58,67 +58,67 @@ public class BigTStream {
                     if (columnFilters.length == 1) {
                         scan = bigT.getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
                     } else {
-                        scan = bigT.getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1] + 'Z'));
+                        scan = bigT.getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1] + Character.MAX_VALUE));
                     }
                 } else {
                     scanEntireBigT = true;
                 }
                 break;
             case 4:
-                if(rowFilters.length == 1){
+                if (rowFilters.length == 1) {
                     if (rowFilters[0].compareTo("*") != 0) {
                         scanEntireBigT = false;
-                        if(columnFilters.length == 1){
+                        if (columnFilters.length == 1) {
                             if (columnFilters[0].compareTo("*") != 0) {
-                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter + 'Z'));
+                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
                             } else {
-                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter + 'Z'));
+                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter + Character.MAX_VALUE));
                             }
-                        }else{
-                            scan = bigT.getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1] + 'Z'));
+                        } else {
+                            scan = bigT.getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
                         }
-                    }else{
+                    } else {
                         scanEntireBigT = true;
                     }
-                }else{
+                } else {
                     scanEntireBigT = false;
-                    if(columnFilters.length == 1){
-                        if(columnFilters[0].compareTo("*") != 0){
-                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter + 'Z'));
-                        }else{
-                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]+'Z'));
+                    if (columnFilters.length == 1) {
+                        if (columnFilters[0].compareTo("*") != 0) {
+                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
+                        } else {
+                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1] + Character.MAX_VALUE));
                         }
-                    }else{
-                        scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1] + 'Z'));
+                    } else {
+                        scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + columnFilters[0]), new StringKey(rowFilters[1] + columnFilters[1]));
                     }
                 }
                 break;
             case 5:
-                if(rowFilters.length == 1){
+                if (rowFilters.length == 1) {
                     if (rowFilters[0].compareTo("*") != 0) {
                         scanEntireBigT = false;
-                        if(valueFilters.length == 1){
+                        if (valueFilters.length == 1) {
                             if (valueFilters[0].compareTo("*") != 0) {
-                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter + 'Z'));
+                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
                             } else {
-                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter + 'Z'));
+                                scan = bigT.getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter + Character.MAX_VALUE));
                             }
-                        }else{
-                            scan = bigT.getBTree().new_scan(new StringKey(rowFilter + valueFilters[0]), new StringKey(rowFilter + valueFilters[1] + 'Z'));
+                        } else {
+                            scan = bigT.getBTree().new_scan(new StringKey(rowFilter + valueFilters[0]), new StringKey(rowFilter + valueFilters[1]));
                         }
-                    }else{
+                    } else {
                         scanEntireBigT = true;
                     }
-                }else{
+                } else {
                     scanEntireBigT = false;
-                    if(valueFilters.length == 1){
-                        if(valueFilters[0].compareTo("*") != 0){
-                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + valueFilter), new StringKey(rowFilters[1] + valueFilter + 'Z'));
-                        }else{
-                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1]+'Z'));
+                    if (valueFilters.length == 1) {
+                        if (valueFilters[0].compareTo("*") != 0) {
+                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + valueFilter), new StringKey(rowFilters[1] + valueFilter));
+                        } else {
+                            scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0]), new StringKey(rowFilters[1] + Character.MAX_VALUE));
                         }
-                    }else{
-                        scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + valueFilters[0]), new StringKey(rowFilters[1] + valueFilters[1] + 'Z'));
+                    } else {
+                        scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + valueFilters[0]), new StringKey(rowFilters[1] + valueFilters[1]));
                     }
                 }
                 break;
