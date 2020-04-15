@@ -21,6 +21,7 @@ import iterator.Sort;
 public class BigTable {
     private List<BigT> bigTableParts;
 
+    Set<Integer> emptyBigT;
     BigTable(){
         bigTableParts = new ArrayList<>();
         bigTableParts.add(null);
@@ -32,6 +33,14 @@ public class BigTable {
     }
 
     public void insertSingleMap(List<Map> mapList, int  type) throws Exception {
+        emptyBigT = new HashSet<Integer>();
+        for(int i=1;i<=5;i++)
+        {
+            if(bigTableParts.get(i).getMapCnt()==0)
+            {
+                emptyBigT.add(i);
+            }
+        }
         insertMapUtil(mapList, type);
         SortRecords(type);
 
@@ -51,6 +60,17 @@ public class BigTable {
     }
 
     public void insertMap(String dataFileName, String typeStr) throws Exception {
+
+        emptyBigT = new HashSet<Integer>();
+        for(int i=1;i<=5;i++)
+        {
+            if(bigTableParts.get(i).getMapCnt()==0)
+            {
+                emptyBigT.add(i);
+            }
+        }
+
+
         int type=Integer.parseInt(typeStr);
         String line = "";
         String UTF8_BOM = "\uFEFF";
@@ -59,18 +79,18 @@ public class BigTable {
 
         while ((line = br.readLine()) != null) {
             String[] fields = line.split(",");
-            if(fields.length==4) {
+            if (fields.length == 4) {
                 if (fields[0].startsWith(UTF8_BOM)) {
                     fields[0] = fields[0].substring(1).trim();
                 }
 
-                if(list.size()==0 || (list.get(0).getRowLabel().compareTo(fields[0])==0 && list.get(0).getColumnLabel().compareTo(fields[1])==0)){
-                    list.add(GetMap.getMap(fields[0] ,fields[1],fields[2],fields[3]));
-                }
-                else{
+                if (list.size() == 0 || (list.get(0).getRowLabel().compareTo(fields[0]) == 0 && list.get(0).getColumnLabel().compareTo(fields[1]) == 0)) {
+                    list.add(GetMap.getMap(fields[0], fields[1], fields[2], fields[3]));
+                } else {
+
                     insertMapUtil(list, type);
                     list.clear();
-                    list.add(GetMap.getMap(fields[0] ,fields[1],fields[2],fields[3]));
+                    list.add(GetMap.getMap(fields[0], fields[1], fields[2], fields[3]));
                 }
             }
         }
@@ -170,16 +190,18 @@ public class BigTable {
 
         List<TimeStampMapMID> currentMaps = new ArrayList<>(MAP_LIMIT);
         for(int i = 1; i<bigTableParts.size(); i++){
-            bigT=bigTableParts.get(i);
-            stream = bigT.openStream(rowKey,colKey,"*");
-            MID mid = new MID();
-            Map map = stream.getNext(mid);
-            while(map!=null){
-                currentMaps.add(new TimeStampMapMID(map.getTimeStamp(), i, map, mid));
-                mid = new MID();
-                map = stream.getNext(mid);
+            if(!emptyBigT.contains(i)) {
+                bigT = bigTableParts.get(i);
+                stream = bigT.openStream(rowKey, colKey, "*");
+                MID mid = new MID();
+                Map map = stream.getNext(mid);
+                while (map != null) {
+                    currentMaps.add(new TimeStampMapMID(map.getTimeStamp(), i, map, mid));
+                    mid = new MID();
+                    map = stream.getNext(mid);
+                }
+                stream.closeStream();
             }
-            stream.closeStream();
         }
 
         Collections.sort(currentMaps, Comparator.comparingInt(TimeStampMapMID::getTimeStamp));
