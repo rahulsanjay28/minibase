@@ -15,12 +15,12 @@ public class Stream {
     private int numberOfMapsFound;
     private heap.Scan scan;
 
-    public Stream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
+    public Stream(BigTable bigTable, int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         tempHeapFile = new Heapfile("query_temp_heap_file");
 
         BigT bigT = null;
-        for (int i = 1; i < Minibase.getInstance().getBigTable().getBigTableParts().size(); i++) {
-            bigT = Minibase.getInstance().getBigTable().getBigTableParts().get(i);
+        for (int i = 1; i < bigTable.getBigTableParts().size(); i++) {
+            bigT = bigTable.getBigTableParts().get(i);
             BigTStream bigTStream = bigT.openStream(rowFilter, columnFilter, valueFilter);
             MID mid = new MID();
             Map map = bigTStream.getNext(mid);
@@ -89,7 +89,11 @@ public class Stream {
             return m;
         }else{
             MID mid = new MID();
-            return scan.getNext(mid);
+            Map m = scan.getNext(mid);
+            if(m != null) {
+                m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            }
+            return m;
         }
     }
 

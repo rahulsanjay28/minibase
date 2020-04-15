@@ -536,6 +536,23 @@ public class Map implements GlobalConst {
             e.printStackTrace();
         }
     }
+
+    public void printJoinMap(){
+        try {
+            System.out.println(this.getRowLabel() +
+                    String.format("%"+ ((Minibase.getInstance().getMaxRowKeyLength() * 2 + 1) - this.getRowLabel().length() + 2)+"s", "") +
+                    this.getColumnLabel() +
+                    String.format("%"+ ((Minibase.getInstance().getMaxRowKeyLength() +
+                            Minibase.getInstance().getMaxColumnKeyLength() + 1) - this.getColumnLabel().length() + 2)+"s", "")
+                    + this.getValue().replaceFirst("^0*", "")+
+                    String.format("%"+ (Minibase.getInstance().getMaxValueLength() -
+                            this.getValue().replaceFirst("^0*", "").length() + 2)+"s", "")
+                    +
+                    this.getTimeStamp());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * Print out the Map
      *

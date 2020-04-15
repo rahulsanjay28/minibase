@@ -22,9 +22,8 @@ public class MapUtils {
      * 1        if the map is greater,
      * -1        if the map is smaller,
      *
-     * @param m1         one Map.
-     * @param m2         another Map.
-     * @param map_fld_no the field numbers in the maps to be compared.
+     * @param t1         one Map.
+     * @param t2         another Map.
      * @return 0        if the two are equal,
      * 1        if the map is greater,
      * -1        if the map is smaller,
@@ -32,47 +31,56 @@ public class MapUtils {
      * @throws IOException         some I/O fault-----------------ask
      * @throws TupleUtilsException exception from this class-----------ask
      */
-    public static int CompareMapWithMap(Map m1, Map m2, int map_fld_no)
+    public static int CompareMapWithMap(AttrType fldType,
+                                        Map t1, int t1_fld_no,
+                                        Map t2, int t2_fld_no)
             throws IOException,
             UnknowAttrType,
             TupleUtilsException {
-        String m1_s = "", m2_s = "";
-        int m1_i, m2_i;
-        switch (map_fld_no) {
-            case 1:            // Compare two strings.
-            case 2:
-            case 4:
-                try {
-                    if (map_fld_no == 1) {
-                        m1_s = m1.getRowLabel();
-                        m2_s = m2.getRowLabel();
-                    } else if (map_fld_no == 2) {
-                        m1_s = m1.getColumnLabel();
-                        m2_s = m2.getColumnLabel();
-                    } else if (map_fld_no == 4) {
-                        m1_s = m1.getValue();
-                        m2_s = m2.getValue();
-                    }
-                } catch (Exception e) {
-                    throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by mapUtils.java");
-                }
-                if (m1_s.compareTo(m2_s) > 0) return 1;
-                else if (m1_s.compareTo(m2_s) < 0) return -1;
-                else return 0;
+        int t1_i, t2_i;
+        float t1_r, t2_r;
+        String t1_s, t2_s;
 
-            case 3:                // Compare two integers
+        switch (fldType.attrType) {
+            case AttrType.attrInteger:                // Compare two integers.
                 try {
-                    m1_i = m1.getTimeStamp();
-                    m2_i = m2.getTimeStamp();
-                } catch (Exception e) {
-                    throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by mapUtils.java");
+                    t1_i = t1.getIntFld(t1_fld_no);
+                    t2_i = t2.getIntFld(t2_fld_no);
+                } catch (FieldNumberOutOfBoundException e) {
+                    throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by TupleUtils.java");
                 }
-                if (m1_i == m2_i) return 0;
-                else if (m1_i < m2_i) return -1;
-                else if (m1_i > m2_i) return 1;
+                if (t1_i == t2_i) return 0;
+                if (t1_i < t2_i) return -1;
+                if (t1_i > t2_i) return 1;
+
+            case AttrType.attrReal:                // Compare two floats
+                try {
+                    t1_r = t1.getFloFld(t1_fld_no);
+                    t2_r = t2.getFloFld(t2_fld_no);
+                } catch (FieldNumberOutOfBoundException e) {
+                    throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by TupleUtils.java");
+                }
+                if (t1_r == t2_r) return 0;
+                if (t1_r < t2_r) return -1;
+                if (t1_r > t2_r) return 1;
+
+            case AttrType.attrString:                // Compare two strings
+                try {
+                    t1_s = t1.getStrFld(t1_fld_no);
+                    t2_s = t2.getStrFld(t2_fld_no);
+                } catch (FieldNumberOutOfBoundException e) {
+                    throw new TupleUtilsException(e, "FieldNumberOutOfBoundException is caught by TupleUtils.java");
+                }
+
+                // Now handle the special case that is posed by the max_values for strings...
+                if (t1_s.compareTo(t2_s) > 0) return 1;
+                if (t1_s.compareTo(t2_s) < 0) return -1;
+                return 0;
+            default:
+
+                throw new UnknowAttrType(null, "Don't know how to handle attrSymbol, attrNull");
 
         }
-        return -1;
     }
 
     public static int CustomCompare(Map m1, Map m2) throws IOException {
@@ -85,12 +93,12 @@ public class MapUtils {
                 } else {
                     if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) > 0) {
                         return 1;
-                    } else if(m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0){
+                    } else if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0) {
                         return -1;
-                    }else{
-                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                    } else {
+                        if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                             return 1;
-                        }else{
+                        } else {
                             return -1;
                         }
                     }
@@ -103,12 +111,12 @@ public class MapUtils {
                 } else {
                     if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
                         return 1;
-                    } else if(m1.getRowLabel().compareTo(m2.getRowLabel()) < 0){
+                    } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
                         return -1;
-                    }else{
-                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                    } else {
+                        if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                             return 1;
-                        }else{
+                        } else {
                             return -1;
                         }
                     }
@@ -138,9 +146,9 @@ public class MapUtils {
                     }
                 }
             case 6:
-                if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                     return 1;
-                }else {
+                } else {
                     return -1;
                 }
             case 7:
@@ -149,27 +157,25 @@ public class MapUtils {
                 } else if (m1.getRowLabel().compareTo(m2.getRowLabel()) < 0) {
                     return -1;
                 } else {
-                    int value1 = m1.getValue().compareTo("")==0? Integer.MIN_VALUE : Integer.parseInt(m1.getValue());
-                    int value2 = m2.getValue().compareTo("")==0? Integer.MIN_VALUE : Integer.parseInt(m2.getValue());
+                    int value1 = m1.getValue().compareTo("") == 0 ? Integer.MIN_VALUE : Integer.parseInt(m1.getValue());
+                    int value2 = m2.getValue().compareTo("") == 0 ? Integer.MIN_VALUE : Integer.parseInt(m2.getValue());
 
-                    if (value1> value2) {
+                    if (value1 > value2) {
                         return 1;
                     } else if (value1 < value2) {
                         return -1;
-                    }
-                    else
-                    {
-                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                    } else {
+                        if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                             return 1;
-                        }else {
+                        } else {
                             return -1;
                         }
                     }
                 }
             case 8:
-                if(m1.getValue().compareTo(m2.getValue()) > 0){
+                if (m1.getValue().compareTo(m2.getValue()) > 0) {
                     return 1;
-                }else{
+                } else {
                     return -1;
                 }
             default:
@@ -180,12 +186,12 @@ public class MapUtils {
                 } else {
                     if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) > 0) {
                         return 1;
-                    } else if(m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0){
+                    } else if (m1.getColumnLabel().compareTo(m2.getColumnLabel()) < 0) {
                         return -1;
-                    }else{
-                        if(m1.getTimeStamp() >= m2.getTimeStamp()){
+                    } else {
+                        if (m1.getTimeStamp() >= m2.getTimeStamp()) {
                             return 1;
-                        }else{
+                        } else {
                             return -1;
                         }
                     }
@@ -214,7 +220,7 @@ public class MapUtils {
             throws IOException,
             UnknowAttrType,
             TupleUtilsException {
-        return CompareMapWithMap(m1, m2, m1_fld_no);
+        return CompareMapWithMap(fldType, m1, m1_fld_no, m2, m1_fld_no);
     }
 
     /**
@@ -233,9 +239,15 @@ public class MapUtils {
             throws IOException, UnknowAttrType, TupleUtilsException {
         int i;
 
-        for (i = 1; i <= 4; i++)
-            if (CompareMapWithMap(m1, m2, i) != 0)
+        AttrType[] attrTypes = new AttrType[4];
+        attrTypes[0] = new AttrType(AttrType.attrString);
+        attrTypes[1] = new AttrType(AttrType.attrString);
+        attrTypes[2] = new AttrType(AttrType.attrInteger);
+        attrTypes[3] = new AttrType(AttrType.attrString);
+        for (i = 1; i <= 4; i++) {
+            if (CompareMapWithMap(attrTypes[i-1], m1, i, m2, i) != 0)
                 return false;
+        }
         return true;
     }
 

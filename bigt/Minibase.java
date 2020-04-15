@@ -49,6 +49,11 @@ public class Minibase {
         String dbpath = "/tmp/big_db";
         SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
 
+        if (bigTableName.contains("join")) {
+            maxColumnKeyLength = maxRowKeyLength + maxColumnKeyLength + 1;
+            maxRowKeyLength = maxRowKeyLength * 2 + 1;
+        }
+
         System.out.println("maxRowKeyLength: " + maxRowKeyLength);
         System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
         System.out.println("maxTimeStampLength: " + maxTimeStampLength);
