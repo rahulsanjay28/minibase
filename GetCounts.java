@@ -1,8 +1,8 @@
-import bigt.Map;
-import bigt.Minibase;
-import bigt.Stream;
+import bigt.*;
 import diskmgr.PCounter;
 import global.SystemDefs;
+
+import java.util.List;
 
 
 /**
@@ -17,10 +17,16 @@ public class GetCounts {
     }
 
     public void execute(String bigTableName, String numBuf) throws Exception {
+
         long startTime = System.currentTimeMillis();
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
         Minibase.getInstance().init(bigTableName, Integer.parseInt(numBuf));
+
+        List<BigTableInfo> bigTableInfoList = BigTableCatalog.getAllBigTablesInBigDB();
+        for(BigTableInfo bigTableInfo: bigTableInfoList){
+            System.out.println(bigTableInfo.getName());
+        }
 
         //counting distinct rows
         Stream stream = Minibase.getInstance().getBigTable().openStream(1, "*", "*", "*");

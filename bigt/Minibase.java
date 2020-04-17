@@ -1,6 +1,10 @@
 package bigt;
 
+import diskmgr.DiskMgrException;
+import diskmgr.FileIOException;
+import diskmgr.InvalidPageNumberException;
 import global.AttrType;
+import global.PageId;
 import global.SystemDefs;
 import heap.HFBufMgrException;
 import heap.HFDiskMgrException;
@@ -72,6 +76,8 @@ public class Minibase {
 
         bigTable = new BigTable();
 
+        udpateCatalog(bigTableName);
+
         for (int type = 1; type <= 5; ++type) {
             try {
                 BigT bigT = new BigT(bigTableName, type);
@@ -96,6 +102,29 @@ public class Minibase {
         }
     }
 
+    private void udpateCatalog(String bigTableName){
+        boolean bigTableFound = false;
+        for (int type = 1; type <= 5; ++type) {
+            try {
+                PageId tmpId = new PageId();
+                tmpId = SystemDefs.JavabaseDB.get_file_entry(bigTableName + type);
+                if(tmpId != null){
+                    bigTableFound = true;
+                }
+            } catch (IOException | FileIOException | InvalidPageNumberException | DiskMgrException e) {
+                e.printStackTrace();
+            }
+        }
+        if(!bigTableFound){
+            try {
+                System.out.println("BigTable not found, adding it to the catalog");
+                BigTableCatalog.addBigTInfo(new BigTableInfo(bigTableName));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
     private void updateMaxKeyLengths(String rowKey, String columnKey, String value, String timestamp) {
         //update the max lengths of each field in the map to use it indexing
 
