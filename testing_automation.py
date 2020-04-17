@@ -69,7 +69,7 @@ def Test_Version(type):
     #print(query)
     os.system(query + outputfile)
     print("Executing Query 1")
-    os.system("tail -n +11 op.txt|head -n -5|sed 's/  \+/,/g' > " + TMP_QUERY_FILE)
+    os.system("tail -n +9 op.txt|head -n -4|sed 's/  \+/,/g' > " + TMP_QUERY_FILE)
     if(os.path.exists(TMP_QUERY_FILE)):
         dft= pd.read_csv(TMP_QUERY_FILE,names=colnames,header=None)
         os.remove(TMP_QUERY_FILE)
