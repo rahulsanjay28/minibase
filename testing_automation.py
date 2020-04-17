@@ -26,9 +26,9 @@ import pandas as pd
 
 
 BUFFER_SIZE=200
-#FILENAME="project2_testdata"
+FILENAME="project2_testdata"
 #FILENAME="batch_insert_5_row_key_col_key"
-FILENAME="batch_insert_Cal_GR_TW"
+#FILENAME="batch_insert_Cal_GR_TW"
 DBNAME = "abc"
 TESTS_OUTPUTFILE = "TestOutput.txt"
 TMP_QUERY_FILE= "TempQuery.csv"
@@ -145,7 +145,7 @@ def TestQuery(type):
                 ,['[California,Greece] [Donkey,Fox] [38141,40385]', '"California" <= rowkey <= "Greece" and "Donkey" <= colkey <= "Fox" and 38141 <= value <= 40385']
                 ,['"*" "*" [38141,40385]', '38141 <= value <= 40385']
                 ,['"*" [Donkey,Fox] [38141,40385]','"Donkey" <= colkey <= "Fox" and 38141 <= value <= 40385']
-                #,['"*" "*" "*"','rowkey == rowkey and colkey == colkey and value == value']
+                ,['"*" "*" "*"','rowkey == rowkey and colkey == colkey and value == value']
                 ]
     
     # for filter in filters:
@@ -187,7 +187,7 @@ def TestQuery(type):
                 print(stderr)
              os.system("echo " + query + " >> " + TESTS_OUTPUTFILE)
              os.system("tail -5 op.txt >> " + TESTS_OUTPUTFILE)
-             os.system("tail -n +11 op.txt|head -n -5|sed 's/  \+/,/g' >> " + TMP_QUERY_FILE)
+             os.system("tail -n +9 op.txt|head -n -4|sed 's/  \+/,/g' >> " + TMP_QUERY_FILE)
              if(os.path.exists(TMP_QUERY_FILE)):
                 colnames=['rowkey', 'colkey', 'value', 'timestamp']
                 dftmp= pd.read_csv(TMP_QUERY_FILE,names=colnames,header=None)
@@ -237,7 +237,7 @@ if __name__=="__main__":
 
     for type in bigtType:
         print("TYPE" , type)
-        Test_Version(type)
+        #Test_Version(type)
         TestQuery(type)
     
         #CreateDBFileWithType(type)
