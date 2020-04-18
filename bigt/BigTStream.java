@@ -13,7 +13,6 @@ public class BigTStream {
     private int numberOfMapsFound;
     private Scan scanBigT;
     private BigT bigT;
-    private boolean scanEntireBigT;
 
     private String[] rowFilters;
     private String[] columnFilters;
@@ -22,7 +21,6 @@ public class BigTStream {
     public BigTStream(BigT bigt, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         this.numberOfMapsFound = 0;
         this.bigT = bigt;
-        scanBigT = new Scan(bigT);
 
         rowFilters = sanitizefilter(rowFilter);
         columnFilters = sanitizefilter(columnFilter);
@@ -40,8 +38,6 @@ public class BigTStream {
         switch (bigT.getType()) {
             case 2:
                 if (rowFilters[0].compareTo("*") != 0) {
-                    scanEntireBigT = false;
-
                     if (rowFilters.length == 1) {
                         scan = bigT.getBTree().new_scan(new StringKey(rowFilter), new StringKey(rowFilter));
                     } else {
@@ -49,25 +45,23 @@ public class BigTStream {
                     }
                 } else {
                     //Scan everything
-                    scanEntireBigT = true;
+                    scanBigT = bigT.openScan();
                 }
                 break;
             case 3:
                 if (columnFilters[0].compareTo("*") != 0) {
-                    scanEntireBigT = false;
                     if (columnFilters.length == 1) {
                         scan = bigT.getBTree().new_scan(new StringKey(columnFilter), new StringKey(columnFilter));
                     } else {
                         scan = bigT.getBTree().new_scan(new StringKey(columnFilters[0]), new StringKey(columnFilters[1] + Character.MAX_VALUE));
                     }
                 } else {
-                    scanEntireBigT = true;
+                    scanBigT = bigT.openScan();
                 }
                 break;
             case 4:
                 if (rowFilters.length == 1) {
                     if (rowFilters[0].compareTo("*") != 0) {
-                        scanEntireBigT = false;
                         if (columnFilters.length == 1) {
                             if (columnFilters[0].compareTo("*") != 0) {
                                 scan = bigT.getBTree().new_scan(new StringKey(rowFilter + columnFilter), new StringKey(rowFilter + columnFilter));
@@ -78,10 +72,9 @@ public class BigTStream {
                             scan = bigT.getBTree().new_scan(new StringKey(rowFilter + columnFilters[0]), new StringKey(rowFilter + columnFilters[1]));
                         }
                     } else {
-                        scanEntireBigT = true;
+                        scanBigT = bigT.openScan();
                     }
                 } else {
-                    scanEntireBigT = false;
                     if (columnFilters.length == 1) {
                         if (columnFilters[0].compareTo("*") != 0) {
                             scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + columnFilter), new StringKey(rowFilters[1] + columnFilter));
@@ -96,7 +89,6 @@ public class BigTStream {
             case 5:
                 if (rowFilters.length == 1) {
                     if (rowFilters[0].compareTo("*") != 0) {
-                        scanEntireBigT = false;
                         if (valueFilters.length == 1) {
                             if (valueFilters[0].compareTo("*") != 0) {
                                 scan = bigT.getBTree().new_scan(new StringKey(rowFilter + valueFilter), new StringKey(rowFilter + valueFilter));
@@ -107,10 +99,9 @@ public class BigTStream {
                             scan = bigT.getBTree().new_scan(new StringKey(rowFilter + valueFilters[0]), new StringKey(rowFilter + valueFilters[1]));
                         }
                     } else {
-                        scanEntireBigT = true;
+                        scanBigT = bigT.openScan();
                     }
                 } else {
-                    scanEntireBigT = false;
                     if (valueFilters.length == 1) {
                         if (valueFilters[0].compareTo("*") != 0) {
                             scan = bigT.getBTree().new_scan(new StringKey(rowFilters[0] + valueFilter), new StringKey(rowFilters[1] + valueFilter));
@@ -123,13 +114,9 @@ public class BigTStream {
                 }
                 break;
             default:
-                scanEntireBigT = true;
+                scanBigT = bigT.openScan();
                 break;
         }
-    }
-
-    public void unsetScanEntireBigT() {
-        scanEntireBigT = false;
     }
 
     public String[] sanitizefilter(String filter) {
@@ -187,7 +174,7 @@ public class BigTStream {
     }
 
     public Map getNext(MID returnMID) throws Exception {
-        if (scanEntireBigT) {
+        if (scanBigT != null) {
             MID mid = new MID();
             Map map = scanBigT.getNext(mid);
             while (map != null) {

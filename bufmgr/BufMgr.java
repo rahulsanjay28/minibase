@@ -661,6 +661,13 @@ public class BufMgr implements GlobalConst {
 
     }
 
+    public int getPinCount(PageId pageId){
+        int frameNo = hashTable.lookup(pageId);
+        if(frameNo > 0) {
+            return replacer.mgr.frameTable()[frameNo].pin_count();
+        }
+        return -1;
+    }
 
     /**
      * Call DB object to allocate a run of new pages and
@@ -846,9 +853,9 @@ public class BufMgr implements GlobalConst {
 
     public void setNumBuffers(int numBuf) throws Exception {
         for (int i = 0; i < numBuffers; ++i) {
-            if (frmeTable[i].pageNo.pid != INVALID_PAGE) {
-                frmeTable[i].dirty = true;
-            }
+//            if (frmeTable[i].pageNo.pid != INVALID_PAGE) {
+//                frmeTable[i].dirty = true;
+//            }
             frmeTable[i].pin_cnt = 0;
         }
         flushAllPages();

@@ -156,6 +156,8 @@ public class BatchInsert {
         tempHeapFile.deleteFile();
         File file = new File(dataFileName +"_after_removing_duplicates.csv");
         file.delete();
+
+        Minibase.getInstance().getBigTable().close();
         //This ensures flushing all the pages to disk
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }

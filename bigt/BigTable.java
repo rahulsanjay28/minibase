@@ -258,4 +258,12 @@ public class BigTable {
     public List<BigT> getBigTableParts(){
         return bigTableParts;
     }
+
+    public void close() throws Exception{
+        for (int i = 1; i <= 5; ++i) {
+            if(bigTableParts.get(i).getBTree() != null) {
+                bigTableParts.get(i).getBTree().close();
+            }
+        }
+    }
 }
