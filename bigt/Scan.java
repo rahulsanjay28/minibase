@@ -597,6 +597,10 @@ public class Scan implements GlobalConst {
     private void unpinPage(PageId pageno, boolean dirty)
             throws HFBufMgrException {
 
+        if(SystemDefs.JavabaseBM.getPinCount(pageno) == 0){
+            return;
+        }
+        
         try {
             SystemDefs.JavabaseBM.unpinPage(pageno, dirty);
         } catch (Exception e) {

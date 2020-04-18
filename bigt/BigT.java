@@ -743,8 +743,10 @@ public class BigT implements Filetype, GlobalConst {
 
                 // delete empty directory page: (automatically unpinned?)
                 unpinPage(currentDirPageId, false/*undirty*/);
-                freePage(currentDirPageId);
 
+                //Only doing this because bigt.Scan is leaving the directory page unpinned somewhere
+                SystemDefs.JavabaseBM.resetPinCount(currentDirPageId);
+                freePage(currentDirPageId);
 
             } else {
                 // either (the directory page has at least one more datapagerecord

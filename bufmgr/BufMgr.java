@@ -669,6 +669,14 @@ public class BufMgr implements GlobalConst {
         return -1;
     }
 
+    //Dangerous, DO NOT USE
+    public void resetPinCount(PageId pageId){
+        int frameNo = hashTable.lookup(pageId);
+        if(frameNo > 0) {
+            (replacer.mgr.frameTable())[frameNo].pin_cnt = 1;
+        }
+    }
+
     /**
      * Call DB object to allocate a run of new pages and
      * find a frame in the buffer pool for the first page
