@@ -13,6 +13,7 @@ import iterator.RelSpec;
 import iterator.Sort;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 
 
@@ -80,8 +81,10 @@ public class GetCounts {
 
         Minibase.getInstance().setOrderType(1);
 
+        int memory = Integer.parseInt(numBuf);
+
         Sort sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 10);
+                , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), memory/2);
 
         int distinctRowCount = 0;
         Map map = sort.get_next();
@@ -105,7 +108,7 @@ public class GetCounts {
         Minibase.getInstance().setOrderType(2);
 
         sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 10);
+                , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), memory/2);
 
         int distinctColumnCount = 0;
         map = sort.get_next();
