@@ -2,6 +2,7 @@ package iterator;
 
 import Utility.GetMap;
 import bigt.Map;
+import bigt.Minibase;
 import bufmgr.PageNotReadException;
 import global.AttrType;
 import global.GlobalConst;
@@ -136,6 +137,7 @@ public class SortMerge extends Iterator implements GlobalConst {
 
         if (!in1_sorted) {
             try {
+                Minibase.getInstance().setOrderType(8);
                 p_i1 = new Sort(in1, (short) len_in1, s1_sizes, am1, join_col_in1,
                         order, sortFld1Len, amt_of_mem / 2);
             } catch (Exception e) {
@@ -145,6 +147,7 @@ public class SortMerge extends Iterator implements GlobalConst {
 
         if (!in2_sorted) {
             try {
+                Minibase.getInstance().setOrderType(8);
                 p_i2 = new Sort(in2, (short) len_in2, s2_sizes, am2, join_col_in2,
                         order, sortFld2Len, amt_of_mem / 2);
             } catch (Exception e) {
@@ -277,6 +280,9 @@ public class SortMerge extends Iterator implements GlobalConst {
                 // Note that depending on whether the sort order
                 // is ascending or descending,
                 // this loop will be modified.
+                map1.print();
+                map2.print();
+                System.out.println("----------");
                 comp_res = MapUtils.CompareMapWithMap(sortFldType, map1,
                         jc_in1, map2, jc_in2);
                 while ((comp_res < 0 && _order.mapOrder == MapOrder.Ascending) ||
@@ -363,6 +369,7 @@ public class SortMerge extends Iterator implements GlobalConst {
                     _map2 = io_buf2.Get(TempMap2);
                 }
             }
+            System.out.println(TempMap1.getRowLabel() + " " + TempMap2.getRowLabel());
             if (PredEval.Eval(OutputFilter, TempMap1, TempMap2, _in1, _in2) == true) {
                 return GetMap.getJoinMap(TempMap1.getRowLabel(), TempMap2.getRowLabel(), "1", "1");
             }
