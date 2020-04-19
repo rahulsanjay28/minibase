@@ -178,6 +178,12 @@ public class MapUtils {
                 } else {
                     return -1;
                 }
+            case 9:
+                if (m1.getValue().compareTo(m2.getValue()) < 0) {
+                    return 1;
+                } else {
+                    return -1;
+                }
             default:
                 if (m1.getRowLabel().compareTo(m2.getRowLabel()) > 0) {
                     return 1;

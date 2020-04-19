@@ -35,7 +35,7 @@ public class BTRowSort {
                     if (order == MapOrder.Ascending) {
                         latestValue = "99999";
                     } else {
-                        latestValue = "-1";
+                        latestValue = "00000";
                     }
                 }
                 tempHeapFile.insertMap(GetMap.getMap(prevRowKey, "temp_col", latestValue, "1").getMapByteArray());
@@ -65,10 +65,14 @@ public class BTRowSort {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Minibase.getInstance().setOrderType(8);
+        if(order == MapOrder.Ascending) {
+            Minibase.getInstance().setOrderType(8);
+        }else{
+            Minibase.getInstance().setOrderType(9);
+        }
         try {
             sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, 3, new MapOrder(order), Minibase.getInstance().getMaxValueLength(), 10);
+                    , fscan, 4, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxValueLength(), 10);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +90,6 @@ public class BTRowSort {
             if (value == null) {
                 return null;
             }
-            System.out.println(value.getRowLabel());
             stream = Minibase.getInstance().getBigTable().openStream(0, value.getRowLabel(),
                     "*", "*");
             m = stream.getNext();
