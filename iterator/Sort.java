@@ -477,6 +477,7 @@ public class Sort extends Iterator implements GlobalConst {
                     try {
                         map = _am.get_next();  // according to Iterator.java
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new SortException(e, "get_next() failed");
                     }
 
