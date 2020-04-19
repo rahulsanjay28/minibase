@@ -22,7 +22,7 @@ public class BigTable {
     private List<BigT> bigTableParts;
 
     Set<Integer> emptyBigT;
-    BigTable(){
+    public BigTable(){
         bigTableParts = new ArrayList<>();
         bigTableParts.add(null);
     }

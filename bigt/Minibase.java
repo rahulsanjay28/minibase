@@ -76,14 +76,15 @@ public class Minibase {
 
         bigTable = new BigTable();
 
-        udpateCatalog(bigTableName);
-
-        for (int type = 1; type <= 5; ++type) {
-            try {
-                BigT bigT = new BigT(bigTableName, type);
-                bigTable.addBigTablePart(bigT);
-            } catch (HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
-                e.printStackTrace();
+        if(!bigTableName.isEmpty()) {
+            udpateCatalog(bigTableName);
+            for (int type = 1; type <= 5; ++type) {
+                try {
+                    BigT bigT = new BigT(bigTableName, type);
+                    bigTable.addBigTablePart(bigT);
+                } catch (HFException | HFBufMgrException | HFDiskMgrException | IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
