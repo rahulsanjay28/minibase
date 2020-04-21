@@ -20,7 +20,7 @@ public class Minibase {
     private int maxRowKeyLength = 19;
     private int maxColumnKeyLength = 17;
     private int maxTimeStampLength = 5;
-    private int maxValueLength = 5;
+    private int maxValueLength = 6;
 
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
