@@ -58,10 +58,10 @@ public class Minibase {
             maxRowKeyLength = maxRowKeyLength * 2 + 1;
         }
 
-        System.out.println("maxRowKeyLength: " + maxRowKeyLength);
-        System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
-        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
-        System.out.println("maxValueLength: " + maxValueLength);
+//        System.out.println("maxRowKeyLength: " + maxRowKeyLength);
+//        System.out.println("maxColumnKeyLength: " + maxColumnKeyLength);
+//        System.out.println("maxTimeStampLength: " + maxTimeStampLength);
+//        System.out.println("maxValueLength: " + maxValueLength);
 
         attrTypes = new AttrType[4];
         attrTypes[0] = new AttrType(AttrType.attrString);
