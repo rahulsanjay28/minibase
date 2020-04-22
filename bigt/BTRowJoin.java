@@ -4,6 +4,7 @@ import Utility.GetMap;
 import global.AttrOperator;
 import global.AttrType;
 import global.MapOrder;
+import global.SystemDefs;
 import heap.HFBufMgrException;
 import heap.HFDiskMgrException;
 import heap.HFException;
@@ -127,13 +128,14 @@ public class BTRowJoin {
         }
 
         MapOrder order = new MapOrder(MapOrder.Ascending);
+        int memory = Minibase.getInstance().getNumberOfBuffersAvailable();
         SortMerge sm = null;
         try {
             sm = new SortMerge(Minibase.getInstance().getAttrTypes(), 4, Minibase.getInstance().getAttrSizes(),
                     Minibase.getInstance().getAttrTypes(), 4, Minibase.getInstance().getAttrSizes(),
                     4, 4,
                     4, 4,
-                    20,
+                    memory/2,
                     left, right,
                     false, false, order,
                     outFilter, projlist, 1);

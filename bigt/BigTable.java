@@ -1,15 +1,9 @@
 package bigt;
 
+import Utility.GetMap;
+import Utility.TimeStampMapMID;
 import btree.StringKey;
 import global.MID;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.*;
-
-import Utility.*;
-
 import global.MapOrder;
 import heap.Heapfile;
 import iterator.FileScan;
@@ -17,27 +11,31 @@ import iterator.FldSpec;
 import iterator.RelSpec;
 import iterator.Sort;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+
 
 public class BigTable {
     private List<BigT> bigTableParts;
 
     Set<Integer> emptyBigT;
-    public BigTable(){
+
+    public BigTable() {
         bigTableParts = new ArrayList<>();
         bigTableParts.add(null);
     }
 
-    public void insertMap(Map map, int type) throws Exception{
+    public void insertMap(Map map, int type) throws Exception {
         //need to iterate through the bigTableParts list and check for versions
         bigTableParts.get(type).insertMap(map);
     }
 
-    public void insertSingleMap(List<Map> mapList, int  type) throws Exception {
+    public void insertSingleMap(List<Map> mapList, int type) throws Exception {
         emptyBigT = new HashSet<Integer>();
-        for(int i=1;i<=5;i++)
-        {
-            if(bigTableParts.get(i).getMapCnt()==0)
-            {
+        for (int i = 1; i <= 5; i++) {
+            if (bigTableParts.get(i).getMapCnt() == 0) {
                 emptyBigT.add(i);
             }
         }
@@ -62,16 +60,14 @@ public class BigTable {
     public void insertMap(String dataFileName, String typeStr) throws Exception {
 
         emptyBigT = new HashSet<Integer>();
-        for(int i=1;i<=5;i++)
-        {
-            if(bigTableParts.get(i).getMapCnt()==0)
-            {
+        for (int i = 1; i <= 5; i++) {
+            if (bigTableParts.get(i).getMapCnt() == 0) {
                 emptyBigT.add(i);
             }
         }
 
 
-        int type=Integer.parseInt(typeStr);
+        int type = Integer.parseInt(typeStr);
         String line = "";
         String UTF8_BOM = "\uFEFF";
         BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
@@ -94,8 +90,7 @@ public class BigTable {
                 }
             }
         }
-        if(list.size()!=0)
-        {
+        if (list.size() != 0) {
             insertMapUtil(list, type);
         }
         System.out.println("ALL MAPS INSERTED");
@@ -122,10 +117,10 @@ public class BigTable {
     public void SortRecords(int type) throws Exception {
 
         Heapfile tempHeapFile = new Heapfile("sort_temp_heap_file");
-        BigTStream stream = bigTableParts.get(type).openStream("*","*","*");
+        BigTStream stream = bigTableParts.get(type).openStream("*", "*", "*");
         MID mid = new MID();
         Map map = stream.getNext(mid);
-        while(map!=null){
+        while (map != null) {
             tempHeapFile.insertMap(map.getMapByteArray());
             mid = new MID();
             map = stream.getNext(mid);
@@ -162,18 +157,19 @@ public class BigTable {
         }
 
         String name = bigTableParts.get(type).getName();
-        if(type!=1) {
+        if (type != 1) {
             bigTableParts.get(type).getBTree().destroyFile();
         }
         bigTableParts.get(type).deleteBigt();
         BigT newbigT = new BigT(name, type);
-        bigTableParts.set(type,newbigT);
+        bigTableParts.set(type, newbigT);
+        int memory = Minibase.getInstance().getNumberOfBuffersAvailable();
         Sort sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 10);
+                , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(),
+                memory / 2);
 
         map = sort.get_next();
-        while(map!=null)
-        {
+        while (map != null) {
             bigTableParts.get(type).insertMap(map);
             map = sort.get_next();
         }
@@ -182,15 +178,15 @@ public class BigTable {
         sort.close();
     }
 
-    public void insertMapUtil(List<Map> mapList, int  type) throws Exception {
+    public void insertMapUtil(List<Map> mapList, int type) throws Exception {
         int MAP_LIMIT = 3;
         String rowKey = mapList.get(0).getRowLabel(), colKey = mapList.get(0).getColumnLabel();
-        BigT bigT=null;
-        BigTStream stream=null;
+        BigT bigT = null;
+        BigTStream stream = null;
 
         List<TimeStampMapMID> currentMaps = new ArrayList<>(MAP_LIMIT);
-        for(int i = 1; i<bigTableParts.size(); i++){
-            if(!emptyBigT.contains(i)) {
+        for (int i = 1; i < bigTableParts.size(); i++) {
+            if (!emptyBigT.contains(i)) {
                 bigT = bigTableParts.get(i);
                 stream = bigT.openStream(rowKey, colKey, "*");
                 MID mid = new MID();
@@ -206,18 +202,17 @@ public class BigTable {
 
         Collections.sort(currentMaps, Comparator.comparingInt(TimeStampMapMID::getTimeStamp));
 
-        for(int i=0;mapList.size()+currentMaps.size()>3 && currentMaps.size()!=0;i++) {
+        for (int i = 0; mapList.size() + currentMaps.size() > 3 && currentMaps.size() != 0; i++) {
             //System.out.println("REMOVING " + mapList.size() + "--"+currentMaps.size() + "--" + currentMaps.get(0).getTimeStamp() + "--" + currentMaps.get(0).getBigTType());
             //System.out.println("BigTable Type "+ bigTableParts.get(currentMaps.get(0).getBigTType()).getType());
             bigTableParts.get(currentMaps.get(0).getBigTType()).deleteMap(currentMaps.get(0).getMid());
-            if(currentMaps.get(0).getBigTType()!=1) {
-                bigTableParts.get(currentMaps.get(0).getBigTType()).getBTree().Delete(getKey(currentMaps.get(0).getBigTType(),currentMaps.get(0).getMap()),currentMaps.get(0).getMid());
+            if (currentMaps.get(0).getBigTType() != 1) {
+                bigTableParts.get(currentMaps.get(0).getBigTType()).getBTree().Delete(getKey(currentMaps.get(0).getBigTType(), currentMaps.get(0).getMap()), currentMaps.get(0).getMid());
             }
             currentMaps.remove(0);
         }
 
-        for(Map m: mapList)
-        {
+        for (Map m : mapList) {
             bigTableParts.get(type).insertMap(m);
         }
     }
@@ -236,32 +231,32 @@ public class BigTable {
         return null;
     }
 
-    public Stream openStream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception{
+    public Stream openStream(int orderType, String rowFilter, String columnFilter, String valueFilter) throws Exception {
         //need to iterate through the bigTableParts list, get the maps from each BigT and sort
         return new Stream(this, orderType, rowFilter, columnFilter, valueFilter);
     }
 
-    public void addBigTablePart(BigT bigT){
+    public void addBigTablePart(BigT bigT) {
         bigTableParts.add(bigT);
     }
 
-    public int getMapCount() throws Exception{
+    public int getMapCount() throws Exception {
         int mapCount = 0;
-        BigT bigT=null;
-        for(int i = 1; i<bigTableParts.size(); i++){
-            bigT=bigTableParts.get(i);
+        BigT bigT = null;
+        for (int i = 1; i < bigTableParts.size(); i++) {
+            bigT = bigTableParts.get(i);
             mapCount += bigT.getMapCnt();
         }
         return mapCount;
     }
 
-    public List<BigT> getBigTableParts(){
+    public List<BigT> getBigTableParts() {
         return bigTableParts;
     }
 
-    public void close() throws Exception{
+    public void close() throws Exception {
         for (int i = 1; i <= 5; ++i) {
-            if(bigTableParts.get(i).getBTree() != null) {
+            if (bigTableParts.get(i).getBTree() != null) {
                 bigTableParts.get(i).getBTree().close();
             }
         }

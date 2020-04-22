@@ -50,10 +50,10 @@ public class SortMerge extends Iterator implements GlobalConst {
     /**
      * constructor,initialization
      *
-     * @param in1        Array containing field types of R
+     * @param in1          Array containing field types of R
      * @param len_in1      # of columns in R
      * @param s1_sizes     shows the length of the string fields in R.
-     * @param in2        Array containing field types of S
+     * @param in2          Array containing field types of S
      * @param len_in2      # of columns in S
      * @param s2_sizes     shows the length of the string fields in S
      * @param sortFld1Len  the length of sorted field in R
@@ -66,7 +66,7 @@ public class SortMerge extends Iterator implements GlobalConst {
      * @param in1_sorted   is am1 sorted?
      * @param in2_sorted   is am2 sorted?
      * @param order        the order of the map: assending or desecnding?
-     * @param outFilter  Ptr to the output filter
+     * @param outFilter    Ptr to the output filter
      * @param proj_list    shows what input fields go where in the output map
      * @param n_out_flds   number of outer relation fileds
      * @throws JoinNewFailed       allocate failed
@@ -141,6 +141,7 @@ public class SortMerge extends Iterator implements GlobalConst {
                 p_i1 = new Sort(in1, (short) len_in1, s1_sizes, am1, join_col_in1,
                         order, sortFld1Len, amt_of_mem / 2);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new SortException(e, "Sort failed");
             }
         }
@@ -151,6 +152,7 @@ public class SortMerge extends Iterator implements GlobalConst {
                 p_i2 = new Sort(in2, (short) len_in2, s2_sizes, am2, join_col_in2,
                         order, sortFld2Len, amt_of_mem / 2);
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new SortException(e, "Sort failed");
             }
         }
@@ -385,7 +387,6 @@ public class SortMerge extends Iterator implements GlobalConst {
             IOException,
             IndexException {
         if (!closeFlag) {
-
             try {
                 p_i1.close();
                 p_i2.close();

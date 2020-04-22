@@ -32,7 +32,7 @@ public class Stream {
             bigTStream.closeStream();
         }
 
-        if(orderType == 0){
+        if (orderType == 0) {
             scan = tempHeapFile.openScan();
             return;
         }
@@ -72,25 +72,27 @@ public class Stream {
                 maxLength = Minibase.getInstance().getMaxTimeStampLength();
                 break;
         }
+        int memory = Minibase.getInstance().getNumberOfBuffersAvailable();
         try {
-            filteredAndSortedData = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, sortField, new MapOrder(MapOrder.Ascending), maxLength, 10);
+            filteredAndSortedData = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4,
+                    Minibase.getInstance().getAttrSizes(), fscan, sortField, new MapOrder(MapOrder.Ascending),
+                    maxLength, memory / 2);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public Map getNext() throws Exception {
-        if(scan == null){
+        if (scan == null) {
             Map m = filteredAndSortedData.get_next();
-            if(m != null){
+            if (m != null) {
                 ++numberOfMapsFound;
             }
             return m;
-        }else{
+        } else {
             MID mid = new MID();
             Map m = scan.getNext(mid);
-            if(m != null) {
+            if (m != null) {
                 m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
             }
             return m;
@@ -103,10 +105,10 @@ public class Stream {
 
     public void close() throws Exception {
         tempHeapFile.deleteFile();
-        if(filteredAndSortedData != null) {
+        if (filteredAndSortedData != null) {
             filteredAndSortedData.close();
         }
-        if(scan != null){
+        if (scan != null) {
             scan.closescan();
         }
     }

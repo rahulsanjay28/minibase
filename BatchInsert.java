@@ -1,19 +1,21 @@
+import Utility.GetMap;
 import bigt.Map;
 import bigt.Minibase;
 import diskmgr.PCounter;
 import global.MapOrder;
 import global.SystemDefs;
-import heap.*;
+import heap.Heapfile;
 import iterator.FileScan;
 import iterator.FldSpec;
 import iterator.RelSpec;
 import iterator.Sort;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import Utility.GetMap;
 
 /**
  * compile this file using the command "javac BatchInsert.java"
@@ -55,13 +57,13 @@ public class BatchInsert {
         BufferedReader br = new BufferedReader(new FileReader(dataFileName + ".csv"));
         while ((line = br.readLine()) != null) {
             String[] fields = line.split(",");
-            if(fields[0].startsWith(UTF8_BOM)){
-                fields[0]=fields[0].substring(1).trim();
+            if (fields[0].startsWith(UTF8_BOM)) {
+                fields[0] = fields[0].substring(1).trim();
             }
-            if(fields[2].startsWith("0")){
+            if (fields[2].startsWith("0")) {
                 fields[2] = fields[2].substring(1).trim();
             }
-            tempHeapFile.insertMap(GetMap.getMap(fields[0],fields[1],fields[2],fields[3]).getMapByteArray());
+            tempHeapFile.insertMap(GetMap.getMap(fields[0], fields[1], fields[2], fields[3]).getMapByteArray());
         }
 
         // create an iterator by open a file scan
@@ -84,49 +86,51 @@ public class BatchInsert {
 //        This is for the clustering strategy - Sort uses this ordertype to sort the records
 
         Minibase.getInstance().setOrderType(1);
-
+        int memory = Minibase.getInstance().getNumberOfBuffersAvailable();
         Sort sort = null;
         try {
             sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(), 10);
+                    , fscan, 1, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxRowKeyLength(),
+                    memory / 2);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Map m = sort.get_next();
-        int count=0;
+        int count = 0;
         m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
         List<byte[]> mapList = new ArrayList<>(3);
         String oldMapRowKey = null;
         String oldColumnValue = null;
-        FileWriter fw = new FileWriter(dataFileName +"_after_removing_duplicates.csv");
+        FileWriter fw = new FileWriter(dataFileName + "_after_removing_duplicates.csv");
 
         //Minibase.getInstance().setCheckVersionsEnabled(true);
-        while (m != null ) {
+        while (m != null) {
             ++numberOfMapsInserted;
-            oldMapRowKey= m.getRowLabel();
+            oldMapRowKey = m.getRowLabel();
             oldColumnValue = m.getColumnLabel();
-            if(mapList.size() == 3){
+            if (mapList.size() == 3) {
                 mapList.remove(0);
             }
             //m.print();
             mapList.add(m.getMapByteArray());
 
             m = sort.get_next();
-            if(m!=null ){
-               m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());}
-               if(m == null ||(!m.getRowLabel().equals(oldMapRowKey) || !m.getColumnLabel().equals(oldColumnValue))){
-                    for(byte[] map : mapList){
-                        //System.out.println("I-------------");
-                        count++;
-                        Map ma = new Map(map,0,0);
-                        ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            if (m != null) {
+                m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
+            }
+            if (m == null || (!m.getRowLabel().equals(oldMapRowKey) || !m.getColumnLabel().equals(oldColumnValue))) {
+                for (byte[] map : mapList) {
+                    //System.out.println("I-------------");
+                    count++;
+                    Map ma = new Map(map, 0, 0);
+                    ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
 //                        ma.print();
-                        fw.write( "\n"+ma.getRowLabel()+","+ma.getColumnLabel()+","+ma.getValue()+","+ma.getTimeStamp());
-                    }
-                   //System.out.println("$$$$$$$$$$-------------");
-                    mapList.clear();
+                    fw.write("\n" + ma.getRowLabel() + "," + ma.getColumnLabel() + "," + ma.getValue() + "," + ma.getTimeStamp());
                 }
+                //System.out.println("$$$$$$$$$$-------------");
+                mapList.clear();
+            }
         }
         System.out.println(count);
         fw.close();
@@ -145,11 +149,11 @@ public class BatchInsert {
 //        System.out.println(count);
 
 
-        Minibase.getInstance().getBigTable().insertMap(dataFileName +"_after_removing_duplicates", type);
+        Minibase.getInstance().getBigTable().insertMap(dataFileName + "_after_removing_duplicates", type);
 
 
         long endTime = System.currentTimeMillis();
-        System.out.println("Total time taken in minutes " + (endTime - startTime)/(1000*60));
+        System.out.println("Total time taken in minutes " + (endTime - startTime) / (1000 * 60));
 //        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
         System.out.println("Total maps in the Big Table " + Minibase.getInstance().getBigTable().getMapCount());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
@@ -157,7 +161,7 @@ public class BatchInsert {
 
         //deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
-        File file = new File(dataFileName +"_after_removing_duplicates.csv");
+        File file = new File(dataFileName + "_after_removing_duplicates.csv");
         file.delete();
 
         Minibase.getInstance().getBigTable().close();

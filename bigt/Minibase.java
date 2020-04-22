@@ -33,6 +33,8 @@ public class Minibase {
     private int orderType;
     private boolean CHECK_VERSIONS_ENABLED = false;
 
+    private int numberOfBuffersAvailable;
+
     private Minibase() {
 
     }
@@ -49,6 +51,7 @@ public class Minibase {
     }
 
     public void init(String bigTableName, int numBuf) {
+        this.numberOfBuffersAvailable = numBuf;
 
         String dbpath = "/tmp/big_db";
         SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
@@ -264,5 +267,9 @@ public class Minibase {
         }
         transFormedValue.append(value);
         return transFormedValue.toString();
+    }
+
+    public int getNumberOfBuffersAvailable() {
+        return numberOfBuffersAvailable;
     }
 }

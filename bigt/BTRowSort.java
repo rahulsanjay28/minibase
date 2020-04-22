@@ -65,14 +65,16 @@ public class BTRowSort {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(order == MapOrder.Ascending) {
+        if (order == MapOrder.Ascending) {
             Minibase.getInstance().setOrderType(8);
-        }else{
+        } else {
             Minibase.getInstance().setOrderType(9);
         }
+        int memory = Minibase.getInstance().getNumberOfBuffersAvailable();
         try {
             sort = new Sort(Minibase.getInstance().getAttrTypes(), (short) 4, Minibase.getInstance().getAttrSizes()
-                    , fscan, 4, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxValueLength(), 10);
+                    , fscan, 4, new MapOrder(MapOrder.Ascending), Minibase.getInstance().getMaxValueLength(),
+                    memory / 2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,7 +95,7 @@ public class BTRowSort {
             stream = Minibase.getInstance().getBigTable().openStream(0, value.getRowLabel(),
                     "*", "*");
             m = stream.getNext();
-            if(m == null){
+            if (m == null) {
                 stream.close();
             }
         }

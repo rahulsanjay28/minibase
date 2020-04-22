@@ -252,7 +252,7 @@ public class Sort extends Iterator implements GlobalConst {
         //    short[] s_size = new short[Tuple.max_size]; // need Tuple.java
         //    AttrType[] junk = new AttrType[1];
         //    junk[0] = new AttrType(sortFldType.attrType);
-        if(Minibase.getInstance().getOrderType() == 9){
+        if (Minibase.getInstance().getOrderType() == 9) {
             char[] c = new char[1];
             c[0] = Character.MAX_VALUE;
             String s = new String(c);
@@ -262,7 +262,7 @@ public class Sort extends Iterator implements GlobalConst {
             lastElem.setRowLabel(s);
             lastElem.setColumnLabel(s);
             lastElem.setValue(s);
-        }else {
+        } else {
             char[] c = new char[1];
             c[0] = Character.MIN_VALUE;
             String s = new String(c);
