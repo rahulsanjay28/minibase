@@ -280,9 +280,6 @@ public class SortMerge extends Iterator implements GlobalConst {
                 // Note that depending on whether the sort order
                 // is ascending or descending,
                 // this loop will be modified.
-                map1.print();
-                map2.print();
-                System.out.println("----------");
                 comp_res = MapUtils.CompareMapWithMap(sortFldType, map1,
                         jc_in1, map2, jc_in2);
                 while ((comp_res < 0 && _order.mapOrder == MapOrder.Ascending) ||
@@ -369,7 +366,6 @@ public class SortMerge extends Iterator implements GlobalConst {
                     _map2 = io_buf2.Get(TempMap2);
                 }
             }
-            System.out.println(TempMap1.getRowLabel() + " " + TempMap2.getRowLabel());
             if (PredEval.Eval(OutputFilter, TempMap1, TempMap2, _in1, _in2) == true) {
                 return GetMap.getJoinMap(TempMap1.getRowLabel(), TempMap2.getRowLabel(), "1", "1");
             }

@@ -58,6 +58,9 @@ public class BatchInsert {
             if(fields[0].startsWith(UTF8_BOM)){
                 fields[0]=fields[0].substring(1).trim();
             }
+            if(fields[2].startsWith("0")){
+                fields[2] = fields[2].substring(1).trim();
+            }
             tempHeapFile.insertMap(GetMap.getMap(fields[0],fields[1],fields[2],fields[3]).getMapByteArray());
         }
 
