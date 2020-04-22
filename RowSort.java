@@ -1,6 +1,4 @@
-import bigt.BTRowSort;
-import bigt.BigT;
-import bigt.Map;
+import bigt.*;
 import diskmgr.PCounter;
 import global.MapOrder;
 import global.SystemDefs;
@@ -20,6 +18,8 @@ public class RowSort {
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
 
+        System.out.println("Performing RowSort");
+
         int order;
         if (rowOrder.equalsIgnoreCase("ascending")) {
             order = MapOrder.Ascending;
@@ -36,6 +36,7 @@ public class RowSort {
         }
         btRowSort.close();
 
+        BigTableCatalog.addBigTInfo(new BigTableInfo(outputBigTableName));
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
 
