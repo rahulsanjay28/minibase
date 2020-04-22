@@ -34,7 +34,7 @@ public class MapInsert {
 //            }
 //            stream.closeStream();
 //        }
-
+        Minibase.getInstance().getBigTable().close();
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }
 }
