@@ -17,10 +17,10 @@ public class Minibase {
     private static Minibase mInstance;
     private BigTable bigTable;
 
-    private int maxRowKeyLength = 19;
-    private int maxColumnKeyLength = 17;
+    private int maxRowKeyLength = 9;
+    private int maxColumnKeyLength = 9;
     private int maxTimeStampLength = 5;
-    private int maxValueLength = 6;
+    private int maxValueLength = 5;
 
     private int numberOfIndexPages = 0;
     private int maxKeyEntrySize = Integer.MAX_VALUE;
@@ -54,7 +54,7 @@ public class Minibase {
         SystemDefs systemDefs = new SystemDefs(dbpath, 100000, numBuf, "Clock");
 
         if (bigTableName.contains("join")) {
-            maxColumnKeyLength = maxRowKeyLength + maxColumnKeyLength + 1;
+            maxColumnKeyLength = maxColumnKeyLength + 6;
             maxRowKeyLength = maxRowKeyLength * 2 + 1;
         }
 

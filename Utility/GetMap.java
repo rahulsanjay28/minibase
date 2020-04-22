@@ -41,8 +41,7 @@ public class GetMap {
 
         short[] attrSizes = new short[3];
         attrSizes[0] = (short) (Minibase.getInstance().getMaxRowKeyLength() * 2 + 1);
-        attrSizes[1] = (short) (Minibase.getInstance().getMaxRowKeyLength() +
-                Minibase.getInstance().getMaxColumnKeyLength() + 1);
+        attrSizes[1] = (short) (Minibase.getInstance().getMaxColumnKeyLength() + 6);
         attrSizes[2] = (short) (Minibase.getInstance().getMaxValueLength());
 
         Map map = new Map();

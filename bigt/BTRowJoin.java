@@ -160,8 +160,8 @@ public class BTRowJoin {
             if (map.getColumnLabel().equals(joinColumnName)) {
                 commonMaps.add(map);
             } else {
-                Map m = GetMap.getJoinMap(rowKeyLeft + ":" + rowKeyRight, rowKeyLeft + "_" +
-                        map.getColumnLabel(), map.getValue(), Integer.toString(map.getTimeStamp()));
+                Map m = GetMap.getJoinMap(rowKeyLeft + ":" + rowKeyRight,
+                        map.getColumnLabel()+"_Left", map.getValue(), Integer.toString(map.getTimeStamp()));
                 outBigT.insertMap(m);
             }
             map = leftStream.getNext();
@@ -176,8 +176,8 @@ public class BTRowJoin {
             if (map.getColumnLabel().equals(joinColumnName)) {
                 commonMaps.add(map);
             } else {
-                Map m = GetMap.getJoinMap(rowKeyLeft + ":" + rowKeyRight, rowKeyRight + "_" +
-                        map.getColumnLabel(), map.getValue(), Integer.toString(map.getTimeStamp()));
+                Map m = GetMap.getJoinMap(rowKeyLeft + ":" + rowKeyRight,
+                        map.getColumnLabel()+"_Right", map.getValue(), Integer.toString(map.getTimeStamp()));
                 outBigT.insertMap(m);
             }
             map = rightStream.getNext();
