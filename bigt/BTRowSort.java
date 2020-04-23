@@ -8,12 +8,23 @@ import iterator.FldSpec;
 import iterator.RelSpec;
 import iterator.Sort;
 
+/**
+ * This class is used by the command line program RowSort.java
+ */
 public class BTRowSort {
 
     private Stream stream = null;
     private Heapfile tempHeapFile = null;
     private Sort sort = null;
 
+    /**
+     * The constructor extracts the latest maps with the given column name and calls the Minibase sort
+     * @param bigTableName
+     * @param order
+     * @param columnName
+     * @param numBuf
+     * @throws Exception
+     */
     public BTRowSort(String bigTableName, int order, String columnName, String numBuf) throws Exception {
         Minibase.getInstance().init(bigTableName, Integer.parseInt(numBuf));
 
@@ -84,6 +95,11 @@ public class BTRowSort {
                 "*", "*");
     }
 
+    /**
+     * This interface is used to get the maps in the RowSorted order based on the specified column
+     * @return
+     * @throws Exception
+     */
     public Map getNext() throws Exception {
         Map m = stream.getNext();
         if (m == null) {
@@ -102,6 +118,10 @@ public class BTRowSort {
         return m;
     }
 
+    /**
+     * This method should be called after the RowSort operation is done
+     * @throws Exception
+     */
     public void close() throws Exception {
         sort.close();
         tempHeapFile.deleteFile();

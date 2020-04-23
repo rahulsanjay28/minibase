@@ -2,6 +2,12 @@ import bigt.*;
 import diskmgr.PCounter;
 import global.SystemDefs;
 
+/**
+ * This is a command line program which implements the RowJoin operator
+ * Compile using "javac RowJoin.java"
+ * Execute using "java RowJoin big_table_1_name big_table_2_name output_big_table_name column_name NUMBUF"
+ * NOTE: output_big_table_name should contain the word "join"
+ */
 public class RowJoin {
     public static void main(String[] args) throws Exception {
         RowJoin rowJoin = new RowJoin();

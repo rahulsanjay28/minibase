@@ -13,20 +13,17 @@ import java.util.List;
  */
 public class GetCounts {
 
-    private int maxRowKeyLength = 19;
-    private int maxColumnKeyLength = 17;
-    private int maxTimeStampLength = 5;
-    private int maxValueLength = 5;
-
-    private AttrType[] attrTypes;
-    private short[] attrSizes;
-
     public static void main(String[] args) throws Exception {
         GetCounts getCounts = new GetCounts();
         getCounts.execute(args[0]);
-
     }
 
+    /**
+     * This method gets each big table info from the catalog and calculates the total maps, distinct rows
+     * and distinct columns
+     * @param numBuf
+     * @throws Exception
+     */
     public void execute(String numBuf) throws Exception {
 
         long startTime = System.currentTimeMillis();

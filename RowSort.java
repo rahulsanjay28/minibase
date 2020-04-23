@@ -3,8 +3,11 @@ import diskmgr.PCounter;
 import global.MapOrder;
 import global.SystemDefs;
 
-import java.io.FileWriter;
-
+/**
+ * This is a command line program which implements the RowSort operator
+ * Compile using "javac RowSort.java"
+ * Execute using "java RowSort big_table_name output_big_table_name ascending/descending column_name NUMBUF"
+ */
 public class RowSort {
 
     public static void main(String[] args) throws Exception {

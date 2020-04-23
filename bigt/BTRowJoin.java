@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used by the command line implementation of the RowJoin.java operator
+ */
 public class BTRowJoin {
 
     private Heapfile leftTempHeapFile;
@@ -23,6 +26,14 @@ public class BTRowJoin {
     private BigTable rightBigTable;
     private BigT outBigT;
 
+    /**
+     * The constructor sets up left and right data and provides it to SortMerge Join
+     * @param leftStream
+     * @param rightBigTableName
+     * @param columnName
+     * @param outBigTableName
+     * @throws Exception
+     */
     public BTRowJoin(Stream leftStream, String rightBigTableName, String columnName, String outBigTableName) throws Exception {
 
         this.joinColumnName = columnName;
@@ -93,6 +104,10 @@ public class BTRowJoin {
         sortMerge();
     }
 
+    /**
+     * This method uses Minibase SortMerge to perform join operation
+     * @throws Exception
+     */
     private void sortMerge() throws Exception {
         CondExpr[] outFilter = new CondExpr[2];
         outFilter[0] = new CondExpr();
@@ -152,6 +167,12 @@ public class BTRowJoin {
         sm.close();
     }
 
+    /**
+     * This method creates the output maps with the two rows from the left and right big tables
+     * @param rowKeyLeft
+     * @param rowKeyRight
+     * @throws Exception
+     */
     private void joinTwoRows(String rowKeyLeft, String rowKeyRight) throws Exception {
         Stream leftStream = Minibase.getInstance().getBigTable().openStream(0, rowKeyLeft,
                 "*", "*");
@@ -194,6 +215,11 @@ public class BTRowJoin {
         }
     }
 
+    /**
+     * This method eliminates the duplicates of the maps containing the join column
+     * @param maps
+     * @throws Exception
+     */
     private void eliminateDuplicates(List<Map> maps) throws Exception {
         if (maps.size() <= 3) {
             return;
@@ -224,6 +250,10 @@ public class BTRowJoin {
         expr[1] = null;
     }
 
+    /**
+     * This method should be called at the end of the RowJoin operation
+     * @throws Exception
+     */
     public void close() throws Exception {
         leftTempHeapFile.deleteFile();
         rightTempHeapFile.deleteFile();

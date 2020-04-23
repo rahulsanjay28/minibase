@@ -8,6 +8,9 @@ import global.MID;
 
 import java.io.IOException;
 
+/**
+ * This class helps to open a stream on particular type of the BigTable
+ */
 public class BigTStream {
     private BTFileScan scan;
     private int numberOfMapsFound;
@@ -173,6 +176,12 @@ public class BigTStream {
         }
     }
 
+    /**
+     * This method helps to retrieve the maps from a particular big table type using the indexes present on it
+     * @param returnMID
+     * @return
+     * @throws Exception
+     */
     public Map getNext(MID returnMID) throws Exception {
         if (scanBigT != null) {
             MID mid = new MID();
