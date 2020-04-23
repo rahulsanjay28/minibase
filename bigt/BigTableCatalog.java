@@ -8,6 +8,9 @@ import heap.Heapfile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to store the all the BigTable's metadata in the big DB
+ */
 public class BigTableCatalog {
 
     private static final int maxRowKeyLength = 15;
@@ -17,12 +20,22 @@ public class BigTableCatalog {
     private static AttrType[] attrTypes = null;
     private static short[] attrSizes = null;
 
+    /**
+     * This method adds a single bigtable metadata into the catalog
+     * @param bigTableInfo
+     * @throws Exception
+     */
     public static void addBigTInfo(BigTableInfo bigTableInfo) throws Exception {
         Heapfile bigTableCatalog = new Heapfile("big_table_catalog");
         bigTableCatalog.insertMap(GetMap.getCatalogMap(bigTableInfo.getName(),
                 "0", "0", "0").getMapByteArray());
     }
 
+    /**
+     * This method gets the list of all big tables from the catalog
+     * @return
+     * @throws Exception
+     */
     public static List<BigTableInfo> getAllBigTablesInBigDB() throws Exception {
 
         List<BigTableInfo> bigTableInfoList = new ArrayList<>();

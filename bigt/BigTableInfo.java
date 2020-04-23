@@ -1,5 +1,9 @@
 package bigt;
 
+/**
+ * This class represents BigTable metadata
+ * More fields can be added as required in the future
+ */
 public class BigTableInfo {
     private String name;
 

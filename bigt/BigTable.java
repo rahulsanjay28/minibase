@@ -16,7 +16,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-
+/**
+ * This class represents a single big table in the BigDB
+ * It holds all the different types in a big table as bigTableParts
+ */
 public class BigTable {
     private List<BigT> bigTableParts;
 

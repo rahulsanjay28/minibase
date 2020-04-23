@@ -8,6 +8,10 @@ import iterator.FldSpec;
 import iterator.RelSpec;
 import iterator.Sort;
 
+/**
+ * This class aggregates the streams from different types in a big table and provides a unified stream on the entire
+ * big table
+ */
 public class Stream {
 
     private Sort filteredAndSortedData;
@@ -82,6 +86,11 @@ public class Stream {
         }
     }
 
+    /**
+     * This method helps to get the maps in the specified order - which is specified as the order type parameter
+     * @return
+     * @throws Exception
+     */
     public Map getNext() throws Exception {
         if (scan == null) {
             Map m = filteredAndSortedData.get_next();
