@@ -44,10 +44,12 @@ public class BatchInsert {
 
         String UTF8_BOM = "\uFEFF";
         long startTime = System.currentTimeMillis();
+
         //Setting the read and write count to zero for every batch insert
         PCounter.getInstance().setReadCount(0);
         PCounter.getInstance().setWriteCount(0);
 
+        //Initializing Minibase
         Minibase.getInstance().init(bigTableName, Integer.parseInt(numBuf));
 
         //As we should not use in-memory sorting, we are using sorting tools provided by the minibase
@@ -83,9 +85,9 @@ public class BatchInsert {
             e.printStackTrace();
         }
 
-//        This is for the clustering strategy - Sort uses this ordertype to sort the records
-
+        //This is for the clustering strategy - Sort uses this ordertype to sort the records
         Minibase.getInstance().setOrderType(1);
+
         int memory = Minibase.getInstance().getNumberOfBuffersAvailable();
         Sort sort = null;
         try {
@@ -104,7 +106,7 @@ public class BatchInsert {
         String oldColumnValue = null;
         FileWriter fw = new FileWriter(dataFileName + "_after_removing_duplicates.csv");
 
-        //Minibase.getInstance().setCheckVersionsEnabled(true);
+        //Code inside while loop removes duplicates from input CSV data file and keeps most recent 3 versions of maps for a particular row and column key
         while (m != null) {
             ++numberOfMapsInserted;
             oldMapRowKey = m.getRowLabel();
@@ -112,109 +114,46 @@ public class BatchInsert {
             if (mapList.size() == 3) {
                 mapList.remove(0);
             }
-            //m.print();
             mapList.add(m.getMapByteArray());
-
             m = sort.get_next();
             if (m != null) {
                 m.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
             }
             if (m == null || (!m.getRowLabel().equals(oldMapRowKey) || !m.getColumnLabel().equals(oldColumnValue))) {
                 for (byte[] map : mapList) {
-                    //System.out.println("I-------------");
                     count++;
                     Map ma = new Map(map, 0, 0);
                     ma.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-//                        ma.print();
                     fw.write("\n" + ma.getRowLabel() + "," + ma.getColumnLabel() + "," + ma.getValue() + "," + ma.getTimeStamp());
                 }
-                //System.out.println("$$$$$$$$$$-------------");
                 mapList.clear();
             }
         }
-        System.out.println(count);
+        System.out.println("Maps to be inserted: " + count);
         fw.close();
         sort.close();
 
-//        Scan sc = tempBTFile.openScan();
-//        MID mid = new MID();
-//        Map m1 = sc.getNext(mid);
-//        int count=0;
-//        while(m1!=null){
-//            m1.setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-//            m1.print();
-//            count++;
-//            m1= sc.getNext(mid);
-//        }
-//        System.out.println(count);
-
-
+        //Method call to insert maps into BigTable
         Minibase.getInstance().getBigTable().insertMap(dataFileName + "_after_removing_duplicates", type);
 
 
         long endTime = System.currentTimeMillis();
         System.out.println("Total time taken in minutes " + (endTime - startTime) / (1000 * 60));
-//        System.out.println("Number of maps inserted into the big table in this batch insertion " + numberOfMapsInserted);
         System.out.println("Total maps in the Big Table " + Minibase.getInstance().getBigTable().getMapCount());
         System.out.println("Total number of reads " + PCounter.getInstance().getReadCount());
         System.out.println("Total number of writes " + PCounter.getInstance().getWriteCount());
 
-        //deleting the temp heap file used for sorting purposes
+        //Deleting the temp heap file used for sorting purposes
         tempHeapFile.deleteFile();
         File file = new File(dataFileName + "_after_removing_duplicates.csv");
+        //Deleting temp csv file
         file.delete();
 
         Minibase.getInstance().getBigTable().close();
         //This ensures flushing all the pages to disk
         SystemDefs.JavabaseBM.setNumBuffers(0);
     }
-
-//    private boolean checkVersions(Map newMap) throws Exception {
-//        Stream stream = null;
-//        boolean readyToInsert = true;
-//        try {
-//            stream = Minibase.getInstance().getBigTable().openStream(6, newMap.getRowLabel(), newMap.getColumnLabel(),
-//                    "*");
-//            if (stream == null) {
-//                System.out.println("Yet to initialize the stream");
-//            } else {
-//                Map[] map = new Map[stream.getMidCount()];
-//                MID[] mids = stream.getMids();
-//                for (int i = 0; i < stream.getMidCount(); i++) {
-//                    map[i] = Minibase.getInstance().getBigTable().getMap(mids[i]);
-//                    map[i].setHdr((short) 4, Minibase.getInstance().getAttrTypes(), Minibase.getInstance().getAttrSizes());
-//                    if(newMap.getTimeStamp() == map[i].getTimeStamp()){
-//                        readyToInsert = false;
-//                        --numberOfMapsInserted;
-//                    }
-//                }
-//                    if(readyToInsert && stream.getMidCount() == 3) {
-//                        int deleteMID = -1;
-//                        if ((map[0].getTimeStamp() < map[1].getTimeStamp()) && (map[0].getTimeStamp() < map[2].getTimeStamp())) {
-//                            deleteMID = 0;
-//                        } else if ((map[1].getTimeStamp() < map[0].getTimeStamp()) && (map[1].getTimeStamp() < map[2].getTimeStamp())) {
-//                            deleteMID = 1;
-//                        } else {
-//                            deleteMID = 2;
-//                        }
-//                        stream.findAndDeleteMap(mids[deleteMID]);
-//                        --numberOfMapsInserted;
-//                    }
-//
-//                stream.closeStream();
-//            }
-//        } catch (Exception e) {
-//            if(stream != null) {
-//                try {
-//                    stream.closeStream();
-//                } catch (Exception ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//            e.printStackTrace();
-//        }
-//        return readyToInsert;
-//    }
+    
 }
 
 
