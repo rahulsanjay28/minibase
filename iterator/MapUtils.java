@@ -173,13 +173,13 @@ public class MapUtils {
                     }
                 }
             case 8:
-                if (m1.getValue().compareTo(m2.getValue()) >= 0) {
+                if (m1.getValue().compareTo(m2.getValue()) > 0) {
                     return 1;
                 } else {
                     return -1;
                 }
             case 9:
-                if (m1.getValue().compareTo(m2.getValue()) <= 0) {
+                if (m1.getValue().compareTo(m2.getValue()) < 0) {
                     return 1;
                 } else {
                     return -1;
